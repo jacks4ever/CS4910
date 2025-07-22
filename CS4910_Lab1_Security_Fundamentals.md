@@ -137,7 +137,7 @@ For each scenario below, analyze the CIA requirements and use the provided scrip
 4. Are there any security aspects I might be overlooking?"
 ```
 
-Create and run the CIA analysis script:
+Create and customize the CIA analysis script template:
 
 ```python
 #!/usr/bin/env python3
@@ -145,6 +145,7 @@ Create and run the CIA analysis script:
 
 import json
 import sys
+from datetime import datetime
 
 def analyze_scenario(scenario_name, confidentiality, integrity, availability, justification):
     """
@@ -176,28 +177,115 @@ def analyze_scenario(scenario_name, confidentiality, integrity, availability, ju
             'availability': availability
         },
         'justification': justification,
-        'risk_level': risk_level
+        'risk_level': risk_level,
+        'total_score': total_score
     }
 
-# Example usage and template
+def save_analysis_results(results, filename="cia_analysis_results.json"):
+    """Save analysis results to JSON file"""
+    with open(filename, 'w') as f:
+        json.dump({
+            'timestamp': datetime.now().isoformat(),
+            'student_analysis': results
+        }, f, indent=2)
+    print(f"\nResults saved to {filename}")
+
+# STUDENT CUSTOMIZATION SECTION
+# Complete this section with your analysis for each scenario
 if __name__ == "__main__":
-    # Template for student analysis
-    scenarios = [
-        "ATM System",
-        "DNS System", 
-        "Implanted Defibrillator",
-        "Online Voting System",
-        "Automated Metro Train"
-    ]
-    
     print("CS4910 Lab 1 - CIA Triad Analysis Tool")
-    print("Complete your analysis for each scenario:")
+    print("=" * 50)
     
-    for scenario in scenarios:
-        print(f"\n--- Analyze: {scenario} ---")
-        print("Rate each aspect from 1-5 (5 = highest importance)")
-        # Students will modify this section with their analysis
+    results = []
+    
+    # SCENARIO 1: ATM System
+    # TODO: Replace these placeholder values with your analysis
+    atm_analysis = analyze_scenario(
+        "ATM System",
+        confidentiality=5,  # STUDENT: Rate 1-5 and justify below
+        integrity=5,        # STUDENT: Rate 1-5 and justify below
+        availability=4,     # STUDENT: Rate 1-5 and justify below
+        justification={
+            'confidentiality': 'STUDENT: Explain why you rated confidentiality this way',
+            'integrity': 'STUDENT: Explain why you rated integrity this way',
+            'availability': 'STUDENT: Explain why you rated availability this way'
+        }
+    )
+    results.append(atm_analysis)
+    
+    # SCENARIO 2: DNS System
+    # TODO: Complete your analysis
+    dns_analysis = analyze_scenario(
+        "DNS System",
+        confidentiality=0,  # STUDENT: Replace with your rating
+        integrity=0,        # STUDENT: Replace with your rating
+        availability=0,     # STUDENT: Replace with your rating
+        justification={
+            'confidentiality': 'STUDENT: Add your justification',
+            'integrity': 'STUDENT: Add your justification',
+            'availability': 'STUDENT: Add your justification'
+        }
+    )
+    results.append(dns_analysis)
+    
+    # SCENARIO 3: Implanted Defibrillator
+    # TODO: Complete your analysis
+    defibrillator_analysis = analyze_scenario(
+        "Implanted Defibrillator",
+        confidentiality=0,  # STUDENT: Replace with your rating
+        integrity=0,        # STUDENT: Replace with your rating
+        availability=0,     # STUDENT: Replace with your rating
+        justification={
+            'confidentiality': 'STUDENT: Add your justification',
+            'integrity': 'STUDENT: Add your justification',
+            'availability': 'STUDENT: Add your justification'
+        }
+    )
+    results.append(defibrillator_analysis)
+    
+    # SCENARIO 4: Online Voting System
+    # TODO: Complete your analysis
+    voting_analysis = analyze_scenario(
+        "Online Voting System",
+        confidentiality=0,  # STUDENT: Replace with your rating
+        integrity=0,        # STUDENT: Replace with your rating
+        availability=0,     # STUDENT: Replace with your rating
+        justification={
+            'confidentiality': 'STUDENT: Add your justification',
+            'integrity': 'STUDENT: Add your justification',
+            'availability': 'STUDENT: Add your justification'
+        }
+    )
+    results.append(voting_analysis)
+    
+    # SCENARIO 5: Automated Metro Train
+    # TODO: Complete your analysis
+    metro_analysis = analyze_scenario(
+        "Automated Metro Train",
+        confidentiality=0,  # STUDENT: Replace with your rating
+        integrity=0,        # STUDENT: Replace with your rating
+        availability=0,     # STUDENT: Replace with your rating
+        justification={
+            'confidentiality': 'STUDENT: Add your justification',
+            'integrity': 'STUDENT: Add your justification',
+            'availability': 'STUDENT: Add your justification'
+        }
+    )
+    results.append(metro_analysis)
+    
+    # Save results to file
+    save_analysis_results(results)
+    
+    print("\n" + "=" * 50)
+    print("Analysis complete! Review your results and take screenshots for your report.")
 ```
+
+**Instructions for Students:**
+1. **Copy this script template** to your `~/CS4910-Lab1/scripts/` directory
+2. **Replace all placeholder values** (0 ratings and "STUDENT:" text) with your actual analysis
+3. **Use AI assistance** to help determine appropriate ratings and justifications
+4. **Run the completed script** to generate your analysis output
+5. **Take screenshots** of the output for your lab report
 
 ### 2.3 Scenario Analysis
 
