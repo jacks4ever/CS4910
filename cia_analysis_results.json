@@ -1,0 +1,19 @@
+{
+  "ATM System": {
+    "scenario": "ATM System",
+    "timestamp": "2025-07-22T17:56:18.777419",
+    "scores": {
+      "confidentiality": 5,
+      "integrity": 5,
+      "availability": 3,
+      "total": 13
+    },
+    "justification": {
+      "confidentiality": "PIN and account information must be protected from unauthorized access. Compromise could lead to financial theft.",
+      "integrity": "Transaction data and account balances must be accurate. Data corruption could cause financial losses.",
+      "availability": "ATM must be accessible when customers need cash. Downtime causes customer inconvenience but not life-threatening."
+    },
+    "risk_level": "High",
+    "primary_concern": "Confidentiality"
+  }
+}
