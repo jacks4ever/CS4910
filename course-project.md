@@ -144,23 +144,68 @@ The CS 4910 Course Project is a comprehensive cybersecurity research and impleme
 | 14 | Video Recording Complete | Submit demo video (due 12/14) |
 | 15 | All Deliverables Complete | Submit PowerPoint and Word report (due 12/15) |
 
-## 📊 Grading Rubric
+## 📊 Unified Project Grading Rubric (Total: 100 Points)
 
-| Component | Weight | Criteria |
-|-----------|--------|----------|
-| Technical Implementation | 40% | Complexity, functionality, innovation |
-| Report Quality | 25% | Writing, analysis, technical depth |
-| Presentation | 20% | Clarity, organization, time management |
-| Demo Video | 15% | Technical demonstration, explanation |
+### 📄 Project Report (40 points)
 
-### 🎯 Grading Scale
-- **A (90-100%):** Exceptional work with significant innovation
-- **B (80-89%):** Good work meeting all requirements
-- **C (70-79%):** Adequate work with minor deficiencies
-- **D (60-69%):** Below expectations, major issues
-- **F (<60%):** Failing to meet basic requirements
+| Criteria | Excellent (36-40 pts) | Good (32-35 pts) | Satisfactory (28-31 pts) | Needs Improvement (24-27 pts) | Unsatisfactory (0-23 pts) |
+|----------|----------------------|------------------|-------------------------|----------------------------|---------------------------|
+| **Technical Content & Analysis (15 pts)** | Demonstrates deep understanding of cybersecurity concepts with sophisticated analysis and original insights | Shows solid understanding with good analysis and some original thinking | Adequate understanding with basic analysis and limited insights | Superficial understanding with minimal analysis | Poor understanding with incorrect or missing analysis |
+| **Methodology & Implementation (10 pts)** | Clear, well-designed methodology with robust implementation and thorough testing | Good methodology with solid implementation and adequate testing | Basic methodology with functional implementation and some testing | Unclear methodology with limited implementation and minimal testing | Poor or missing methodology with non-functional implementation |
+| **Results & Evaluation (10 pts)** | Comprehensive results with thorough evaluation, meaningful metrics, and insightful interpretation | Good results with solid evaluation and appropriate metrics | Basic results with adequate evaluation and standard metrics | Limited results with minimal evaluation and few metrics | Poor or missing results with no meaningful evaluation |
+| **IEEE Format & Writing (5 pts)** | Perfect IEEE formatting, excellent writing quality, proper citations | Minor formatting issues, good writing quality, mostly correct citations | Some formatting issues, adequate writing, acceptable citations | Multiple formatting issues, poor writing quality, incorrect citations | Major formatting problems, very poor writing, missing citations |
+
+### 🎤 PowerPoint Presentation (30 points)
+
+| Criteria | Excellent (27-30 pts) | Good (24-26 pts) | Satisfactory (21-23 pts) | Needs Improvement (18-20 pts) | Unsatisfactory (0-17 pts) |
+|----------|----------------------|------------------|-------------------------|----------------------------|---------------------------|
+| **Content Organization & Flow (10 pts)** | Logical structure, smooth transitions, comprehensive coverage of all required elements | Well-organized with good transitions and covers most required elements | Basic organization with adequate transitions and covers essential elements | Poor organization with unclear transitions and missing some elements | No clear organization, confusing flow, missing many elements |
+| **Technical Accuracy & Depth (10 pts)** | Technically accurate throughout with deep understanding demonstrated | Mostly accurate with good technical understanding | Generally accurate with adequate technical understanding | Some technical errors with limited understanding | Many technical errors with poor understanding |
+| **Visual Design & Clarity (5 pts)** | Professional design, excellent use of visuals, easy to read and understand | Good design with effective visuals and clear readability | Adequate design with some visuals and acceptable readability | Poor design with few visuals and difficult to read | Very poor design, no effective visuals, hard to read |
+| **Slide Count & Template Use (5 pts)** | Follows template exactly, appropriate slide count (10-15), all required sections included | Minor deviations from template, good slide count, most sections included | Some template deviations, acceptable slide count, essential sections included | Major template deviations, too few/many slides, missing sections | Doesn't follow template, inappropriate slide count, many missing sections |
+
+### 🎥 Demo Video (25 points)
+
+| Criteria | Excellent (23-25 pts) | Good (20-22 pts) | Satisfactory (18-19 pts) | Needs Improvement (15-17 pts) | Unsatisfactory (0-14 pts) |
+|----------|----------------------|------------------|-------------------------|----------------------------|---------------------------|
+| **Technical Demonstration (15 pts)** | Comprehensive demo showing all features working flawlessly with clear explanations | Good demo showing most features working well with adequate explanations | Basic demo showing core features working with minimal explanations | Limited demo with some features working and unclear explanations | Poor demo with non-working features and no clear explanations |
+| **Video Quality & Production (5 pts)** | Professional quality: clear audio, sharp video (1080p+), smooth recording | Good quality: clear audio, good video quality, minor technical issues | Adequate quality: acceptable audio/video, some technical issues | Poor quality: unclear audio/video, multiple technical issues | Very poor quality: inaudible audio, unwatchable video |
+| **Time Management & Content (5 pts)** | Perfect timing (5-8 minutes), covers all required content efficiently | Good timing, covers most required content well | Acceptable timing, covers essential content adequately | Poor timing (too short/long), missing some required content | Very poor timing, missing most required content |
+
+### 🔬 Project Scope & Innovation (5 points)
+
+| Criteria | Excellent (5 pts) | Good (4 pts) | Satisfactory (3 pts) | Needs Improvement (2 pts) | Unsatisfactory (0-1 pts) |
+|----------|------------------|--------------|---------------------|---------------------------|-------------------------|
+| **Complexity & Technical Challenge** | Highly complex project with significant technical challenges overcome | Good complexity with solid technical challenges addressed | Adequate complexity with basic technical challenges | Limited complexity with minimal technical challenges | Very simple project with no significant technical challenges |
+| **Cybersecurity Relevance & Innovation** | Highly relevant to current cybersecurity issues with innovative approaches | Good relevance with some innovative elements | Adequate relevance with standard approaches | Limited relevance with basic approaches | Poor relevance to cybersecurity field |
+
+## 📊 Final Grade Calculation
+
+| **Component** | **Points** | **Percentage** |
+|---------------|------------|----------------|
+| Project Report | 40 | 40% |
+| PowerPoint Presentation | 30 | 30% |
+| Demo Video | 25 | 25% |
+| Project Scope & Innovation | 5 | 5% |
+| **TOTAL** | **100** | **100%** |
+
+### 🎯 Grade Scale
+- **A (90-100 points):** Exceptional work exceeding expectations
+- **B (80-89 points):** Good work meeting expectations with excellence
+- **C (70-79 points):** Satisfactory work meeting basic requirements
+- **D (60-69 points):** Below expectations with significant issues
+- **F (0-59 points):** Failing to meet minimum requirements
+
+### ⚠️ Important Notes
+- **Late Submission:** 10% deduction per day late
+- **Missing Components:** Cannot receive higher than C if any major component is missing
+- **Academic Integrity:** Any plagiarism or cheating results in automatic F
+- **Team Contribution:** Both team members must contribute substantially to all components
 
 ## 📁 Template Files & Resources
+
+### 📊 Grading & Evaluation:
+- **[Detailed Grading Rubric](CS4910_Project_Grading_Rubric.md)** - Complete rubric with point breakdowns and criteria
 
 ### 📄 Required Templates (Download and Use):
 - **[Project Report Template](CS4910_Project_Report_Template.md)** - Structure for your IEEE format report

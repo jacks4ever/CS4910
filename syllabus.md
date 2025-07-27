@@ -126,6 +126,7 @@ Detailed assignment instructions and due dates are posted on Canvas. Schedule ma
 - 📋 Deliverables: Final Presentation, Demo Video, and IEEE Format Report (3 pages)
 - 📚 **Project resources available in repository:**
   - [Course Project Instructions](course-project.md) - Complete guidelines and requirements
+  - [Detailed Grading Rubric](CS4910_Project_Grading_Rubric.md) - 100-point evaluation criteria
   - [Project Report Template](CS4910_Project_Report_Template.md) - IEEE format structure
   - [PowerPoint Template](CS4910_Project_Presentation_Template.md) - Presentation structure
   - [Video Demo Guide](video-demo-guide.md) - Video creation instructions

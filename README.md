@@ -11,6 +11,7 @@ Welcome to the CS 4910 Introduction to Computer Security course repository! This
 - **[Course Project Instructions](course-project.md)** - Comprehensive project guidelines and requirements
 
 ### 🔬 Project Resources
+- **[Detailed Grading Rubric](CS4910_Project_Grading_Rubric.md)** - Complete 100-point rubric with evaluation criteria
 - **[Project Report Template](CS4910_Project_Report_Template.md)** - IEEE format structure for your report
 - **[PowerPoint Template](CS4910_Project_Presentation_Template.md)** - Slide structure for your presentation
 - **[Video Demo Creation Guide](video-demo-guide.md)** - Instructions for creating project demo videos
