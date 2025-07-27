@@ -11,11 +11,10 @@ Welcome to the CS 4910 Introduction to Computer Security course repository! This
 - **[Course Project Instructions](course-project.md)** - Comprehensive project guidelines and requirements
 
 ### 🔬 Project Resources
-- **[IEEE Template Setup Guide](word-template-setup.md)** - How to format your project report
-- **[Presentation Template](presentation-template.md)** - Structure for your final presentation
+- **[Project Report Template](CS4910_Project_Report_Template.md)** - IEEE format structure for your report
+- **[PowerPoint Template](CS4910_Project_Presentation_Template.md)** - Slide structure for your presentation
 - **[Video Demo Creation Guide](video-demo-guide.md)** - Instructions for creating project demo videos
 - **[Sample Project Examples](sample-project-examples.md)** - Inspiration and reference videos
-- **[IEEE Template Guide](ieee-template-guide.md)** - Detailed formatting requirements
 
 ## 🎯 Quick Navigation
 

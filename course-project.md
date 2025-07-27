@@ -8,29 +8,29 @@ The CS 4910 Course Project is a comprehensive cybersecurity research and impleme
 
 - **👥 Team Size:** Two-person teams (no exceptions)
 - **🔐 Topic:** Must be cybersecurity-related with a hands-on technical component
-- **⏰ Duration:** Full semester project with milestone deliverables
 - **📊 Weight:** 20% of final course grade
 
-## 📋 Deliverables
+## 📋 Required Deliverables
+
+**All deliverables must be submitted by ONE team member on Canvas by the due dates:**
 
 ### 1. 📄 Project Report (Due: December 15, 2025)
 - **Format:** 3-page IEEE conference proceedings format (two-column)
-- **Template:** Use official IEEE templates (provided in this repository)
+- **Template:** Use the provided Word template: `CS4910_Project_Report_Template.docx`
 - **Content:** Technical analysis, methodology, results, and conclusions
-- **Citations:** Proper IEEE citation format for all external resources
-- **Submission:** One submission per team on Canvas
+- **Submission:** Upload Word document to Canvas
 
-### 2. 🎤 Final Presentation (Week 15-16)
-- **Duration:** 10-12 minutes per team
-- **Format:** PowerPoint or similar presentation software
-- **Content:** Project overview, methodology, demonstration, and results
-- **Template:** PowerPoint template provided in this repository
+### 2. 🎤 PowerPoint Presentation (Due: December 15, 2025)
+- **Format:** PowerPoint presentation (no live presentation required)
+- **Template:** Use the provided template: `CS4910_Project_Presentation_Template.pptx`
+- **Content:** 10-15 slides covering project overview, methodology, results
+- **Submission:** Upload PowerPoint file to Canvas
 
 ### 3. 🎥 Demo Video (Due: December 14, 2025)
 - **Duration:** 5-8 minutes
 - **Content:** Live demonstration of your project's technical components
-- **Format:** MP4, uploaded to Canvas or shared via cloud link
-- **Quality:** Clear audio, visible screen capture, professional presentation
+- **Format:** MP4 file or cloud link (Google Drive, YouTube unlisted, etc.)
+- **Submission:** Upload video file or submit link on Canvas
 
 ## 🔍 Recommended Project Topics
 
@@ -130,16 +130,19 @@ The CS 4910 Course Project is a comprehensive cybersecurity research and impleme
     - Develop rule engine
     - Test against common attacks
 
-## 📝 Project Timeline & Milestones
+## 📝 Sample Project Timeline (For Team Accountability)
 
-| Week | Milestone | Deliverable |
-|------|-----------|-------------|
-| 4 | Team Formation | Project Approval Email |
-| 4 | Topic Selection | Project Approval |
-| 8 | Progress Check | Interim Progress Report (1 page) |
-| 12 | Implementation Complete | Working Prototype |
-| 15-16 | Final Presentations | Presentation & Demo |
-| 16 | Final Submission | Report & Video |
+**Note:** This timeline is a suggested framework for teams to hold each other accountable. No intermediate submissions to the professor are required.
+
+| Week | Milestone | Team Accountability Check |
+|------|-----------|---------------------------|
+| 4 | Team Formation & Topic Selection | Email instructor for project approval |
+| 6 | Research & Planning Complete | Team meeting: finalize approach and tools |
+| 8 | Implementation Started | Team meeting: progress check, divide remaining work |
+| 10 | Core Implementation Complete | Team meeting: test system, identify issues |
+| 12 | Testing & Documentation | Team meeting: finalize report outline, video planning |
+| 14 | Video Recording Complete | Submit demo video (due 12/14) |
+| 15 | All Deliverables Complete | Submit PowerPoint and Word report (due 12/15) |
 
 ## 📊 Grading Rubric
 
@@ -157,51 +160,45 @@ The CS 4910 Course Project is a comprehensive cybersecurity research and impleme
 - **D (60-69%):** Below expectations, major issues
 - **F (<60%):** Failing to meet basic requirements
 
-## 📚 Resources & Support
+## 📁 Template Files & Resources
 
-### 🔗 Useful Links
-- [IEEE Citation Style Guide](https://ieee-dataport.org/sites/default/files/analysis/27/IEEE%20Citation%20Guidelines.pdf)
-- [Cybersecurity Datasets](https://www.kaggle.com/datasets?search=cybersecurity)
-- [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
-- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+### 📄 Required Templates (Download and Use):
+- **[Project Report Template](CS4910_Project_Report_Template.md)** - Structure for your IEEE format report
+- **[PowerPoint Template](CS4910_Project_Presentation_Template.md)** - Slide structure for your presentation
+- **[Official IEEE Word Template](https://www.ieee.org/conferences/publishing/templates.html)** - Download the official IEEE conference template
 
-### 🛠️ Development Tools
+### 🎥 Video Creation Resources:
+- **Recording Software:** OBS Studio (free), Camtasia, or built-in screen recorders
+- **Video Format:** MP4, 1080p resolution minimum
+- **Content:** 5-8 minutes demonstrating your system functionality
+- **Submission:** Upload to Canvas or share cloud link (Google Drive, YouTube unlisted)
+
+### 🛠️ Development Resources:
 - **Programming Languages:** Python, Java, C++, JavaScript
-- **Security Tools:** Wireshark, Metasploit, Nmap, Burp Suite
-- **Platforms:** Kali Linux, Ubuntu, Windows
-- **Cloud Services:** AWS, Azure, Google Cloud (free tiers available)
+- **Security Tools:** Wireshark, Metasploit, Nmap, Burp Suite, Kali Linux
+- **Cloud Platforms:** AWS, Azure, Google Cloud (free tiers available)
+- **Datasets:** [Kaggle Cybersecurity Datasets](https://www.kaggle.com/datasets?search=cybersecurity)
 
-### 📖 Academic Resources
-- IEEE Xplore Digital Library
-- ACM Digital Library
-- Google Scholar
-- University Library Database Access
+## ❓ Quick FAQ
 
-## ❓ Frequently Asked Questions
+**Q: Do we need to present live to the class?**  
+A: No, just submit your PowerPoint file. No live presentation required.
 
-**Q: Can we change our project topic after approval?**
-A: Minor modifications are allowed with instructor approval. Major changes require re-approval.
+**Q: Can we use existing tools/libraries?**  
+A: Yes, but you must add significant original work and clearly document your contributions.
 
-**Q: What if my teammate drops the course?**
-A: Contact the instructor immediately. You may need to find a new partner or adjust project scope.
+**Q: What if my teammate drops the course?**  
+A: Contact the instructor immediately for guidance on team adjustments.
 
-**Q: Can we use existing open-source tools?**
-A: Yes, but you must add significant original contributions and clearly document what is your work.
-
-**Q: How technical should the implementation be?**
-A: The project should demonstrate substantial programming/configuration work, not just research or documentation.
-
-**Q: Can we work with industry partners?**
-A: Yes, with instructor approval and proper documentation of your individual contributions.
+**Q: How technical should our project be?**  
+A: Must include substantial hands-on implementation, not just research or documentation.
 
 ## 📞 Getting Help
 
-- **Office Hours:** See syllabus for instructor availability
 - **Email:** Include "CS4910 Project" in subject line
-- **Discussion Forum:** Use Canvas discussion board for general questions
-- **Peer Collaboration:** Encouraged for learning, but maintain project independence
+- **Office Hours:** See syllabus for availability
+- **Canvas Discussion:** For general questions and team formation
 
 ---
 
-*Last Updated: July 2025*
-*For the most current information, always refer to Canvas announcements*
+*Use the provided templates and focus on demonstrating your cybersecurity skills through hands-on implementation!*
