@@ -123,7 +123,13 @@ Detailed assignment instructions and due dates are posted on Canvas. Schedule ma
 ## 🔬 Course Project
 - 👥 Two-person teams
 - 🔐 Must be in cybersecurity and include a hands-on component
-- 📋 Deliverables: Project approval (email/meeting), proposal presentation, final presentation, demo (video), and report (3 pages, IEEE format: [IEEE Templates](https://www.ieee.org/conferences/publishing/templates.html))
+- 📋 Deliverables: Final Presentation, Demo Video, and IEEE Format Report (3 pages)
+- 📚 **Complete project documentation available in repository:**
+  - [Course Project Instructions](course-project.md)
+  - [IEEE Template Setup Guide](word-template-setup.md)
+  - [Presentation Template](presentation-template.md)
+  - [Video Demo Creation Guide](video-demo-guide.md)
+  - [Sample Project Examples](sample-project-examples.md)
 
 ## 🤝 Academic Integrity & AI Use
 **Plagiarism/Cheating:** ⚠️ No cheating, copying, or plagiarism on any assignments or exams. Violations result in a zero for the assignment/exam and may result in course failure and reporting to the university.
