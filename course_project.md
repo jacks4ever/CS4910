@@ -35,12 +35,12 @@ Your team must submit the following by **December 15, 2025**:
 - See the [report template guide](project_templates/report_template.md) for structure
 - Additional content can be included in appendices (beyond the 3-page limit)
 
-## 📅 Suggested Timeline
+## 📅 Team Accountability Timeline
 
-This timeline is provided to help team members hold each other accountable. **No formal presentations to the professor are required** - only the final submission of all deliverables by one team member.
+This timeline is provided **solely for team members to hold each other accountable**. It is not a submission schedule, and no check-ins or presentations to the professor are required at these milestones. The only required submission is the final project materials by December 15.
 
-| Week | Suggested Milestone |
-|------|---------------------|
+| Week | Suggested Team Milestone |
+|------|--------------------------|
 | 4    | Select topic and form team |
 | 7    | Complete project plan and begin research |
 | 10   | Begin implementation |
@@ -82,13 +82,37 @@ Choose from these areas or propose your own:
 - Threat hunting methodology
 - Security automation framework
 
-## 📊 Grading Criteria
+## 📊 Unified Grading Rubric (100 Points Total)
 
-| Component | Weight | Description |
-|-----------|--------|-------------|
-| Technical Implementation | 40% | Depth, accuracy, and security relevance |
-| Demo Video | 30% | Demonstration quality and technical explanation |
-| Project Report | 30% | Content, format, and technical writing |
+### 1. 🛠️ Technical Implementation (40 points)
+*Evaluates the practical cybersecurity implementation, tools used, and security relevance*
+
+| Grade | Points | Description |
+|-------|--------|-------------|
+| **Excellent** | 36-40 | Sophisticated implementation with exceptional technical depth, innovative approach to security challenges, comprehensive security controls, excellent tool selection and configuration |
+| **Good** | 30-35 | Strong implementation with good technical depth, effective security approach, appropriate security controls, proper tool selection and configuration |
+| **Satisfactory** | 24-29 | Adequate implementation with basic technical depth, standard security approach, minimal security controls, acceptable tool selection |
+| **Needs Improvement** | 0-23 | Weak implementation with poor technical depth, inadequate security approach, insufficient security controls, inappropriate tool selection |
+
+### 2. 🎬 Demo Video and Presentation (30 points)
+*Evaluates the quality of demonstration, technical explanation, and presentation materials*
+
+| Grade | Points | Description |
+|-------|--------|-------------|
+| **Excellent** | 27-30 | Professional-quality video with clear narration, comprehensive demonstration of all features, excellent technical explanations, exceptional presentation materials |
+| **Good** | 22-26 | Good quality video with clear narration, effective demonstration of key features, solid technical explanations, well-designed presentation materials |
+| **Satisfactory** | 18-21 | Acceptable video quality, basic demonstration of features, adequate technical explanations, standard presentation materials |
+| **Needs Improvement** | 0-17 | Poor video quality, unclear or incomplete demonstration, inadequate technical explanations, substandard presentation materials |
+
+### 3. 📝 Project Report and Documentation (30 points)
+*Evaluates the quality of the IEEE-formatted report, technical writing, and documentation*
+
+| Grade | Points | Description |
+|-------|--------|-------------|
+| **Excellent** | 27-30 | Exceptional IEEE-formatted report with comprehensive analysis, excellent technical writing, proper citations, insightful security implications, perfect adherence to formatting requirements |
+| **Good** | 22-26 | Well-written IEEE-formatted report with good analysis, clear technical writing, appropriate citations, meaningful security implications, good adherence to formatting requirements |
+| **Satisfactory** | 18-21 | Adequate IEEE-formatted report with basic analysis, acceptable technical writing, minimal citations, basic security implications, satisfactory adherence to formatting |
+| **Needs Improvement** | 0-17 | Poor report quality with weak analysis, problematic technical writing, missing citations, inadequate security implications, poor adherence to formatting requirements |
 
 ## 📚 Resources
 
@@ -131,6 +155,8 @@ A: Only one team member needs to submit all three deliverables (PowerPoint, vide
 
 1. **PowerPoint**: Save as .pptx format
 2. **Video**: Upload to YouTube (unlisted) or submit MP4 file
-3. **Report**: Submit as Word document (.docx)
-4. **Naming Convention**: Use format "CS4910_ProjectTitle_LastName1_LastName2"
+3. **Report**: Submit as Word document (.docx) following IEEE format
+4. **Naming Convention**: Use format "CS4910_ProjectTitle_LastName1_LastName2" for all files
 5. **Submit**: One team member uploads all files to Canvas by December 15, 2025
+
+**Important Note**: No in-person presentations to the professor are required. The timeline provided is solely for team accountability. All evaluation will be based on the submitted materials (PowerPoint, video, and report).
