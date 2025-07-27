@@ -50,39 +50,39 @@ All graded work is due Sunday at 11:59pm unless otherwise noted.
 
 | Week | Date | Reading | Topics | Assignment/Project |
 |------|------|---------|--------|-------------------|
-| 1 | 8/26 | | Course Overview | HW 0 (not collected) |
-| 1 | 8/28 | Ch. 1 | Computer Security Overview | |
-| 2 | 9/2 | Ch. 1 | Computer Security Overview | |
-| 2 | 9/4 | Ch. 2 | Cryptographic Tools | |
-| 3 | 9/9 | Ch. 2 | Cryptographic Tools | HW 1 |
-| 3 | 9/11 | Ch. 3 | User Authentication | Project Approval Email |
-| 4 | 9/16 | Ch. 4 | Access Control | Project Approval |
-| 4 | 9/18 | | Information Theory & Complexity | Assignment 1: Security Fundamentals and AWS Environment Setup (due 9/21) |
-| 5 | 9/23 | | Information Theory & Complexity | |
-| 5 | 9/25 | | Canvas Exam 1 | |
-| 6 | 9/30 | Ch. 5 | Database & Cloud Security | HW 2 |
-| 6 | 10/2 | | Project Proposal Presentations | |
-| 7 | 10/7 | | Project Proposal Presentations | |
-| 7 | 10/9 | Ch. 6 | Malicious Software | Assignment 2: Information Theory, Cryptography, and Security Analysis (due 10/12) |
-| 8 | 10/14 | | Project Proposal Presentations | |
-| 8 | 10/16 | | Capture the Flag | |
-| 9 | 10/21 | | Project Proposal Presentations | |
-| 9 | 10/23 | Ch. 7 | Denial of Service Attacks | |
-| 10 | 10/28 | Ch. 8 | Intrusion Detection | HW 3 |
-| 10 | 10/30 | | AI and Security | |
-| 11 | 11/4 | Ch. 9 | Intrusion Prevention | |
-| 11 | 11/6 | | Canvas Exam 2 | Assignment 3: Ethics in Cybersecurity and Access Control Systems (due 11/9) |
-| 12 | 11/11 | Ch. 10 | Buffer Overflow | |
-| 12 | 11/13 | | Blockchain & Cryptocurrency | |
-| 13 | 11/18 | | Ethics & Responsible Disclosure | HW 4 |
-| 13 | 11/20 | | Project Final Presentations | |
-| 14 | 11/25 | | No class (Thanksgiving Break) | |
-| 14 | 11/27 | | No class (Thanksgiving Break) | |
-| 15 | 12/2 | | Project Final Presentations | |
-| 15 | 12/4 | Ch. 11 | Software Security | |
-| 16 | 12/9 | | Project Final Presentations | Assignment 4: Network Security and Intrusion Detection Systems (due 12/14) |
-| 16 | 12/11 | | Project Final Presentations | Project Demo Presentation |
-| 17 | 12/18 | | Canvas Exam 3 (Final, 10:20am) | Project Report (due 12/19) |
+| 1 | 8/25 | | Course Overview | |
+| 1 | 8/27 | Ch. 1 | Computer Security Overview | |
+| 2 | 9/2 | | No class (Labor Day) | |
+| 2 | 9/4 | Ch. 1 | Computer Security Overview | |
+| 3 | 9/8 | Ch. 2 | Cryptographic Tools | |
+| 3 | 9/10 | Ch. 2 | Cryptographic Tools | |
+| 4 | 9/15 | Ch. 3 | User Authentication | Project Approval Email |
+| 4 | 9/17 | Ch. 4 | Access Control | Project Approval |
+| 5 | 9/22 | | Information Theory & Complexity | Assignment 1: Security Fundamentals and AWS Environment Setup (due 9/28) |
+| 5 | 9/24 | | Information Theory & Complexity | |
+| 6 | 9/29 | | Canvas Exam 1 | |
+| 6 | 10/1 | Ch. 5 | Database & Cloud Security | |
+| 7 | 10/6 | | Project Proposal Presentations | |
+| 7 | 10/8 | | Project Proposal Presentations | |
+| 8 | 10/13 | Ch. 6 | Malicious Software | Assignment 2: Information Theory, Cryptography, and Security Analysis (due 10/19) |
+| 8 | 10/15 | | Project Proposal Presentations | |
+| 9 | 10/20 | | Capture the Flag | |
+| 9 | 10/22 | | Project Proposal Presentations | |
+| 10 | 10/27 | Ch. 7 | Denial of Service Attacks | |
+| 10 | 10/29 | Ch. 8 | Intrusion Detection | |
+| 11 | 11/3 | | AI and Security | |
+| 11 | 11/5 | Ch. 9 | Intrusion Prevention | |
+| 12 | 11/10 | | Canvas Exam 2 | Assignment 3: Ethics in Cybersecurity and Access Control Systems (due 11/16) |
+| 12 | 11/12 | Ch. 10 | Buffer Overflow | |
+| 13 | 11/17 | | Blockchain & Cryptocurrency | |
+| 13 | 11/19 | | Ethics & Responsible Disclosure | |
+| 14 | 11/24 | | No class (Thanksgiving Break) | |
+| 14 | 11/26 | | No class (Thanksgiving Break) | |
+| 15 | 12/1 | | Project Final Presentations | |
+| 15 | 12/3 | Ch. 11 | Software Security | |
+| 16 | 12/8 | | Project Final Presentations | Assignment 4: Network Security and Intrusion Detection Systems (due 12/14) |
+| 16 | 12/10 | | Project Final Presentations | Project Demo Presentation |
+| 17 | 12/17 | | Canvas Exam 3 (Final, 10:20am) | Project Report (due 12/19) |
 
 Detailed assignment instructions and due dates are posted on Canvas. Schedule may be adjusted as needed.
 
