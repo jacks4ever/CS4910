@@ -60,29 +60,29 @@ All graded work is due Sunday at 11:59pm unless otherwise noted.
 | 4 | 9/17 | Ch. 4 | Access Control | Project Approval |
 | 5 | 9/22 | | Information Theory & Complexity | Assignment 1: Security Fundamentals and AWS Environment Setup (due 9/28) |
 | 5 | 9/24 | | Information Theory & Complexity | |
-| 6 | 9/29 | | Canvas Exam 1 | |
+| 6 | 9/29 | | Canvas Exam 1 (take home, starts 7:20pm, due Sunday 10/5 by 11:59pm) | |
 | 6 | 10/1 | Ch. 5 | Database & Cloud Security | |
-| 7 | 10/6 | | Project Proposal Presentations | |
-| 7 | 10/8 | | Project Proposal Presentations | |
+| 7 | 10/6 | | Capture the Flag 1 | |
+| 7 | 10/8 | | Capture the Flag 2 | |
 | 8 | 10/13 | Ch. 6 | Malicious Software | Assignment 2: Information Theory, Cryptography, and Security Analysis (due 10/19) |
-| 8 | 10/15 | | Project Proposal Presentations | |
+| 8 | 10/15 | | Capture the Flag 3 | |
 | 9 | 10/20 | | Capture the Flag | |
-| 9 | 10/22 | | Project Proposal Presentations | |
+| 9 | 10/22 | | Capture the Flag Wrap-up | |
 | 10 | 10/27 | Ch. 7 | Denial of Service Attacks | |
 | 10 | 10/29 | Ch. 8 | Intrusion Detection | |
 | 11 | 11/3 | | AI and Security | |
 | 11 | 11/5 | Ch. 9 | Intrusion Prevention | |
-| 12 | 11/10 | | Canvas Exam 2 | Assignment 3: Ethics in Cybersecurity and Access Control Systems (due 11/16) |
+| 12 | 11/10 | | Canvas Exam 2 (take home, starts 7:20pm, due Sunday 11/16 by 11:59pm) | Assignment 3: Ethics in Cybersecurity and Access Control Systems (due 11/16) |
 | 12 | 11/12 | Ch. 10 | Buffer Overflow | |
 | 13 | 11/17 | | Blockchain & Cryptocurrency | |
 | 13 | 11/19 | | Ethics & Responsible Disclosure | |
 | 14 | 11/24 | | No class (Thanksgiving Break) | |
 | 14 | 11/26 | | No class (Thanksgiving Break) | |
-| 15 | 12/1 | | Project Final Presentations | |
+| 15 | 12/1 | | Final Exam Review 1 | |
 | 15 | 12/3 | Ch. 11 | Software Security | |
-| 16 | 12/8 | | Project Final Presentations | Assignment 4: Network Security and Intrusion Detection Systems (due 12/14) |
-| 16 | 12/10 | | Project Final Presentations | Project Demo Presentation |
-| 17 | 12/17 | | Canvas Exam 3 (Final, 10:20am) | Project Report (due 12/19) |
+| 16 | 12/8 | | Final Exam Review 2 | Assignment 4: Network Security and Intrusion Detection Systems (due 12/14) |
+| 16 | 12/10 | | Final Exam Review 2 | Project Demo Presentation |
+| 17 | 12/17 | | Final Exam (take home, starts after 7:20pm, due Friday 12/19 by 11:59pm) | Project Report (due 12/19) |
 
 Detailed assignment instructions and due dates are posted on Canvas. Schedule may be adjusted as needed.
 
@@ -119,7 +119,7 @@ Detailed assignment instructions and due dates are posted on Canvas. Schedule ma
 
 **Late Policy:** ⏰ 10% deduction per day late.
 
-**Exams:** 📋 Three Canvas exams; no makeups without prior approval and documentation.
+**Exams:** 📋 Three Canvas take-home exams; Exams 1 & 2 start at 7:20pm and are due the following Sunday by 11:59pm. Final exam starts after 7:20pm on 12/17 and is due Friday 12/19 by 11:59pm.
 
 ## 🔬 Course Project
 - 👥 Two-person teams
