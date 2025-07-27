@@ -48,41 +48,42 @@ All graded work is due Sunday at 11:59pm unless otherwise noted.
 
 ## 📆 Weekly Schedule & Assignments
 
-| Week | Date | Reading | Topics | Assignment/Project |
-|------|------|---------|--------|-------------------|
+| Week | Date | Reading | Topics | Deliverable Due Dates |
+|------|------|---------|--------|----------------------|
 | 1 | 8/25 | | Course Overview | |
-| 1 | 8/27 | Ch. 1 | Computer Security Overview | |
+| 1 | 8/27 | Ch. 1 | Computer Security Overview Part 1 | Week 1 Discussion (due 8/31) |
 | 2 | 9/2 | | No class (Labor Day) | |
-| 2 | 9/4 | Ch. 1 | Computer Security Overview | |
-| 3 | 9/8 | Ch. 2 | Cryptographic Tools | |
-| 3 | 9/10 | Ch. 2 | Cryptographic Tools | |
-| 4 | 9/15 | Ch. 3 | User Authentication | Project Approval Email |
-| 4 | 9/17 | Ch. 4 | Access Control | Project Approval |
-| 5 | 9/22 | | Information Theory & Complexity | Assignment 1: Security Fundamentals and AWS Environment Setup (due 9/28) |
-| 5 | 9/24 | | Information Theory & Complexity | |
-| 6 | 9/29 | | Canvas Exam 1 (take home, starts 7:20pm, due Sunday 10/5 by 11:59pm) | |
-| 6 | 10/1 | Ch. 5 | Database & Cloud Security | |
-| 7 | 10/6 | | Capture the Flag 1 | |
-| 7 | 10/8 | | Capture the Flag 2 | |
-| 8 | 10/13 | Ch. 6 | Malicious Software | Assignment 2: Information Theory, Cryptography, and Security Analysis (due 10/19) |
-| 8 | 10/15 | | Capture the Flag 3 | |
-| 9 | 10/20 | | Capture the Flag | |
-| 9 | 10/22 | | Capture the Flag Wrap-up | |
-| 10 | 10/27 | Ch. 7 | Denial of Service Attacks | |
-| 10 | 10/29 | Ch. 8 | Intrusion Detection | |
-| 11 | 11/3 | | AI and Security | |
-| 11 | 11/5 | Ch. 9 | Intrusion Prevention | |
-| 12 | 11/10 | | Canvas Exam 2 (take home, starts 7:20pm, due Sunday 11/16 by 11:59pm) | Assignment 3: Ethics in Cybersecurity and Access Control Systems (due 11/16) |
-| 12 | 11/12 | Ch. 10 | Buffer Overflow | |
-| 13 | 11/17 | | Blockchain & Cryptocurrency | |
-| 13 | 11/19 | | Ethics & Responsible Disclosure | |
+| 2 | 9/4 | Ch. 1 | Computer Security Overview Part 2 | Week 2 Discussion (due 9/7) |
+| 3 | 9/8 | Ch. 2 | Cryptographic Tools Part 1 | |
+| 3 | 9/10 | Ch. 2 | Cryptographic Tools Part 2 | Week 3 Discussion (due 9/14) |
+| 4 | 9/15 | Ch. 3 | User Authentication | |
+| 4 | 9/17 | Ch. 4 | Access Control | Week 4 Discussion & Assignment 1 (due 9/21) |
+| 5 | 9/22 | | Information Theory & Complexity Part 1 | |
+| 5 | 9/24 | | Exam 1 Review | Week 5 Discussion & Exam 1 (due 9/28) |
+| 6 | 9/29 | | Information Theory & Complexity Part 2 | |
+| 6 | 10/1 | Ch. 5 | Database & Cloud Security Part 1 | Week 6 Discussion (due 10/5) |
+| 7 | 10/6 | | Database & Cloud Security Part 2 | |
+| 7 | 10/8 | | Malicious Software Part 1 | Week 7 Discussion & Assignment 2 (due 10/12) |
+| 8 | 10/13 | Ch. 6 | Malicious Software Part 2 | |
+| 8 | 10/15 | | Capture the Flag Part 1 | Week 8 Discussion (due 10/19) |
+| 9 | 10/20 | | Capture the Flag Part 2 | |
+| 9 | 10/22 | | Denial of Service Attacks | Week 9 Discussion (due 10/26) |
+| 10 | 10/27 | Ch. 7 | Intrusion Detection | |
+| 10 | 10/29 | Ch. 8 | AI and Security | Week 10 Discussion & Assignment 3 (due 11/2) |
+| 11 | 11/3 | | Intrusion Prevention | |
+| 11 | 11/5 | Ch. 9 | Exam 2 Review | Week 11 Discussion, Exam 2 (due 11/9) |
+| 12 | 11/10 | | Buffer Overflow | |
+| 12 | 11/12 | Ch. 10 | Blockchain and Application | Week 12 Discussion (due 11/16) |
+| 13 | 11/17 | | Cryptocurrency | |
+| 13 | 11/19 | | Ethics & Responsible Disclosure | Week 13 Discussion (due 11/23) |
 | 14 | 11/24 | | No class (Thanksgiving Break) | |
-| 14 | 11/26 | | No class (Thanksgiving Break) | |
-| 15 | 12/1 | | Final Exam Review 1 | |
-| 15 | 12/3 | Ch. 11 | Software Security | |
-| 16 | 12/8 | | Final Exam Review 2 | Assignment 4: Network Security and Intrusion Detection Systems (due 12/14) |
-| 16 | 12/10 | | Final Exam Review 2 | Project Demo Presentation |
-| 17 | 12/17 | | Final Exam (take home, starts after 7:20pm, due Friday 12/19 by 11:59pm) | Project Report (due 12/19) |
+| 14 | 11/26 | | No class (Thanksgiving Break) | Thanksgiving Break |
+| 15 | 12/1 | | Software Security Part 1 | |
+| 15 | 12/3 | Ch. 11 | Software Security Part 2 | Week 14 Discussion & Assignment 4 (due 12/7) |
+| 16 | 12/8 | | Blue and Red Team Demonstration | |
+| 16 | 12/10 | | Purple Team Demonstration | Week 15 Discussion & Course Project (due 12/14) |
+| 17 | 12/15 | | Final Exam Review 1 | Final Exam (due 12/19) |
+| 17 | 12/17 | | Final Exam Review 2 | Final Exam (due 12/19) |
 
 Detailed assignment instructions and due dates are posted on Canvas. Schedule may be adjusted as needed.
 
