@@ -90,16 +90,14 @@ Detailed assignment instructions and due dates are posted on Canvas. Schedule ma
 
 | Category | Weight |
 |----------|--------|
-| Class Attendance | 10% |
-| Recitation Participation | 4% |
-| In-Class Assignments | 10% |
-| Homework Assignments | 22% |
-| Canvas Exams | 21% |
-| Project Approval | 3% |
-| Project Proposal Presentation | 10% |
-| Project Final Presentation | 7% |
-| Project Demo Presentation | 6% |
-| Project Report | 7% |
+| Attendance | 10% |
+| Assignments | 30% |
+| Discussions | 10% |
+| Exam 1 | 7.5% |
+| Exam 2 | 7.5% |
+| Course Project | 20% |
+| Final Exam | 15% |
+| **Total** | **100%** |
 
 ## 🎓 Grade Scale
 - 🏆 A: 93-100
