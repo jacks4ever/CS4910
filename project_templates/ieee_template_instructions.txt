@@ -1,0 +1,21 @@
+IEEE TEMPLATE INSTRUCTIONS
+
+To create your project report, please follow these steps:
+
+1. Download the official IEEE conference proceedings template from:
+   https://www.ieee.org/conferences/publishing/templates.html
+
+2. Select the "US letter" template format for Microsoft Word
+
+3. Use the template to create your 3-page report following the guidelines in the report_template.md file
+
+4. Do not modify the template's formatting, margins, or column layout
+
+5. Save your completed report as a Word document (.docx) with the filename format:
+   CS4910_ProjectTitle_LastName1_LastName2.docx
+
+6. Submit your report on Canvas by the deadline (12/15)
+
+Note: Only one team member needs to submit the report on behalf of the team.
+
+For detailed guidance on structuring your report, please refer to the report_template.md file in this directory.
