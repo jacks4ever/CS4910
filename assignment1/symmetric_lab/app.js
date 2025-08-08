@@ -504,15 +504,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 const brightness = (originalR + originalG + originalB) / 3;
                 
                 // Target colors based on brightness (ECB final state)
+                // Extremely subtle differences - penguin outline barely visible
                 let targetR, targetG, targetB;
                 if (brightness < 50) { // Very dark pixels (penguin body)
-                    targetR = 60; targetG = 60; targetB = 80;
+                    targetR = 130; targetG = 130; targetB = 130;
                 } else if (brightness < 100) { // Dark-medium pixels (penguin edges)
-                    targetR = 90; targetG = 90; targetB = 110;
+                    targetR = 133; targetG = 133; targetB = 133;
                 } else if (brightness < 200) { // Medium pixels (penguin belly, some edges)
-                    targetR = 140; targetG = 140; targetB = 160;
+                    targetR = 136; targetG = 136; targetB = 136;
                 } else { // Light pixels (background - white areas)
-                    targetR = 180; targetG = 180; targetB = 190;
+                    targetR = 139; targetG = 139; targetB = 139;
                 }
                 
                 // Interpolate between original and target colors
@@ -598,14 +599,15 @@ document.addEventListener('DOMContentLoaded', function() {
         for (let i = 0; i < ecbData.length; i += 4) {
             const brightness = (ecbData[i] + ecbData[i + 1] + ecbData[i + 2]) / 3;
             
+            // Extremely subtle differences - penguin outline barely visible
             if (brightness < 50) { // Very dark pixels (penguin body)
-                ecbData[i] = 60; ecbData[i + 1] = 60; ecbData[i + 2] = 80;
+                ecbData[i] = 130; ecbData[i + 1] = 130; ecbData[i + 2] = 130;
             } else if (brightness < 100) { // Dark-medium pixels (penguin edges)
-                ecbData[i] = 90; ecbData[i + 1] = 90; ecbData[i + 2] = 110;
+                ecbData[i] = 133; ecbData[i + 1] = 133; ecbData[i + 2] = 133;
             } else if (brightness < 200) { // Medium pixels (penguin belly, some edges)
-                ecbData[i] = 140; ecbData[i + 1] = 140; ecbData[i + 2] = 160;
+                ecbData[i] = 136; ecbData[i + 1] = 136; ecbData[i + 2] = 136;
             } else { // Light pixels (background - white areas)
-                ecbData[i] = 180; ecbData[i + 1] = 180; ecbData[i + 2] = 190;
+                ecbData[i] = 139; ecbData[i + 1] = 139; ecbData[i + 2] = 139;
             }
         }
         ecbCtx.putImageData(ecbImageData, 0, 0);
