@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive RSA Cryptography Lab</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="lab-header">
+            <h1>Interactive RSA Cryptography Lab</h1>
+            <p>Learn RSA encryption through hands-on practice</p>
+            <div class="security-warning">
+                ⚠️ <strong>Educational Only:</strong> These small key sizes are for demonstration purposes only and should never be used in production systems.
+            </div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="theory">Theory</button>
+            <button class="tab-btn" data-tab="practice">Practice</button>
+            <button class="tab-btn" data-tab="application">Application</button>
+            <button class="tab-btn" data-tab="challenge">Challenge</button>
+        </nav>
+
+        <!-- Theory Tab -->
+        <div id="theory" class="tab-content active">
+            <h2>RSA Theory & Variables</h2>
+            
+            <div class="ai-prompt-section">
+                <button class="ai-prompt-toggle btn btn--secondary">💡 AI Learning Prompts</button>
+                <div class="ai-prompt-content hidden">
+                    <p><strong>Try asking an AI:</strong></p>
+                    <code>"Explain the mathematical foundations of RSA cryptography, including why it works and the role of each parameter"</code>
+                </div>
+            </div>
+
+            <div class="theory-section">
+                <h3>RSA Variables & Definitions</h3>
+                <div class="variables-grid">
+                    <div class="variable-card" data-variable="p">
+                        <div class="variable-name">p</div>
+                        <select class="definition-select" data-correct="First prime number (kept secret)">
+                            <option value="">Select definition...</option>
+                            <option value="First prime number (kept secret)">First prime number (kept secret)</option>
+                            <option value="Public modulus">Public modulus</option>
+                            <option value="Encrypted message">Encrypted message</option>
+                            <option value="Original message">Original message</option>
+                        </select>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="variable-card" data-variable="q">
+                        <div class="variable-name">q</div>
+                        <select class="definition-select" data-correct="Second prime number (kept secret)">
+                            <option value="">Select definition...</option>
+                            <option value="Second prime number (kept secret)">Second prime number (kept secret)</option>
+                            <option value="Public encryption exponent">Public encryption exponent</option>
+                            <option value="Private decryption exponent">Private decryption exponent</option>
+                            <option value="Euler's totient function">Euler's totient function</option>
+                        </select>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="variable-card" data-variable="n">
+                        <div class="variable-name">n</div>
+                        <select class="definition-select" data-correct="Public modulus (n = p × q)">
+                            <option value="">Select definition...</option>
+                            <option value="Public modulus (n = p × q)">Public modulus (n = p × q)</option>
+                            <option value="First prime number">First prime number</option>
+                            <option value="Second prime number">Second prime number</option>
+                            <option value="Private key component">Private key component</option>
+                        </select>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="variable-card" data-variable="phi">
+                        <div class="variable-name">φ(n)</div>
+                        <select class="definition-select" data-correct="Euler's totient function φ(n) = (p-1)(q-1)">
+                            <option value="">Select definition...</option>
+                            <option value="Euler's totient function φ(n) = (p-1)(q-1)">Euler's totient function φ(n) = (p-1)(q-1)</option>
+                            <option value="Public modulus">Public modulus</option>
+                            <option value="Encryption exponent">Encryption exponent</option>
+                            <option value="Decryption exponent">Decryption exponent</option>
+                        </select>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="variable-card" data-variable="e">
+                        <div class="variable-name">e</div>
+                        <select class="definition-select" data-correct="Public encryption exponent (coprime to φ(n))">
+                            <option value="">Select definition...</option>
+                            <option value="Public encryption exponent (coprime to φ(n))">Public encryption exponent (coprime to φ(n))</option>
+                            <option value="Private decryption key">Private decryption key</option>
+                            <option value="Original message">Original message</option>
+                            <option value="Encrypted ciphertext">Encrypted ciphertext</option>
+                        </select>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="variable-card" data-variable="d">
+                        <div class="variable-name">d</div>
+                        <select class="definition-select" data-correct="Private decryption exponent (modular inverse of e)">
+                            <option value="">Select definition...</option>
+                            <option value="Private decryption exponent (modular inverse of e)">Private decryption exponent (modular inverse of e)</option>
+                            <option value="Public encryption key">Public encryption key</option>
+                            <option value="First prime factor">First prime factor</option>
+                            <option value="Second prime factor">Second prime factor</option>
+                        </select>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="variable-card" data-variable="M">
+                        <div class="variable-name">M</div>
+                        <select class="definition-select" data-correct="Original message (plaintext)">
+                            <option value="">Select definition...</option>
+                            <option value="Original message (plaintext)">Original message (plaintext)</option>
+                            <option value="Encrypted message (ciphertext)">Encrypted message (ciphertext)</option>
+                            <option value="Modulus value">Modulus value</option>
+                            <option value="Mathematical constant">Mathematical constant</option>
+                        </select>
+                        <div class="feedback"></div>
+                    </div>
+
+                    <div class="variable-card" data-variable="C">
+                        <div class="variable-name">C</div>
+                        <select class="definition-select" data-correct="Encrypted message (ciphertext)">
+                            <option value="">Select definition...</option>
+                            <option value="Encrypted message (ciphertext)">Encrypted message (ciphertext)</option>
+                            <option value="Original message (plaintext)">Original message (plaintext)</option>
+                            <option value="Cryptographic constant">Cryptographic constant</option>
+                            <option value="Calculation result">Calculation result</option>
+                        </select>
+                        <div class="feedback"></div>
+                    </div>
+                </div>
+
+                <div class="key-generation-section">
+                    <h3>Step-by-Step RSA Key Generation</h3>
+                    <div class="example-values">
+                        <strong>Example Values:</strong> p = 7, q = 11
+                    </div>
+                    
+                    <div class="step">
+                        <p><strong>Step 1:</strong> Calculate n = p × q</p>
+                        <div class="calculation">
+                            n = <input type="number" class="fill-blank" data-correct="77" placeholder="?"> 
+                            <div class="feedback"></div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <p><strong>Step 2:</strong> Calculate φ(n) = (p-1) × (q-1)</p>
+                        <div class="calculation">
+                            φ(77) = <input type="number" class="fill-blank" data-correct="60" placeholder="?">
+                            <div class="feedback"></div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <p><strong>Step 3:</strong> Choose e (coprime to φ(n), commonly e = 7)</p>
+                        <div class="calculation">
+                            e = <input type="number" class="fill-blank" data-correct="7" placeholder="?">
+                            <div class="feedback"></div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <p><strong>Step 4:</strong> Calculate d (modular inverse of e mod φ(n))</p>
+                        <div class="calculation">
+                            d = <input type="number" class="fill-blank" data-correct="43" placeholder="?">
+                            <div class="feedback"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Practice Tab -->
+        <div id="practice" class="tab-content">
+            <h2>Modular Arithmetic Practice</h2>
+            
+            <div class="ai-prompt-section">
+                <button class="ai-prompt-toggle btn btn--secondary">💡 AI Learning Prompts</button>
+                <div class="ai-prompt-content hidden">
+                    <p><strong>Try asking an AI:</strong></p>
+                    <code>"Help me practice modular arithmetic operations needed for RSA implementation"</code>
+                </div>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <span class="progress-text">0/5 Problems Completed</span>
+            </div>
+
+            <div class="practice-problems">
+                <div class="problem-card">
+                    <h4>Problem 1: Modular Multiplication</h4>
+                    <p>Calculate: 23 × 19 mod 13</p>
+                    <input type="number" class="answer-input" data-correct="8" data-hint="First multiply 23 × 19 = 437, then find 437 mod 13">
+                    <div class="problem-feedback"></div>
+                    <button class="show-steps btn btn--outline">Show Steps</button>
+                    <div class="steps-content hidden">
+                        <p>Step 1: 23 × 19 = 437</p>
+                        <p>Step 2: 437 ÷ 13 = 33 remainder 8</p>
+                        <p>Step 3: Therefore, 437 mod 13 = 8</p>
+                    </div>
+                </div>
+
+                <div class="problem-card">
+                    <h4>Problem 2: Greatest Common Divisor</h4>
+                    <p>Find GCD(48, 18) using Euclidean algorithm</p>
+                    <input type="number" class="answer-input" data-correct="6" data-hint="Use repeated division: 48 = 18×2 + 12, then 18 = 12×1 + 6, then 12 = 6×2 + 0">
+                    <div class="problem-feedback"></div>
+                    <button class="show-steps btn btn--outline">Show Steps</button>
+                    <div class="steps-content hidden">
+                        <p>Step 1: 48 = 18 × 2 + 12</p>
+                        <p>Step 2: 18 = 12 × 1 + 6</p>
+                        <p>Step 3: 12 = 6 × 2 + 0</p>
+                        <p>Therefore, GCD(48, 18) = 6</p>
+                    </div>
+                </div>
+
+                <div class="problem-card">
+                    <h4>Problem 3: Modular Inverse</h4>
+                    <p>Find the modular inverse of 7 mod 26</p>
+                    <input type="number" class="answer-input" data-correct="15" data-hint="Use extended Euclidean algorithm to find x where 7x ≡ 1 (mod 26)">
+                    <div class="problem-feedback"></div>
+                    <button class="show-steps btn btn--outline">Show Steps</button>
+                    <div class="steps-content hidden">
+                        <p>Using Extended Euclidean Algorithm:</p>
+                        <p>7 × 15 = 105</p>
+                        <p>105 mod 26 = 1</p>
+                        <p>Therefore, 7⁻¹ ≡ 15 (mod 26)</p>
+                    </div>
+                </div>
+
+                <div class="problem-card">
+                    <h4>Problem 4: Modular Exponentiation</h4>
+                    <p>Calculate: 3⁵ mod 7</p>
+                    <input type="number" class="answer-input" data-correct="5" data-hint="3^5 = 243, then find 243 mod 7">
+                    <div class="problem-feedback"></div>
+                    <button class="show-steps btn btn--outline">Show Steps</button>
+                    <div class="steps-content hidden">
+                        <p>Step 1: 3⁵ = 243</p>
+                        <p>Step 2: 243 ÷ 7 = 34 remainder 5</p>
+                        <p>Step 3: Therefore, 3⁵ mod 7 = 5</p>
+                    </div>
+                </div>
+
+                <div class="problem-card">
+                    <h4>Problem 5: Combined Operations</h4>
+                    <p>Calculate: (15 + 28) × 7 mod 11</p>
+                    <input type="number" class="answer-input" data-correct="4" data-hint="First: 15 + 28 = 43, then 43 × 7 = 301, finally 301 mod 11">
+                    <div class="problem-feedback"></div>
+                    <button class="show-steps btn btn--outline">Show Steps</button>
+                    <div class="steps-content hidden">
+                        <p>Step 1: 15 + 28 = 43</p>
+                        <p>Step 2: 43 × 7 = 301</p>
+                        <p>Step 3: 301 ÷ 11 = 27 remainder 4</p>
+                        <p>Therefore, (15 + 28) × 7 mod 11 = 4</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Application Tab -->
+        <div id="application" class="tab-content">
+            <h2>RSA Message Encryption</h2>
+            
+            <div class="ai-prompt-section">
+                <button class="ai-prompt-toggle btn btn--secondary">💡 AI Learning Prompts</button>
+                <div class="ai-prompt-content hidden">
+                    <p><strong>Try asking an AI:</strong></p>
+                    <code>"Walk me through encrypting a message using RSA step by step"</code>
+                </div>
+            </div>
+
+            <div class="encryption-section">
+                <div class="message-input-section">
+                    <h3>Enter Your Message</h3>
+                    <input type="text" id="plaintext-input" class="form-control" placeholder="Enter your message (A-Z only)" maxlength="10">
+                    <button id="convert-message" class="btn btn--primary">Convert to Numbers</button>
+                </div>
+
+                <div id="ascii-conversion" class="conversion-display hidden">
+                    <h3>Letter-to-Number Conversion</h3>
+                    <div class="conversion-table">
+                        <div class="conversion-row">
+                            <span class="label">Letters:</span>
+                            <span id="letters-display"></span>
+                        </div>
+                        <div class="conversion-row">
+                            <span class="label">Numbers:</span>
+                            <span id="numbers-display"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="encryption-steps" class="encryption-steps hidden">
+                    <h3>Step-by-Step Encryption (e=7, n=77)</h3>
+                    <p>For each number M, calculate C = M⁷ mod 77</p>
+                    <div id="encryption-calculations"></div>
+                </div>
+
+                <div id="final-ciphertext" class="final-result hidden">
+                    <h3>Final Encrypted Message</h3>
+                    <div class="ciphertext-display"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Challenge Tab -->
+        <div id="challenge" class="tab-content cia-theme">
+            <div class="cia-header">
+                <h2>🕵️ CIA Decryption Room</h2>
+                <p class="mission-brief">CLASSIFIED MISSION: Decrypt the intercepted RSA-encrypted message</p>
+            </div>
+            
+            <div class="ai-prompt-section">
+                <button class="ai-prompt-toggle btn btn--secondary">💡 AI Learning Prompts</button>
+                <div class="ai-prompt-content hidden">
+                    <p><strong>Try asking an AI:</strong></p>
+                    <code>"What are the main cryptanalytic attacks against RSA and how do they work?"</code>
+                </div>
+            </div>
+
+            <div class="decryption-parameters">
+                <h3>🔐 Decryption Parameters</h3>
+                <div class="parameters-grid">
+                    <div class="param">n = 77</div>
+                    <div class="param">d = 43</div>
+                </div>
+            </div>
+
+            <div class="letter-conversion-table">
+                <h3>🔤 Letter-Number Conversion</h3>
+                <div class="conversion-grid">
+                    <div>A=1 B=2 C=3 D=4 E=5 F=6 G=7 H=8 I=9 J=10 K=11 L=12 M=13</div>
+                    <div>N=14 O=15 P=16 Q=17 R=18 S=19 T=20 U=21 V=22 W=23 X=24 Y=25 Z=26</div>
+                </div>
+            </div>
+
+            <div class="encrypted-message">
+                <h3>📡 Intercepted Message</h3>
+                <div class="decryption-grid">
+                    <div class="decrypt-item">
+                        <div class="encrypted-value">42</div>
+                        <input type="number" class="decrypt-input" data-correct="14" data-letter="N">
+                        <div class="decrypt-feedback"></div>
+                        <div class="revealed-letter hidden">N</div>
+                    </div>
+                    
+                    <div class="decrypt-item">
+                        <div class="encrypted-value">47</div>
+                        <input type="number" class="decrypt-input" data-correct="5" data-letter="E">
+                        <div class="decrypt-feedback"></div>
+                        <div class="revealed-letter hidden">E</div>
+                    </div>
+                    
+                    <div class="decrypt-item">
+                        <div class="encrypted-value">22</div>
+                        <input type="number" class="decrypt-input" data-correct="22" data-letter="V">
+                        <div class="decrypt-feedback"></div>
+                        <div class="revealed-letter hidden">V</div>
+                    </div>
+                    
+                    <div class="decrypt-item">
+                        <div class="encrypted-value">47</div>
+                        <input type="number" class="decrypt-input" data-correct="5" data-letter="E">
+                        <div class="decrypt-feedback"></div>
+                        <div class="revealed-letter hidden">E</div>
+                    </div>
+                    
+                    <div class="decrypt-item">
+                        <div class="encrypted-value">39</div>
+                        <input type="number" class="decrypt-input" data-correct="18" data-letter="R">
+                        <div class="decrypt-feedback"></div>
+                        <div class="revealed-letter hidden">R</div>
+                    </div>
+                    
+                    <div class="space-indicator">&nbsp;</div>
+                    
+                    <div class="decrypt-item">
+                        <div class="encrypted-value">28</div>
+                        <input type="number" class="decrypt-input" data-correct="7" data-letter="G">
+                        <div class="decrypt-feedback"></div>
+                        <div class="revealed-letter hidden">G</div>
+                    </div>
+                    
+                    <div class="decrypt-item">
+                        <div class="encrypted-value">37</div>
+                        <input type="number" class="decrypt-input" data-correct="9" data-letter="I">
+                        <div class="decrypt-feedback"></div>
+                        <div class="revealed-letter hidden">I</div>
+                    </div>
+                    
+                    <div class="decrypt-item">
+                        <div class="encrypted-value">22</div>
+                        <input type="number" class="decrypt-input" data-correct="22" data-letter="V">
+                        <div class="decrypt-feedback"></div>
+                        <div class="revealed-letter hidden">V</div>
+                    </div>
+                    
+                    <div class="decrypt-item">
+                        <div class="encrypted-value">47</div>
+                        <input type="number" class="decrypt-input" data-correct="5" data-letter="E">
+                        <div class="decrypt-feedback"></div>
+                        <div class="revealed-letter hidden">E</div>
+                    </div>
+                    
+                    <div class="space-indicator">&nbsp;</div>
+                    
+                    <div class="decrypt-item">
+                        <div class="encrypted-value">21</div>
+                        <input type="number" class="decrypt-input" data-correct="21" data-letter="U">
+                        <div class="decrypt-feedback"></div>
+                        <div class="revealed-letter hidden">U</div>
+                    </div>
+                    
+                    <div class="decrypt-item">
+                        <div class="encrypted-value">58</div>
+                        <input type="number" class="decrypt-input" data-correct="16" data-letter="P">
+                        <div class="decrypt-feedback"></div>
+                        <div class="revealed-letter hidden">P</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mission-status">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="status-text">Mission Progress: 0/11 Numbers Decrypted</div>
+            </div>
+
+            <div id="mission-complete" class="mission-complete hidden">
+                <div class="final-message">
+                    <h2>🎉 MISSION ACCOMPLISHED! 🎉</h2>
+                    <div class="decrypted-message">NEVER GIVE UP</div>
+                    <p class="congratulations">Excellent work, Agent! You have successfully decrypted the classified message.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
