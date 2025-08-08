@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UCCS - Interactive AES Cryptography Lab</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -16,7 +17,7 @@
             <div class="course-info">
                 <p>University of Colorado Colorado Springs (UCCS)</p>
                 <p>CS4910: Introduction to Computer Security</p>
-                <p>Assignment 2: Information Theory, Cryptography, and Security Analysis</p>
+                <p>Assignment 1: Symmetric Cryptography and AES Analysis</p>
                 <p>Instructor: Rhett Saunders</p>
             </div>
             <div class="security-warning">
@@ -83,7 +84,7 @@
                                 <div class="matrix">
                                     <div>S(a₁)</div><div>S(a₂)</div><div>S(a₃)</div><div>S(a₄)</div>
                                     <div>S(b₁)</div><div>S(b₂)</div><div>S(b₃)</div><div>S(b₄)</div>
-                                    <div>S(c₁)</div><div>S(c₂)</div><div>S(c₃)</div><div>S(c₄)</div>
+                                    <div>S(c₁)</div><div>S(c₂)</div><div>S(c₃)</div><div>c₄</div>
                                     <div>S(d₁)</div><div>S(d₂)</div><div>S(d₃)</div><div>S(d₄)</div>
                                 </div>
                             </div>
@@ -156,19 +157,34 @@
                     <div class="modes-grid">
                         <div class="mode">
                             <h4>ECB (Electronic Codebook)</h4>
-                            <p>The simplest mode where each block is encrypted independently. Not recommended for most applications due to pattern preservation.</p>
+                            <p><strong>⚠️ INSECURE:</strong> Each block is encrypted independently. Identical plaintext blocks produce identical ciphertext blocks, revealing patterns in the data.</p>
+                            <div class="mode-diagram">
+                                <div class="block">P₁</div><div class="arrow">→</div><div class="cipher">AES</div><div class="arrow">→</div><div class="block">C₁</div><br>
+                                <div class="block">P₂</div><div class="arrow">→</div><div class="cipher">AES</div><div class="arrow">→</div><div class="block">C₂</div>
+                            </div>
                         </div>
                         <div class="mode">
                             <h4>CBC (Cipher Block Chaining)</h4>
-                            <p>Each block of plaintext is XORed with the previous ciphertext block before being encrypted. Requires an initialization vector (IV).</p>
+                            <p><strong>✅ SECURE:</strong> Each block is XORed with the previous ciphertext block before encryption. Requires an initialization vector (IV).</p>
+                            <div class="mode-diagram">
+                                <div class="block">IV ⊕ P₁</div><div class="arrow">→</div><div class="cipher">AES</div><div class="arrow">→</div><div class="block">C₁</div><br>
+                                <div class="block">C₁ ⊕ P₂</div><div class="arrow">→</div><div class="cipher">AES</div><div class="arrow">→</div><div class="block">C₂</div>
+                            </div>
                         </div>
                         <div class="mode">
                             <h4>CTR (Counter)</h4>
-                            <p>Turns a block cipher into a stream cipher. Each block of plaintext is XORed with an encrypted counter value.</p>
+                            <p><strong>✅ SECURE:</strong> Turns a block cipher into a stream cipher. Each block of plaintext is XORed with an encrypted counter value.</p>
+                            <div class="mode-diagram">
+                                <div class="block">CTR₁</div><div class="arrow">→</div><div class="cipher">AES</div><div class="arrow">→</div><div class="block">⊕ P₁ = C₁</div><br>
+                                <div class="block">CTR₂</div><div class="arrow">→</div><div class="cipher">AES</div><div class="arrow">→</div><div class="block">⊕ P₂ = C₂</div>
+                            </div>
                         </div>
                         <div class="mode">
                             <h4>GCM (Galois/Counter Mode)</h4>
-                            <p>Provides both encryption and authentication. Widely used for secure communications.</p>
+                            <p><strong>✅ SECURE + AUTHENTICATED:</strong> Provides both encryption and authentication. Widely used for secure communications.</p>
+                            <div class="mode-diagram">
+                                <div class="block">CTR + Auth</div><div class="arrow">→</div><div class="cipher">AES</div><div class="arrow">→</div><div class="block">C + Tag</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -176,55 +192,47 @@
 
             <!-- PRACTICE TAB -->
             <div class="tab-content" id="practice">
-                <h2>AES Practice & Visualization</h2>
+                <h2>AES Practice & Hands-On Learning</h2>
                 
                 <div class="info-box">
-                    <h3>AES-128 Key Expansion Exercise</h3>
-                    <p>Given an initial 128-bit key, expand it to generate round keys for all 10 rounds of AES-128.</p>
+                    <h3>🔧 Interactive AES Key Expansion</h3>
+                    <p>Watch how a 128-bit key expands into round keys for all 10 rounds of AES-128.</p>
                     
                     <div class="exercise">
                         <div class="input-group">
-                            <label for="initial-key">Initial Key (hex, 16 bytes):</label>
-                            <input type="text" id="initial-key" value="000102030405060708090a0b0c0d0e0f" maxlength="32">
+                            <label for="initial-key">Initial Key (32 hex characters):</label>
+                            <input type="text" id="initial-key" value="000102030405060708090a0b0c0d0e0f" maxlength="32" placeholder="Enter 32 hex characters">
                             <button id="expand-key" class="primary-button">Expand Key</button>
+                            <button id="random-key" class="secondary-button">Generate Random Key</button>
                         </div>
                         
                         <div class="output-container">
                             <h4>Round Keys:</h4>
                             <div id="round-keys" class="code-output">
-                                <p>Round 0: 000102030405060708090a0b0c0d0e0f</p>
-                                <p>Round 1: d6aa74fdd2af72fadaa678f1d6ab76fe</p>
-                                <p>Round 2: b692cf0b643dbdf1be9bc5006830b3fe</p>
-                                <p>Round 3: b6ff744ed2c2c9bf6c590cbf0469bf41</p>
-                                <p>Round 4: 47f7f7bc95353e03f96c32bcfd058dfd</p>
-                                <p>Round 5: 3caaa3e8a99f9deb50f3af57adf622aa</p>
-                                <p>Round 6: 5e390f7df7a69296a7553dc10aa31f6b</p>
-                                <p>Round 7: 14f9701ae35fe28c440adf4d4ea9c026</p>
-                                <p>Round 8: 47438735a41c65b9e016baf4aebf7ad2</p>
-                                <p>Round 9: 549932d1f08557681093ed9cbe2c974e</p>
-                                <p>Round 10: 13111d7fe3944a17f307a78b4d2b30c5</p>
+                                <p>Click "Expand Key" to see the round keys...</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="info-box">
-                    <h3>AES Round Function Visualization</h3>
+                    <h3>🔄 AES Round Function Step-by-Step</h3>
                     <p>See how data transforms through each step of a single AES round.</p>
                     
                     <div class="exercise">
                         <div class="input-group">
-                            <label for="input-state">Input State (hex, 16 bytes):</label>
+                            <label for="input-state">Input State (32 hex characters):</label>
                             <input type="text" id="input-state" value="00112233445566778899aabbccddeeff" maxlength="32">
-                            <label for="round-key">Round Key (hex, 16 bytes):</label>
-                            <input type="text" id="round-key" value="000102030405060708090a0b0c0d0e0f" maxlength="32">
+                            <label for="round-key-input">Round Key (32 hex characters):</label>
+                            <input type="text" id="round-key-input" value="000102030405060708090a0b0c0d0e0f" maxlength="32">
                             <button id="process-round" class="primary-button">Process Round</button>
+                            <button id="step-by-step" class="secondary-button">Step-by-Step</button>
                         </div>
                         
                         <div class="visualization-container">
                             <div class="round-step">
                                 <h4>Initial State</h4>
-                                <div class="state-matrix">
+                                <div class="state-matrix" id="initial-state">
                                     <div>00</div><div>44</div><div>88</div><div>cc</div>
                                     <div>11</div><div>55</div><div>99</div><div>dd</div>
                                     <div>22</div><div>66</div><div>aa</div><div>ee</div>
@@ -235,42 +243,63 @@
                             <div class="round-step">
                                 <h4>After SubBytes</h4>
                                 <div class="state-matrix" id="subbytes-output">
-                                    <div>63</div><div>1a</div><div>cd</div><div>b4</div>
-                                    <div>82</div><div>f3</div><div>ee</div><div>8a</div>
-                                    <div>93</div><div>33</div><div>ac</div><div>6f</div>
-                                    <div>c7</div><div>5b</div><div>ea</div><div>16</div>
+                                    <div>--</div><div>--</div><div>--</div><div>--</div>
+                                    <div>--</div><div>--</div><div>--</div><div>--</div>
+                                    <div>--</div><div>--</div><div>--</div><div>--</div>
+                                    <div>--</div><div>--</div><div>--</div><div>--</div>
                                 </div>
                             </div>
                             
                             <div class="round-step">
                                 <h4>After ShiftRows</h4>
                                 <div class="state-matrix" id="shiftrows-output">
-                                    <div>63</div><div>1a</div><div>cd</div><div>b4</div>
-                                    <div>f3</div><div>ee</div><div>8a</div><div>82</div>
-                                    <div>ac</div><div>6f</div><div>93</div><div>33</div>
-                                    <div>16</div><div>c7</div><div>5b</div><div>ea</div>
+                                    <div>--</div><div>--</div><div>--</div><div>--</div>
+                                    <div>--</div><div>--</div><div>--</div><div>--</div>
+                                    <div>--</div><div>--</div><div>--</div><div>--</div>
+                                    <div>--</div><div>--</div><div>--</div><div>--</div>
                                 </div>
                             </div>
                             
                             <div class="round-step">
                                 <h4>After MixColumns</h4>
                                 <div class="state-matrix" id="mixcolumns-output">
-                                    <div>ba</div><div>84</div><div>e8</div><div>1b</div>
-                                    <div>75</div><div>a4</div><div>8d</div><div>40</div>
-                                    <div>f4</div><div>8d</div><div>06</div><div>7d</div>
-                                    <div>7a</div><div>32</div><div>0e</div><div>5d</div>
+                                    <div>--</div><div>--</div><div>--</div><div>--</div>
+                                    <div>--</div><div>--</div><div>--</div><div>--</div>
+                                    <div>--</div><div>--</div><div>--</div><div>--</div>
+                                    <div>--</div><div>--</div><div>--</div><div>--</div>
                                 </div>
                             </div>
                             
                             <div class="round-step">
                                 <h4>After AddRoundKey</h4>
                                 <div class="state-matrix" id="addroundkey-output">
-                                    <div>ba</div><div>80</div><div>e0</div><div>17</div>
-                                    <div>74</div><div>a1</div><div>85</div><div>4c</div>
-                                    <div>f6</div><div>88</div><div>0c</div><div>71</div>
-                                    <div>77</div><div>3f</div><div>04</div><div>53</div>
+                                    <div>--</div><div>--</div><div>--</div><div>--</div>
+                                    <div>--</div><div>--</div><div>--</div><div>--</div>
+                                    <div>--</div><div>--</div><div>--</div><div>--</div>
+                                    <div>--</div><div>--</div><div>--</div><div>--</div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>📚 AES S-Box Lookup</h3>
+                    <p>Explore the AES substitution box (S-box) used in the SubBytes operation.</p>
+                    
+                    <div class="exercise">
+                        <div class="input-group">
+                            <label for="sbox-input">Input Byte (hex):</label>
+                            <input type="text" id="sbox-input" value="00" maxlength="2" placeholder="00-FF">
+                            <button id="sbox-lookup" class="primary-button">S-Box Lookup</button>
+                            <span id="sbox-result" class="result-display">Result: --</span>
+                        </div>
+                        
+                        <div class="sbox-table">
+                            <h4>AES S-Box Table</h4>
+                            <table id="sbox-table">
+                                <!-- S-box table will be generated by JavaScript -->
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -278,91 +307,141 @@
 
             <!-- APPLICATION TAB -->
             <div class="tab-content" id="application">
-                <h2>AES Application & Implementation</h2>
+                <h2>AES Application & Real-World Usage</h2>
                 
                 <div class="info-box">
-                    <h3>AES-128 Encryption/Decryption Tool</h3>
-                    <p>Encrypt and decrypt messages using AES-128 in different modes of operation.</p>
+                    <h3>🔐 Interactive AES Encryption/Decryption Tool</h3>
+                    <p>Encrypt and decrypt messages using real AES implementation with different modes.</p>
                     
-                    <div class="crypto-tool">
+                    <div class="exercise">
                         <div class="input-group">
                             <label for="aes-mode">Mode of Operation:</label>
                             <select id="aes-mode">
-                                <option value="ecb">ECB (Electronic Codebook)</option>
-                                <option value="cbc" selected>CBC (Cipher Block Chaining)</option>
-                                <option value="ctr">CTR (Counter)</option>
+                                <option value="CBC">CBC (Cipher Block Chaining) - Recommended</option>
+                                <option value="ECB">ECB (Electronic Codebook) - INSECURE</option>
+                                <option value="CTR">CTR (Counter Mode)</option>
                             </select>
                             
-                            <label for="aes-key">Encryption Key (hex, 16 bytes):</label>
-                            <input type="text" id="aes-key" value="000102030405060708090a0b0c0d0e0f" maxlength="32">
+                            <label for="aes-key">Encryption Key (leave empty for random):</label>
+                            <input type="text" id="aes-key" placeholder="Will generate random key if empty">
                             
-                            <label for="aes-iv">IV/Nonce (hex, 16 bytes, for CBC/CTR):</label>
-                            <input type="text" id="aes-iv" value="10111213141516171819202122232425" maxlength="32">
+                            <label for="aes-iv">IV/Nonce (leave empty for random):</label>
+                            <input type="text" id="aes-iv" placeholder="Will generate random IV if empty">
                         </div>
                         
-                        <div class="text-area-container">
-                            <div class="text-area-group">
+                        <div class="crypto-container">
+                            <div class="crypto-section">
                                 <label for="plaintext">Plaintext:</label>
-                                <textarea id="plaintext" placeholder="Enter text to encrypt...">This is a secret message that needs to be encrypted securely.</textarea>
+                                <textarea id="plaintext" rows="4" placeholder="Enter your message here...">This is a secret message that demonstrates AES encryption!</textarea>
                                 <div class="button-group">
                                     <button id="encrypt-button" class="primary-button">Encrypt →</button>
+                                    <button id="generate-key" class="secondary-button">Generate New Key</button>
                                 </div>
                             </div>
                             
-                            <div class="text-area-group">
-                                <label for="ciphertext">Ciphertext (hex):</label>
-                                <textarea id="ciphertext" placeholder="Encrypted data will appear here..."></textarea>
+                            <div class="crypto-section">
+                                <label for="ciphertext">Ciphertext (Base64):</label>
+                                <textarea id="ciphertext" rows="4" placeholder="Encrypted data will appear here..." readonly></textarea>
                                 <div class="button-group">
                                     <button id="decrypt-button" class="primary-button">← Decrypt</button>
+                                    <button id="copy-ciphertext" class="secondary-button">Copy</button>
                                 </div>
+                            </div>
+                        </div>
+                        
+                        <div class="key-display">
+                            <h4>Encryption Details:</h4>
+                            <div id="encryption-details">
+                                <p>Key: <span id="current-key">Not generated</span></p>
+                                <p>IV: <span id="current-iv">Not generated</span></p>
+                                <p>Mode: <span id="current-mode">CBC</span></p>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="info-box">
-                    <h3>AES Mode Comparison</h3>
-                    <p>Visualize how different AES modes handle identical blocks in the plaintext.</p>
+                <div class="info-box danger-box">
+                    <h3>⚠️ ECB Mode Visual Vulnerability Demonstration</h3>
+                    <p><strong>Why ECB Mode is Dangerous:</strong> ECB mode preserves patterns in the plaintext, making it unsuitable for encrypting structured data like images.</p>
                     
-                    <div class="mode-comparison">
+                    <div class="exercise">
+                        <div class="ecb-demo">
+                            <h4>Linux Penguin (Tux) Encryption Comparison</h4>
+                            <p>This demonstration shows why ECB mode is insecure by encrypting the same image with different AES modes.</p>
+                            
+                            <div class="image-comparison">
+                                <div class="image-section">
+                                    <h5>Original Image</h5>
+                                    <img src="penguin.png" alt="Original Tux Penguin" class="demo-image">
+                                    <p>Clear, recognizable Linux penguin</p>
+                                </div>
+                                
+                                <div class="image-section">
+                                    <h5>ECB Mode (INSECURE)</h5>
+                                    <canvas id="ecb-canvas" class="demo-image"></canvas>
+                                    <p class="danger-text">⚠️ Pattern still visible! This is BAD!</p>
+                                </div>
+                                
+                                <div class="image-section">
+                                    <h5>CBC Mode (SECURE)</h5>
+                                    <canvas id="cbc-canvas" class="demo-image"></canvas>
+                                    <p class="success-text">✅ Completely scrambled - this is GOOD!</p>
+                                </div>
+                                
+                                <div class="image-section">
+                                    <h5>CTR Mode (SECURE)</h5>
+                                    <canvas id="ctr-canvas" class="demo-image"></canvas>
+                                    <p class="success-text">✅ Completely scrambled - this is GOOD!</p>
+                                </div>
+                            </div>
+                            
+                            <div class="demo-controls">
+                                <button id="encrypt-image" class="primary-button">Encrypt Image with All Modes</button>
+                                <button id="reset-image" class="secondary-button">Reset</button>
+                            </div>
+                            
+                            <div class="explanation">
+                                <h4>🎯 Key Learning Points:</h4>
+                                <ul>
+                                    <li><strong>ECB Mode Problem:</strong> Identical plaintext blocks produce identical ciphertext blocks</li>
+                                    <li><strong>Pattern Preservation:</strong> You can still see the outline of the penguin in ECB mode</li>
+                                    <li><strong>Security Risk:</strong> This reveals information about the original data structure</li>
+                                    <li><strong>Better Alternatives:</strong> CBC and CTR modes completely scramble the data</li>
+                                    <li><strong>Real-World Impact:</strong> Never use ECB mode for anything other than single-block encryption</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>📊 Mode Comparison with Repeating Data</h3>
+                    <p>See how different AES modes handle identical blocks in plaintext.</p>
+                    
+                    <div class="exercise">
                         <div class="input-group">
-                            <label for="comparison-plaintext">Plaintext with Repeating Blocks:</label>
-                            <input type="text" id="comparison-plaintext" value="AAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBB" maxlength="64">
-                            <button id="compare-modes" class="primary-button">Compare Modes</button>
+                            <label for="pattern-input">Plaintext with Repeating Pattern:</label>
+                            <input type="text" id="pattern-input" value="HELLO WORLD! HELLO WORLD! HELLO WORLD! HELLO WORLD!" placeholder="Enter text with repeating patterns">
+                            <button id="compare-modes" class="primary-button">Compare All Modes</button>
                         </div>
                         
-                        <div class="comparison-results">
-                            <div class="comparison-mode">
-                                <h4>ECB Mode</h4>
-                                <div class="visualization" id="ecb-visualization">
-                                    <div class="block identical">Block 1</div>
-                                    <div class="block different">Block 2</div>
-                                    <div class="block identical">Block 3</div>
-                                    <div class="block different">Block 4</div>
-                                </div>
-                                <p class="mode-description">In ECB mode, identical plaintext blocks encrypt to identical ciphertext blocks, revealing patterns.</p>
+                        <div class="mode-comparison">
+                            <div class="mode-result">
+                                <h4>ECB Mode Result</h4>
+                                <div id="ecb-result" class="cipher-result">Click "Compare All Modes" to see results</div>
+                                <div class="pattern-analysis" id="ecb-analysis"></div>
                             </div>
                             
-                            <div class="comparison-mode">
-                                <h4>CBC Mode</h4>
-                                <div class="visualization" id="cbc-visualization">
-                                    <div class="block unique">Block 1</div>
-                                    <div class="block unique">Block 2</div>
-                                    <div class="block unique">Block 3</div>
-                                    <div class="block unique">Block 4</div>
-                                </div>
-                                <p class="mode-description">In CBC mode, each block depends on all previous blocks, hiding patterns in the plaintext.</p>
+                            <div class="mode-result">
+                                <h4>CBC Mode Result</h4>
+                                <div id="cbc-result" class="cipher-result">Click "Compare All Modes" to see results</div>
+                                <div class="pattern-analysis" id="cbc-analysis"></div>
                             </div>
                             
-                            <div class="comparison-mode">
-                                <h4>CTR Mode</h4>
-                                <div class="visualization" id="ctr-visualization">
-                                    <div class="block unique">Block 1</div>
-                                    <div class="block unique">Block 2</div>
-                                    <div class="block unique">Block 3</div>
-                                    <div class="block unique">Block 4</div>
-                                </div>
-                                <p class="mode-description">In CTR mode, each block is encrypted with a different counter value, effectively creating a stream cipher.</p>
+                            <div class="mode-result">
+                                <h4>CTR Mode Result</h4>
+                                <div id="ctr-result" class="cipher-result">Click "Compare All Modes" to see results</div>
+                                <div class="pattern-analysis" id="ctr-analysis"></div>
                             </div>
                         </div>
                     </div>
@@ -371,44 +450,37 @@
 
             <!-- CHALLENGE TAB -->
             <div class="tab-content" id="challenge">
-                <h2>AES Challenges & Security Analysis</h2>
+                <h2>AES Security Challenges & Advanced Topics</h2>
                 
                 <div class="info-box">
-                    <h3>Challenge 1: Padding Oracle Attack</h3>
-                    <p>Explore how improper error handling in decryption can lead to a padding oracle attack against AES-CBC.</p>
+                    <h3>🎯 Challenge 1: ECB Oracle Attack</h3>
+                    <p>Exploit ECB mode's deterministic nature to recover a secret message.</p>
                     
-                    <div class="challenge-container">
+                    <div class="exercise">
                         <div class="challenge-description">
-                            <p>In this challenge, you'll interact with a simulated server that decrypts AES-CBC ciphertexts and returns whether the padding is valid or not. Your goal is to decrypt the secret message without knowing the key.</p>
-                            <p>The server uses PKCS#7 padding and will respond with either "Valid padding" or "Invalid padding" for each ciphertext you submit.</p>
+                            <p><strong>Scenario:</strong> You have access to an encryption oracle that uses AES-ECB. The oracle prepends your input with a secret message before encrypting. Your goal is to recover the secret.</p>
+                            <p><strong>Hint:</strong> Use the fact that identical 16-byte blocks encrypt to identical ciphertext in ECB mode.</p>
                         </div>
                         
-                        <div class="challenge-interface">
-                            <div class="input-group">
-                                <label for="challenge1-ciphertext">Ciphertext to Decrypt (hex):</label>
-                                <input type="text" id="challenge1-ciphertext" value="7230246d6d56f19c3d9ab61e65e5d75bc1880e119ce6f65e2f5a6678be0bc95e" maxlength="64">
-                                <button id="check-padding" class="primary-button">Check Padding</button>
-                            </div>
-                            
-                            <div class="server-response">
-                                <h4>Server Response:</h4>
-                                <div id="padding-response" class="code-output">
-                                    <p>Submit a ciphertext to check its padding...</p>
-                                </div>
-                            </div>
-                            
-                            <div class="solution-container">
-                                <button id="show-solution1" class="secondary-button">Show Solution Approach</button>
-                                <div id="solution1" class="solution hidden">
-                                    <h4>Solution Approach:</h4>
-                                    <ol>
-                                        <li>Modify the last byte of the second-to-last block and try all 256 possible values.</li>
-                                        <li>When the server responds with "Valid padding", you've found a value that creates valid padding (likely 0x01).</li>
-                                        <li>Use this to calculate the last byte of the plaintext.</li>
-                                        <li>Repeat the process for the second-to-last byte, but now aiming for padding 0x02, 0x02.</li>
-                                        <li>Continue until you've decrypted the entire block.</li>
-                                        <li>Move to the previous block and repeat.</li>
-                                    </ol>
+                        <div class="input-group">
+                            <label for="oracle-input">Your Input:</label>
+                            <input type="text" id="oracle-input" placeholder="Enter your chosen plaintext">
+                            <button id="query-oracle" class="primary-button">Query Oracle</button>
+                            <button id="reset-challenge1" class="secondary-button">Reset Challenge</button>
+                        </div>
+                        
+                        <div class="oracle-response">
+                            <h4>Oracle Response (Hex):</h4>
+                            <div id="oracle-output" class="code-output">Submit input to see encrypted result...</div>
+                        </div>
+                        
+                        <div class="challenge-progress">
+                            <h4>Your Progress:</h4>
+                            <div id="recovered-secret">Secret: <span id="secret-progress">???????????????</span></div>
+                            <div id="challenge1-hints" class="hints-section">
+                                <button id="show-hint1" class="hint-button">Show Hint</button>
+                                <div id="hint1-content" class="hint-content hidden">
+                                    Try sending 15 'A's, then 14 'A's, then 13 'A's... and compare the first blocks of the responses.
                                 </div>
                             </div>
                         </div>
@@ -416,103 +488,119 @@
                 </div>
                 
                 <div class="info-box">
-                    <h3>Challenge 2: Known-Plaintext Attack on ECB Mode</h3>
-                    <p>Demonstrate how ECB mode's deterministic nature makes it vulnerable to known-plaintext attacks.</p>
+                    <h3>🛡️ Challenge 2: Padding Oracle Attack Simulation</h3>
+                    <p>Understand how improper error handling can lead to complete plaintext recovery.</p>
                     
-                    <div class="challenge-container">
+                    <div class="exercise">
                         <div class="challenge-description">
-                            <p>In this challenge, you have access to an encryption oracle that uses AES-ECB with an unknown key. The oracle prepends your input with a secret string before encrypting.</p>
-                            <p>Your goal is to recover the secret string by carefully crafting inputs and analyzing the resulting ciphertexts.</p>
+                            <p><strong>Scenario:</strong> A server decrypts AES-CBC ciphertexts and tells you whether the padding is valid. Use this information to decrypt a secret message.</p>
+                            <p><strong>Target Ciphertext:</strong> Contains a secret message encrypted with AES-CBC and PKCS#7 padding.</p>
                         </div>
                         
-                        <div class="challenge-interface">
-                            <div class="input-group">
-                                <label for="challenge2-input">Input to Encrypt:</label>
-                                <input type="text" id="challenge2-input" placeholder="Enter text to encrypt...">
-                                <button id="encrypt-input" class="primary-button">Encrypt</button>
+                        <div class="input-group">
+                            <label for="padding-ciphertext">Ciphertext to Test (Hex):</label>
+                            <input type="text" id="padding-ciphertext" value="a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456" placeholder="Enter ciphertext in hex">
+                            <button id="check-padding" class="primary-button">Check Padding</button>
+                            <button id="auto-attack" class="secondary-button">Auto Attack</button>
+                        </div>
+                        
+                        <div class="oracle-response">
+                            <h4>Server Response:</h4>
+                            <div id="padding-response" class="code-output">Submit ciphertext to check padding...</div>
+                        </div>
+                        
+                        <div class="attack-progress">
+                            <h4>Attack Progress:</h4>
+                            <div id="recovered-plaintext">Plaintext: <span id="plaintext-progress">Analyzing...</span></div>
+                            <div class="progress-bar">
+                                <div id="attack-progress-bar" class="progress-fill"></div>
                             </div>
-                            
-                            <div class="oracle-response">
-                                <h4>Encryption Oracle Response:</h4>
-                                <div id="oracle-response" class="code-output">
-                                    <p>Submit an input to see the encrypted result...</p>
-                                </div>
-                            </div>
-                            
-                            <div class="recovered-secret">
-                                <h4>Recovered Secret:</h4>
-                                <div id="recovered-secret" class="code-output">
-                                    <p>Use the oracle to recover the secret...</p>
-                                </div>
-                            </div>
-                            
-                            <div class="solution-container">
-                                <button id="show-solution2" class="secondary-button">Show Solution Approach</button>
-                                <div id="solution2" class="solution hidden">
-                                    <h4>Solution Approach:</h4>
-                                    <ol>
-                                        <li>First, determine the block size (16 bytes for AES) by increasing input length until the ciphertext size jumps.</li>
-                                        <li>Confirm ECB mode by encrypting repeated characters and looking for repeated blocks in the output.</li>
-                                        <li>To recover the first byte of the secret, send 15 'A's as input. This forces the first byte of the secret into the last position of the first block.</li>
-                                        <li>Try all possible values for the 16th byte until you find one that produces a matching first block.</li>
-                                        <li>Once found, you know the first byte of the secret.</li>
-                                        <li>For the second byte, send 14 'A's and the first recovered byte. Then try all values for the 16th position again.</li>
-                                        <li>Continue this process until you've recovered the entire secret.</li>
-                                    </ol>
-                                </div>
+                        </div>
+                        
+                        <div id="challenge2-hints" class="hints-section">
+                            <button id="show-hint2" class="hint-button">Show Attack Strategy</button>
+                            <div id="hint2-content" class="hint-content hidden">
+                                <p>1. Modify the last byte of the second-to-last block</p>
+                                <p>2. Try all 256 values until padding is valid</p>
+                                <p>3. Use the valid value to determine the last plaintext byte</p>
+                                <p>4. Repeat for all bytes in the block</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="info-box">
-                    <h3>Challenge 3: Implement Authenticated Encryption</h3>
-                    <p>Implement authenticated encryption using AES-GCM or AES-CBC with HMAC to protect against tampering.</p>
+                    <h3>🔐 Challenge 3: Implement Authenticated Encryption</h3>
+                    <p>Build a secure messaging system that provides both confidentiality and integrity.</p>
                     
-                    <div class="challenge-container">
+                    <div class="exercise">
                         <div class="challenge-description">
-                            <p>In this challenge, you'll implement a secure messaging system that provides both confidentiality and integrity/authenticity.</p>
-                            <p>Your implementation should detect if a message has been tampered with during transmission.</p>
+                            <p><strong>Goal:</strong> Implement authenticated encryption using AES-GCM or AES-CBC+HMAC to detect tampering.</p>
+                            <p><strong>Requirements:</strong> Your system must detect any modification to the ciphertext.</p>
                         </div>
                         
-                        <div class="challenge-interface">
-                            <div class="input-group">
-                                <label for="auth-mode">Authentication Mode:</label>
-                                <select id="auth-mode">
-                                    <option value="gcm">AES-GCM (AEAD)</option>
-                                    <option value="cbc-hmac">AES-CBC with HMAC</option>
-                                </select>
-                                
-                                <label for="auth-key">Encryption Key (hex, 16 bytes):</label>
-                                <input type="text" id="auth-key" value="000102030405060708090a0b0c0d0e0f" maxlength="32">
-                                
-                                <label for="auth-message">Message to Protect:</label>
-                                <textarea id="auth-message" placeholder="Enter message to encrypt and authenticate...">This message must not be tampered with!</textarea>
-                                
-                                <button id="protect-message" class="primary-button">Encrypt & Authenticate</button>
-                            </div>
+                        <div class="input-group">
+                            <label for="auth-mode">Authentication Mode:</label>
+                            <select id="auth-mode">
+                                <option value="GCM">AES-GCM (Authenticated Encryption)</option>
+                                <option value="CBC-HMAC">AES-CBC + HMAC-SHA256</option>
+                            </select>
                             
-                            <div class="protected-output">
-                                <h4>Protected Message:</h4>
-                                <div id="protected-output" class="code-output">
-                                    <p>Encrypt and authenticate a message first...</p>
-                                </div>
-                                
-                                <div class="tampering-simulation">
-                                    <h4>Simulate Tampering:</h4>
-                                    <button id="tamper-button" class="secondary-button">Tamper with Ciphertext</button>
-                                    <div id="tampered-output" class="code-output hidden">
-                                        <p>Tampered ciphertext will appear here...</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="verification">
-                                    <h4>Verification:</h4>
-                                    <button id="verify-button" class="primary-button">Verify & Decrypt</button>
-                                    <div id="verification-result" class="code-output">
-                                        <p>Verification results will appear here...</p>
-                                    </div>
-                                </div>
+                            <label for="auth-message">Message to Protect:</label>
+                            <textarea id="auth-message" rows="3" placeholder="Enter sensitive message...">This message must not be tampered with!</textarea>
+                            
+                            <button id="protect-message" class="primary-button">Encrypt & Authenticate</button>
+                        </div>
+                        
+                        <div class="protected-output">
+                            <h4>Protected Message:</h4>
+                            <div id="protected-data" class="code-output">Encrypt a message first...</div>
+                        </div>
+                        
+                        <div class="tampering-simulation">
+                            <h4>Tampering Simulation:</h4>
+                            <button id="tamper-bit" class="danger-button">Flip Random Bit</button>
+                            <button id="tamper-byte" class="danger-button">Change Random Byte</button>
+                            <button id="tamper-block" class="danger-button">Corrupt Block</button>
+                            
+                            <div id="tampered-data" class="code-output hidden">Tampered data will appear here...</div>
+                        </div>
+                        
+                        <div class="verification-section">
+                            <button id="verify-message" class="primary-button">Verify & Decrypt</button>
+                            <div id="verification-result" class="code-output">Verification results will appear here...</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <h3>🏆 Bonus Challenge: AES Key Recovery</h3>
+                    <p>Advanced challenge: Recover an AES key using side-channel analysis simulation.</p>
+                    
+                    <div class="exercise">
+                        <div class="challenge-description">
+                            <p><strong>Scenario:</strong> You have access to timing information from AES encryption operations. Use this to recover the secret key.</p>
+                            <p><strong>Note:</strong> This simulates real-world side-channel attacks on poorly implemented AES.</p>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="timing-input">Plaintext for Timing Analysis:</label>
+                            <input type="text" id="timing-input" value="00000000000000000000000000000000" maxlength="32">
+                            <button id="timing-attack" class="primary-button">Measure Timing</button>
+                            <button id="analyze-timing" class="secondary-button">Analyze Results</button>
+                        </div>
+                        
+                        <div class="timing-results">
+                            <h4>Timing Measurements:</h4>
+                            <canvas id="timing-chart" width="400" height="200"></canvas>
+                            <div id="timing-analysis" class="code-output">Run timing attack to see results...</div>
+                        </div>
+                        
+                        <div class="key-recovery">
+                            <h4>Key Recovery Progress:</h4>
+                            <div id="recovered-key">Key: <span id="key-progress">????????????????????????????????</span></div>
+                            <div class="progress-bar">
+                                <div id="key-recovery-progress" class="progress-fill"></div>
                             </div>
                         </div>
                     </div>
