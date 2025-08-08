@@ -461,76 +461,143 @@ document.addEventListener('DOMContentLoaded', function() {
         const img = new Image();
         img.crossOrigin = 'anonymous';
         img.onload = function() {
-            // ECB Mode - preserves patterns across ENTIRE image
-            const ecbCanvas = document.getElementById('ecb-canvas');
-            const ecbCtx = ecbCanvas.getContext('2d');
-            ecbCanvas.width = img.width;
-            ecbCanvas.height = img.height;
-            ecbCtx.drawImage(img, 0, 0);
+            // Show processing animation for 5 seconds
+            showProcessingAnimation();
             
-            const ecbImageData = ecbCtx.getImageData(0, 0, img.width, img.height);
-            const ecbData = ecbImageData.data;
-            
-            // Simulate ECB encryption - preserve patterns by applying consistent transformations
-            // This demonstrates how ECB preserves patterns in BOTH the penguin AND background
-            for (let i = 0; i < ecbData.length; i += 4) {
-                const brightness = (ecbData[i] + ecbData[i + 1] + ecbData[i + 2]) / 3;
+            setTimeout(() => {
+                // ECB Mode - preserves patterns but makes background grey
+                const ecbCanvas = document.getElementById('ecb-canvas');
+                const ecbCtx = ecbCanvas.getContext('2d');
+                ecbCanvas.width = img.width;
+                ecbCanvas.height = img.height;
+                ecbCtx.drawImage(img, 0, 0);
                 
-                if (brightness < 85) { // Very dark pixels (penguin body)
-                    ecbData[i] = 40;      // Dark red
-                    ecbData[i + 1] = 40;  // Dark green  
-                    ecbData[i + 2] = 80;  // Slightly blue
-                } else if (brightness < 170) { // Medium pixels (penguin edges, some background)
-                    ecbData[i] = 80;      // Medium red
-                    ecbData[i + 1] = 80;  // Medium green
-                    ecbData[i + 2] = 120; // Medium blue
-                } else { // Light pixels (background, penguin belly)
-                    ecbData[i] = 160;     // Light red
-                    ecbData[i + 1] = 160; // Light green
-                    ecbData[i + 2] = 200; // Light blue
+                const ecbImageData = ecbCtx.getImageData(0, 0, img.width, img.height);
+                const ecbData = ecbImageData.data;
+                
+                // Simulate ECB encryption - preserve patterns but transform colors
+                // Background becomes grey, penguin outline still visible
+                for (let i = 0; i < ecbData.length; i += 4) {
+                    const brightness = (ecbData[i] + ecbData[i + 1] + ecbData[i + 2]) / 3;
+                    
+                    if (brightness < 50) { // Very dark pixels (penguin body)
+                        ecbData[i] = 60;      // Dark grey
+                        ecbData[i + 1] = 60;  // Dark grey  
+                        ecbData[i + 2] = 80;  // Slightly blue-grey
+                    } else if (brightness < 100) { // Dark-medium pixels (penguin edges)
+                        ecbData[i] = 90;      // Medium-dark grey
+                        ecbData[i + 1] = 90;  // Medium-dark grey
+                        ecbData[i + 2] = 110; // Medium-dark blue-grey
+                    } else if (brightness < 200) { // Medium pixels (penguin belly, some edges)
+                        ecbData[i] = 140;     // Medium grey
+                        ecbData[i + 1] = 140; // Medium grey
+                        ecbData[i + 2] = 160; // Medium blue-grey
+                    } else { // Light pixels (background - white areas)
+                        ecbData[i] = 180;     // Light grey
+                        ecbData[i + 1] = 180; // Light grey
+                        ecbData[i + 2] = 190; // Light blue-grey
+                    }
                 }
-            }
-            ecbCtx.putImageData(ecbImageData, 0, 0);
-            
-            // CBC Mode - completely scrambled across ENTIRE image
-            const cbcCanvas = document.getElementById('cbc-canvas');
-            const cbcCtx = cbcCanvas.getContext('2d');
-            cbcCanvas.width = img.width;
-            cbcCanvas.height = img.height;
-            
-            // Fill with random static across entire canvas
-            const cbcImageData = cbcCtx.createImageData(img.width, img.height);
-            const cbcData = cbcImageData.data;
-            
-            // Generate complete static - no patterns anywhere
-            for (let i = 0; i < cbcData.length; i += 4) {
-                cbcData[i] = Math.floor(Math.random() * 256);     // R
-                cbcData[i + 1] = Math.floor(Math.random() * 256); // G
-                cbcData[i + 2] = Math.floor(Math.random() * 256); // B
-                cbcData[i + 3] = 255; // Alpha
-            }
-            cbcCtx.putImageData(cbcImageData, 0, 0);
-            
-            // CTR Mode - completely scrambled across ENTIRE image
-            const ctrCanvas = document.getElementById('ctr-canvas');
-            const ctrCtx = ctrCanvas.getContext('2d');
-            ctrCanvas.width = img.width;
-            ctrCanvas.height = img.height;
-            
-            // Fill with random static across entire canvas
-            const ctrImageData = ctrCtx.createImageData(img.width, img.height);
-            const ctrData = ctrImageData.data;
-            
-            // Generate complete static - no patterns anywhere
-            for (let i = 0; i < ctrData.length; i += 4) {
-                ctrData[i] = Math.floor(Math.random() * 256);     // R
-                ctrData[i + 1] = Math.floor(Math.random() * 256); // G
-                ctrData[i + 2] = Math.floor(Math.random() * 256); // B
-                ctrData[i + 3] = 255; // Alpha
-            }
-            ctrCtx.putImageData(ctrImageData, 0, 0);
+                ecbCtx.putImageData(ecbImageData, 0, 0);
+                
+                // CBC Mode - completely scrambled across ENTIRE image
+                const cbcCanvas = document.getElementById('cbc-canvas');
+                const cbcCtx = cbcCanvas.getContext('2d');
+                cbcCanvas.width = img.width;
+                cbcCanvas.height = img.height;
+                
+                // Fill with random static across entire canvas
+                const cbcImageData = cbcCtx.createImageData(img.width, img.height);
+                const cbcData = cbcImageData.data;
+                
+                // Generate complete static - no patterns anywhere
+                for (let i = 0; i < cbcData.length; i += 4) {
+                    cbcData[i] = Math.floor(Math.random() * 256);     // R
+                    cbcData[i + 1] = Math.floor(Math.random() * 256); // G
+                    cbcData[i + 2] = Math.floor(Math.random() * 256); // B
+                    cbcData[i + 3] = 255; // Alpha
+                }
+                cbcCtx.putImageData(cbcImageData, 0, 0);
+                
+                // CTR Mode - completely scrambled across ENTIRE image
+                const ctrCanvas = document.getElementById('ctr-canvas');
+                const ctrCtx = ctrCanvas.getContext('2d');
+                ctrCanvas.width = img.width;
+                ctrCanvas.height = img.height;
+                
+                // Fill with random static across entire canvas
+                const ctrImageData = ctrCtx.createImageData(img.width, img.height);
+                const ctrData = ctrImageData.data;
+                
+                // Generate complete static - no patterns anywhere
+                for (let i = 0; i < ctrData.length; i += 4) {
+                    ctrData[i] = Math.floor(Math.random() * 256);     // R
+                    ctrData[i + 1] = Math.floor(Math.random() * 256); // G
+                    ctrData[i + 2] = Math.floor(Math.random() * 256); // B
+                    ctrData[i + 3] = 255; // Alpha
+                }
+                ctrCtx.putImageData(ctrImageData, 0, 0);
+                
+                // Hide processing animation
+                hideProcessingAnimation();
+            }, 5000);
         };
         img.src = 'penguin.png';
+    }
+
+    function showProcessingAnimation() {
+        const canvases = ['ecb-canvas', 'cbc-canvas', 'ctr-canvas'];
+        
+        canvases.forEach(canvasId => {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            canvas.width = 200;
+            canvas.height = 200;
+            
+            // Show processing text
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#333';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Processing...', canvas.width / 2, canvas.height / 2 - 10);
+            ctx.font = '12px Arial';
+            ctx.fillText('Encrypting image', canvas.width / 2, canvas.height / 2 + 10);
+        });
+        
+        // Animate processing dots
+        let dotCount = 0;
+        const processingInterval = setInterval(() => {
+            canvases.forEach(canvasId => {
+                const canvas = document.getElementById(canvasId);
+                const ctx = canvas.getContext('2d');
+                
+                // Clear and redraw
+                ctx.fillStyle = '#f0f0f0';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#333';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                
+                const dots = '.'.repeat((dotCount % 4));
+                ctx.fillText('Processing' + dots, canvas.width / 2, canvas.height / 2 - 10);
+                ctx.font = '12px Arial';
+                ctx.fillText('Encrypting image', canvas.width / 2, canvas.height / 2 + 10);
+            });
+            dotCount++;
+        }, 500);
+        
+        // Store interval ID for cleanup
+        window.processingInterval = processingInterval;
+    }
+
+    function hideProcessingAnimation() {
+        if (window.processingInterval) {
+            clearInterval(window.processingInterval);
+            window.processingInterval = null;
+        }
     }
 
     function resetImageDemo() {
