@@ -21,7 +21,7 @@ class RSALab {
 
     // Tab Switching
     setupTabSwitching() {
-        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
 
         console.log('Found', tabButtons.length, 'tab buttons');

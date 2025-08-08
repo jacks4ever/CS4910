@@ -3,32 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive RSA Cryptography Lab</title>
+    <title>UCCS - Interactive RSA Cryptography Lab</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <header class="lab-header">
+        <header>
             <div class="logo-container">
-                <img src="uccs-logo.svg" alt="UCCS Logo" class="uccs-logo">
+                <img src="uccs-logo.svg" alt="University of Colorado Colorado Springs Logo" class="logo">
             </div>
-            <h1>Interactive RSA Cryptography Lab</h1>
-            <p>Learn RSA encryption through hands-on practice</p>
+            <h1>INTERACTIVE RSA CRYPTOGRAPHY LAB</h1>
+            <div class="course-info">
+                <p>University of Colorado Colorado Springs (UCCS)</p>
+                <p>CS4910: Introduction to Computer Security</p>
+                <p>Assignment 2: Asymmetric Cryptography and RSA Analysis</p>
+                <p>Instructor: Rhett Saunders</p>
+            </div>
             <div class="security-warning">
                 ⚠️ <strong>Educational Only:</strong> These small key sizes are for demonstration purposes only and should never be used in production systems.
             </div>
         </header>
 
-        <!-- Tab Navigation -->
-        <nav class="tab-nav">
-            <button class="tab-btn active" data-tab="theory">Theory</button>
-            <button class="tab-btn" data-tab="practice">Practice</button>
-            <button class="tab-btn" data-tab="application">Application</button>
-            <button class="tab-btn" data-tab="challenge">Challenge</button>
+        <nav>
+            <button class="tab-button active" data-tab="theory">Theory</button>
+            <button class="tab-button" data-tab="practice">Practice</button>
+            <button class="tab-button" data-tab="application">Application</button>
+            <button class="tab-button" data-tab="challenge">Challenge</button>
         </nav>
 
         <!-- Theory Tab -->
-        <div id="theory" class="tab-content active">
+        <div id="theory" class="content tab-content active">
             <h2>RSA Theory & Variables</h2>
             
             <div class="ai-prompt-section">
@@ -181,7 +186,7 @@
         </div>
 
         <!-- Practice Tab -->
-        <div id="practice" class="tab-content">
+        <div id="practice" class="content tab-content">
             <h2>Modular Arithmetic Practice</h2>
             
             <div class="ai-prompt-section">
@@ -271,7 +276,7 @@
         </div>
 
         <!-- Application Tab -->
-        <div id="application" class="tab-content">
+        <div id="application" class="content tab-content">
             <h2>RSA Message Encryption</h2>
             
             <div class="ai-prompt-section">
@@ -317,7 +322,7 @@
         </div>
 
         <!-- Challenge Tab -->
-        <div id="challenge" class="tab-content cia-theme">
+        <div id="challenge" class="content tab-content cia-theme">
             <div class="cia-header">
                 <h2>🕵️ CIA Decryption Room</h2>
                 <p class="mission-brief">CLASSIFIED MISSION: Decrypt the intercepted RSA-encrypted message</p>
