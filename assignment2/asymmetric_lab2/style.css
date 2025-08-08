@@ -185,6 +185,48 @@ h4 {
   border-left: 4px solid var(--uccs-gold);
 }
 
+/* AI Prompts Section - Enhanced for asymmetric_lab2 */
+.ai-prompt-section {
+  background: rgba(59, 130, 246, 0.08);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 32px;
+}
+
+.ai-prompt-toggle {
+  font-size: 14px;
+  padding: 8px 16px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ai-prompt-toggle:hover {
+  background: #e9ecef;
+  border-color: var(--uccs-gold);
+}
+
+.ai-prompt-content {
+  margin-top: 16px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 5px;
+  border-left: 4px solid var(--uccs-gold);
+}
+
+.ai-prompt-content code {
+  display: block;
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-top: 8px;
+  font-family: 'Courier New', monospace;
+  border-left: 4px solid var(--uccs-gold);
+}
+
 /* Concept Grid */
 .concept-grid {
   display: grid;
@@ -926,4 +968,76 @@ h4 {
   .info-box {
     break-inside: avoid;
   }
+}
+
+/* Utility Classes for asymmetric_lab2 */
+.hidden {
+  display: none !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.block {
+  display: block;
+}
+
+/* Theory Section Styles */
+.theory-section h3 {
+  margin-bottom: 24px;
+  color: #333;
+}
+
+.variables-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.variable-card {
+  background: #fff;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.variable-card:hover {
+  border-color: var(--uccs-gold);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.variable-name {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* Progress Section */
+.progress-section {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--uccs-gold);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 14px;
+  color: #666;
 }
