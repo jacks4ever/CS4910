@@ -1545,12 +1545,24 @@ h4 {
 }
 
 .cia-header {
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--uccs-gold);
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 20px;
   text-align: center;
-  color: #fff !important;
+  color: var(--uccs-black) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cia-header h2 {
+  color: var(--uccs-black) !important;
+  margin-bottom: 10px;
+}
+
+.cia-header .mission-brief {
+  color: var(--uccs-black) !important;
+  font-weight: 600;
+  font-size: 1.1rem;
 }
 
 /* Status and progress indicators */
