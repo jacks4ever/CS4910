@@ -447,7 +447,7 @@ class RSALab {
             input.classList.remove('incorrect');
             input.classList.add('correct');
             if (feedback) {
-                feedback.textContent = 'ACCESS LEVEL INCREASED ✓';
+                feedback.textContent = 'CORRECT ✓';
                 feedback.classList.remove('incorrect');
                 feedback.classList.add('correct');
             }
@@ -466,7 +466,7 @@ class RSALab {
             input.classList.remove('correct');
             input.classList.add('incorrect');
             if (feedback) {
-                feedback.textContent = 'SECURITY BREACH DETECTED ⚠️';
+                feedback.textContent = 'WRONG ⚠️';
                 feedback.classList.remove('correct');
                 feedback.classList.add('incorrect');
             }

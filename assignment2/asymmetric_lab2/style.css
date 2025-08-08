@@ -1490,24 +1490,9 @@ h4 {
   margin-top: 10px;
 }
 
-/* CIA Theme specific - aligned with main theme */
-.cia-theme {
-  background: var(--background-color);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  padding: 20px;
-  margin: 20px 0;
-}
+/* CIA Theme removed - now uses standard theme like other tabs */
 
-.cia-theme h1,
-.cia-theme h2,
-.cia-theme h3,
-.cia-theme h4,
-.cia-theme h5,
-.cia-theme h6 {
-  color: var(--uccs-gold) !important;
-}
+/* CIA theme headings now use standard styling */
 
 .cia-theme .param {
   background: var(--card-background);
@@ -1544,26 +1529,7 @@ h4 {
   border: 1px solid var(--border-color);
 }
 
-.cia-header {
-  background: var(--uccs-gold);
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  text-align: center;
-  color: var(--uccs-black) !important;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.cia-header h2 {
-  color: var(--uccs-black) !important;
-  margin-bottom: 10px;
-}
-
-.cia-header .mission-brief {
-  color: var(--uccs-black) !important;
-  font-weight: 600;
-  font-size: 1.1rem;
-}
+/* Remove CIA header special styling to align with other tabs */
 
 /* Status and progress indicators */
 .status-text {
