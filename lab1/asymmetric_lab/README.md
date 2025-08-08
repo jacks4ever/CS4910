@@ -5,15 +5,34 @@ This is an interactive lab for learning about RSA cryptography. The lab includes
 - Python scripts demonstrating RSA encryption/decryption
 - Practice problems and challenges
 
-## Running with Docker
+## Running the Lab
 
-### Prerequisites
+### Option 1: Using the start-lab.sh Script (Recommended)
+
+The easiest way to run the lab is using the provided start-lab.sh script:
+
+```bash
+# Make sure the script is executable
+chmod +x start-lab.sh
+
+# Run the script
+./start-lab.sh
+```
+
+This script will:
+1. Check if Python is installed
+2. Start a local web server on port 12000
+3. Open your default web browser to the lab interface
+
+### Option 2: Running with Docker
+
+#### Prerequisites
 - Docker installed on your system
 - Docker Compose (optional, but recommended)
 
-### Option 1: Using Docker Compose (Recommended)
+#### Option 2A: Using Docker Compose
 
-To start the lab server with a single command:
+To start the lab server with Docker Compose:
 
 ```bash
 docker-compose up
@@ -21,7 +40,7 @@ docker-compose up
 
 This will build the Docker image if it doesn't exist and start the container.
 
-### Option 2: Using Docker directly
+#### Option 2B: Using Docker directly
 
 Build the Docker image:
 
