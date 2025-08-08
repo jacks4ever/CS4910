@@ -1,4 +1,12 @@
 :root {
+  /* UCCS Brand Colors */
+  --uccs-gold: rgba(207, 184, 124, 1);
+  --uccs-black: rgba(0, 0, 0, 1);
+  --uccs-dark-gold: rgba(177, 154, 94, 1);
+  --uccs-light-gold: rgba(237, 214, 154, 1);
+  --uccs-dark-gray: rgba(88, 89, 91, 1);
+  --uccs-light-gray: rgba(221, 221, 221, 1);
+  
   /* Primitive Color Tokens */
   --color-white: rgba(255, 255, 255, 1);
   --color-black: rgba(0, 0, 0, 1);
@@ -413,29 +421,37 @@ pre code {
 }
 
 .btn--primary {
-  background: var(--color-primary);
-  color: var(--color-btn-primary-text);
+  background: var(--uccs-gold);
+  color: var(--uccs-black);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .btn--primary:hover {
-  background: var(--color-primary-hover);
+  background: var(--uccs-dark-gold);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
 .btn--primary:active {
-  background: var(--color-primary-active);
+  background: var(--uccs-light-gold);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .btn--secondary {
-  background: var(--color-secondary);
-  color: var(--color-text);
+  background: var(--uccs-light-gray);
+  color: var(--uccs-dark-gray);
+  border: 1px solid var(--uccs-dark-gray);
 }
 
 .btn--secondary:hover {
-  background: var(--color-secondary-hover);
+  background: var(--color-white);
+  color: var(--uccs-black);
+  border-color: var(--uccs-gold);
 }
 
 .btn--secondary:active {
-  background: var(--color-secondary-active);
+  background: var(--uccs-light-gold);
+  color: var(--uccs-black);
+  border-color: var(--uccs-dark-gold);
 }
 
 .btn--outline {
@@ -742,13 +758,43 @@ select.form-control {
 .lab-header {
   text-align: center;
   padding: var(--space-32) 0;
-  border-bottom: 2px solid var(--color-border);
+  border-bottom: 2px solid var(--uccs-gold);
   margin-bottom: var(--space-32);
+  background-color: var(--color-white);
+}
+
+.uccs-branding {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-16);
+}
+
+.uccs-logo {
+  max-width: 300px;
+  height: auto;
 }
 
 .lab-header h1 {
-  color: var(--color-primary);
+  color: var(--uccs-black);
   margin-bottom: var(--space-16);
+  font-size: 2.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.course-info {
+  margin-bottom: var(--space-24);
+  background-color: var(--uccs-light-gray);
+  padding: var(--space-16);
+  border-radius: var(--radius-base);
+  border-left: 4px solid var(--uccs-gold);
+}
+
+.course-info p {
+  color: var(--uccs-dark-gray);
+  font-size: var(--font-size-md);
+  margin-bottom: var(--space-8);
+  line-height: 1.4;
 }
 
 .lab-header p {
@@ -773,7 +819,7 @@ select.form-control {
   display: flex;
   gap: var(--space-8);
   margin-bottom: var(--space-32);
-  border-bottom: 2px solid var(--color-border);
+  border-bottom: 3px solid var(--uccs-gold);
 }
 
 .tab-btn {
@@ -782,7 +828,7 @@ select.form-control {
   padding: var(--space-16) var(--space-24);
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-medium);
-  color: var(--color-text-secondary);
+  color: var(--uccs-dark-gray);
   cursor: pointer;
   border-radius: var(--radius-base) var(--radius-base) 0 0;
   transition: all var(--duration-fast) var(--ease-standard);
@@ -790,23 +836,24 @@ select.form-control {
 }
 
 .tab-btn:hover {
-  background: var(--color-secondary);
-  color: var(--color-text);
+  background: var(--uccs-light-gold);
+  color: var(--uccs-black);
 }
 
 .tab-btn.active {
-  background: var(--color-primary);
-  color: var(--color-btn-primary-text);
+  background: var(--uccs-gold);
+  color: var(--uccs-black);
+  font-weight: bold;
 }
 
 .tab-btn.active::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: -3px;
   left: 0;
   right: 0;
-  height: 2px;
-  background: var(--color-primary);
+  height: 3px;
+  background: var(--uccs-black);
 }
 
 /* Tab Content */
