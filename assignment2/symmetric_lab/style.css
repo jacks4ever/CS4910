@@ -404,6 +404,26 @@ h4 {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.warning-button {
+  background: var(--color-warning);
+  color: var(--uccs-black);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.warning-button:hover {
+  background: #e0a800;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 .hint-button {
   background: var(--color-info);
   color: white;
@@ -910,6 +930,7 @@ h4 {
   .primary-button,
   .secondary-button,
   .danger-button,
+  .warning-button,
   .hint-button {
     display: none;
   }

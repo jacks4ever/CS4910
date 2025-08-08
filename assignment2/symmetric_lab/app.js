@@ -1009,6 +1009,217 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // AES Key Recovery Challenge
+    const timingAttackButton = document.getElementById('timing-attack');
+    const analyzeTimingButton = document.getElementById('analyze-timing');
+    const resetKeyRecoveryButton = document.getElementById('reset-key-recovery');
+    let timingResults = [];
+    let secretKey = "1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d"; // Secret key to recover
+    let recoveredKeyBytes = Array(16).fill(null);
+    
+    if (timingAttackButton) {
+        timingAttackButton.addEventListener('click', function() {
+            const plaintext = document.getElementById('timing-input').value.toLowerCase();
+            
+            if (!validateHex(plaintext, 32)) {
+                alert('Please enter exactly 32 hexadecimal characters for the plaintext.');
+                return;
+            }
+            
+            // Simulate timing attack
+            simulateTimingAttack(plaintext);
+        });
+    }
+    
+    if (analyzeTimingButton) {
+        analyzeTimingButton.addEventListener('click', function() {
+            if (timingResults.length === 0) {
+                alert('Please run the timing attack first to collect data.');
+                return;
+            }
+            
+            // Analyze timing data and recover key
+            analyzeTimingData();
+        });
+    }
+    
+    if (resetKeyRecoveryButton) {
+        resetKeyRecoveryButton.addEventListener('click', function() {
+            // Reset the challenge
+            timingResults = [];
+            recoveredKeyBytes = Array(16).fill(null);
+            
+            // Clear the canvas
+            const canvas = document.getElementById('timing-chart');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Reset the analysis text
+            document.getElementById('timing-analysis').textContent = 'Run timing attack to see results...';
+            
+            // Reset the key progress display
+            document.getElementById('key-progress').textContent = '????????????????????????????????';
+            
+            // Reset the progress bar
+            const progressBar = document.getElementById('key-recovery-progress');
+            if (progressBar) {
+                progressBar.style.width = '0%';
+            }
+            
+            // Generate a new secret key for the challenge
+            secretKey = generateRandomHex(32);
+            
+            alert('Challenge has been reset with a new secret key.');
+        });
+    }
+    
+    function simulateTimingAttack(plaintext) {
+        // Clear previous results
+        timingResults = [];
+        document.getElementById('timing-analysis').textContent = 'Collecting timing data...';
+        
+        // Convert plaintext to bytes
+        const plaintextBytes = hexToBytes(plaintext);
+        
+        // Simulate timing measurements for each possible value of the first byte of the key
+        for (let keyByte = 0; keyByte < 256; keyByte++) {
+            // Simulate time taken for AES operation with this key byte
+            // In a real attack, this would be measuring actual encryption times
+            
+            // For simulation, we'll make the correct key byte take slightly longer
+            // This simulates a timing side-channel leak
+            const secretKeyByte = parseInt(secretKey.substr(0, 2), 16);
+            let time = Math.random() * 10 + 90; // Base time between 90-100ms
+            
+            // Add a timing leak - the correct key byte will have a slightly higher time
+            // In real attacks, this could be due to cache hits/misses or branch prediction
+            if (keyByte === secretKeyByte) {
+                time += 5 + Math.random() * 2; // Add 5-7ms for the correct key byte
+            }
+            
+            timingResults.push({
+                keyByte: keyByte,
+                time: time
+            });
+        }
+        
+        // Sort results by time (descending)
+        timingResults.sort((a, b) => b.time - a.time);
+        
+        // Display results
+        displayTimingResults();
+    }
+    
+    function displayTimingResults() {
+        const canvas = document.getElementById('timing-chart');
+        const ctx = canvas.getContext('2d');
+        
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw timing chart
+        const barWidth = canvas.width / 256;
+        const maxTime = Math.max(...timingResults.map(r => r.time));
+        const minTime = Math.min(...timingResults.map(r => r.time));
+        const range = maxTime - minTime;
+        
+        // Create a map from key byte to time for easier lookup
+        const timeMap = {};
+        timingResults.forEach(r => {
+            timeMap[r.keyByte] = r.time;
+        });
+        
+        // Draw bars for each key byte
+        for (let i = 0; i < 256; i++) {
+            const time = timeMap[i] || minTime;
+            const height = ((time - minTime) / range) * (canvas.height - 20);
+            
+            // Color the bar - highlight the top 5 candidates
+            const topCandidates = timingResults.slice(0, 5).map(r => r.keyByte);
+            if (topCandidates.includes(i)) {
+                ctx.fillStyle = '#ff6b6b'; // Red for top candidates
+            } else {
+                ctx.fillStyle = '#4ecdc4'; // Teal for others
+            }
+            
+            ctx.fillRect(i * barWidth, canvas.height - height, barWidth - 1, height);
+        }
+        
+        // Display top 5 candidates
+        let analysisText = 'Top 5 key byte candidates based on timing:\n';
+        for (let i = 0; i < 5; i++) {
+            if (i < timingResults.length) {
+                const result = timingResults[i];
+                analysisText += `${i+1}. 0x${result.keyByte.toString(16).padStart(2, '0')} - ${result.time.toFixed(2)}ms\n`;
+            }
+        }
+        
+        document.getElementById('timing-analysis').textContent = analysisText;
+    }
+    
+    function analyzeTimingData() {
+        // In a real attack, we would need multiple measurements and statistical analysis
+        // For this simulation, we'll just take the top candidate
+        
+        // Get the most likely key byte (the one with the highest timing)
+        const mostLikelyKeyByte = timingResults[0].keyByte;
+        
+        // For educational purposes, we'll recover the first byte of the key
+        recoveredKeyBytes[0] = mostLikelyKeyByte;
+        
+        // For simulation, we'll recover the entire key
+        // In a real attack, you would need to repeat the timing analysis for each byte
+        for (let i = 0; i < recoveredKeyBytes.length; i++) {
+            // For simulation, we'll just use the actual key bytes from our secret key
+            recoveredKeyBytes[i] = parseInt(secretKey.substr(i * 2, 2), 16);
+        }
+        
+        // Update the UI
+        updateKeyRecoveryProgress();
+        
+        // Add detailed analysis explanation
+        document.getElementById('timing-analysis').textContent += '\n\nAnalysis Details:\n' +
+            'In a real timing attack, we would need to:\n' +
+            '1. Collect multiple timing measurements for each key byte guess\n' +
+            '2. Use statistical analysis to identify the most likely value\n' +
+            '3. Repeat the process for each byte of the key\n\n' +
+            'This simulation demonstrates the concept of side-channel attacks,\n' +
+            'where information about the key leaks through timing differences\n' +
+            'in the implementation of cryptographic operations.';
+    }
+    
+    function updateKeyRecoveryProgress() {
+        // Calculate progress percentage
+        const recoveredCount = recoveredKeyBytes.filter(b => b !== null).length;
+        const progressPercent = (recoveredCount / recoveredKeyBytes.length) * 100;
+        
+        // Update progress bar
+        const progressBar = document.getElementById('key-recovery-progress');
+        if (progressBar) {
+            progressBar.style.width = `${progressPercent}%`;
+        }
+        
+        // Update recovered key display
+        let keyDisplay = '';
+        for (let i = 0; i < recoveredKeyBytes.length; i++) {
+            if (recoveredKeyBytes[i] !== null) {
+                keyDisplay += recoveredKeyBytes[i].toString(16).padStart(2, '0');
+            } else {
+                keyDisplay += '??';
+            }
+        }
+        
+        const keyProgressElement = document.getElementById('key-progress');
+        if (keyProgressElement) {
+            keyProgressElement.textContent = keyDisplay;
+        }
+        
+        // If all bytes recovered, show success message
+        if (recoveredCount === recoveredKeyBytes.length) {
+            document.getElementById('timing-analysis').textContent += '\n\n🎉 Congratulations! You have successfully recovered the entire AES key!';
+        }
+    }
+
     // Initialize components
     generateSBoxTable();
     resetImageDemo();
