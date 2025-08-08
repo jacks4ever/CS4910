@@ -51,16 +51,8 @@ class RSALab {
 
     // AI Prompts Toggle
     setupAIPrompts() {
-        const toggles = document.querySelectorAll('.ai-prompt-toggle');
-        toggles.forEach(toggle => {
-            toggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                const content = toggle.nextElementSibling;
-                if (content) {
-                    content.classList.toggle('hidden');
-                }
-            });
-        });
+        // AI prompts are now always visible by default
+        // No toggle functionality needed
     }
 
     // Theory Tab Setup
