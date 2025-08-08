@@ -461,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const img = new Image();
         img.crossOrigin = 'anonymous';
         img.onload = function() {
-            // ECB Mode - preserves patterns
+            // ECB Mode - preserves patterns across ENTIRE image
             const ecbCanvas = document.getElementById('ecb-canvas');
             const ecbCtx = ecbCanvas.getContext('2d');
             ecbCanvas.width = img.width;
@@ -471,53 +471,62 @@ document.addEventListener('DOMContentLoaded', function() {
             const ecbImageData = ecbCtx.getImageData(0, 0, img.width, img.height);
             const ecbData = ecbImageData.data;
             
-            // Simulate ECB encryption - preserve patterns by only slightly modifying data
+            // Simulate ECB encryption - preserve patterns by applying consistent transformations
+            // This demonstrates how ECB preserves patterns in BOTH the penguin AND background
             for (let i = 0; i < ecbData.length; i += 4) {
-                if (ecbData[i] < 128) { // Dark pixels
-                    ecbData[i] = Math.min(255, ecbData[i] + 50);     // R
-                    ecbData[i + 1] = Math.min(255, ecbData[i + 1] + 50); // G
-                    ecbData[i + 2] = Math.min(255, ecbData[i + 2] + 50); // B
-                } else { // Light pixels
-                    ecbData[i] = Math.max(0, ecbData[i] - 30);     // R
-                    ecbData[i + 1] = Math.max(0, ecbData[i + 1] - 30); // G
-                    ecbData[i + 2] = Math.max(0, ecbData[i + 2] - 30); // B
+                const brightness = (ecbData[i] + ecbData[i + 1] + ecbData[i + 2]) / 3;
+                
+                if (brightness < 85) { // Very dark pixels (penguin body)
+                    ecbData[i] = 40;      // Dark red
+                    ecbData[i + 1] = 40;  // Dark green  
+                    ecbData[i + 2] = 80;  // Slightly blue
+                } else if (brightness < 170) { // Medium pixels (penguin edges, some background)
+                    ecbData[i] = 80;      // Medium red
+                    ecbData[i + 1] = 80;  // Medium green
+                    ecbData[i + 2] = 120; // Medium blue
+                } else { // Light pixels (background, penguin belly)
+                    ecbData[i] = 160;     // Light red
+                    ecbData[i + 1] = 160; // Light green
+                    ecbData[i + 2] = 200; // Light blue
                 }
             }
             ecbCtx.putImageData(ecbImageData, 0, 0);
             
-            // CBC Mode - completely scrambled
+            // CBC Mode - completely scrambled across ENTIRE image
             const cbcCanvas = document.getElementById('cbc-canvas');
             const cbcCtx = cbcCanvas.getContext('2d');
             cbcCanvas.width = img.width;
             cbcCanvas.height = img.height;
-            cbcCtx.drawImage(img, 0, 0);
             
-            const cbcImageData = cbcCtx.getImageData(0, 0, img.width, img.height);
+            // Fill with random static across entire canvas
+            const cbcImageData = cbcCtx.createImageData(img.width, img.height);
             const cbcData = cbcImageData.data;
             
-            // Completely randomize pixels for CBC
+            // Generate complete static - no patterns anywhere
             for (let i = 0; i < cbcData.length; i += 4) {
                 cbcData[i] = Math.floor(Math.random() * 256);     // R
                 cbcData[i + 1] = Math.floor(Math.random() * 256); // G
                 cbcData[i + 2] = Math.floor(Math.random() * 256); // B
+                cbcData[i + 3] = 255; // Alpha
             }
             cbcCtx.putImageData(cbcImageData, 0, 0);
             
-            // CTR Mode - completely scrambled
+            // CTR Mode - completely scrambled across ENTIRE image
             const ctrCanvas = document.getElementById('ctr-canvas');
             const ctrCtx = ctrCanvas.getContext('2d');
             ctrCanvas.width = img.width;
             ctrCanvas.height = img.height;
-            ctrCtx.drawImage(img, 0, 0);
             
-            const ctrImageData = ctrCtx.getImageData(0, 0, img.width, img.height);
+            // Fill with random static across entire canvas
+            const ctrImageData = ctrCtx.createImageData(img.width, img.height);
             const ctrData = ctrImageData.data;
             
-            // Completely randomize pixels for CTR
+            // Generate complete static - no patterns anywhere
             for (let i = 0; i < ctrData.length; i += 4) {
                 ctrData[i] = Math.floor(Math.random() * 256);     // R
                 ctrData[i + 1] = Math.floor(Math.random() * 256); // G
                 ctrData[i + 2] = Math.floor(Math.random() * 256); // B
+                ctrData[i + 3] = 255; // Alpha
             }
             ctrCtx.putImageData(ctrImageData, 0, 0);
         };

@@ -362,36 +362,36 @@
                 
                 <div class="info-box danger-box">
                     <h3>⚠️ ECB Mode Visual Vulnerability Demonstration</h3>
-                    <p><strong>Why ECB Mode is Dangerous:</strong> ECB mode preserves patterns in the plaintext, making it unsuitable for encrypting structured data like images.</p>
+                    <p><strong>Why ECB Mode is Dangerous:</strong> ECB mode preserves patterns in the plaintext, making it unsuitable for encrypting structured data like images. <strong>Proper encryption should make the ENTIRE image look like random static!</strong></p>
                     
                     <div class="exercise">
                         <div class="ecb-demo">
                             <h4>Linux Penguin (Tux) Encryption Comparison</h4>
-                            <p>This demonstration shows why ECB mode is insecure by encrypting the same image with different AES modes.</p>
+                            <p>This demonstration shows why ECB mode is insecure by encrypting the same image with different AES modes. Notice how secure modes turn the <strong>entire image</strong> into static.</p>
                             
                             <div class="image-comparison">
                                 <div class="image-section">
                                     <h5>Original Image</h5>
                                     <img src="penguin.png" alt="Original Tux Penguin" class="demo-image">
-                                    <p>Clear, recognizable Linux penguin</p>
+                                    <p>Clear, recognizable Linux penguin with background</p>
                                 </div>
                                 
                                 <div class="image-section">
                                     <h5>ECB Mode (INSECURE)</h5>
                                     <canvas id="ecb-canvas" class="demo-image"></canvas>
-                                    <p class="danger-text">⚠️ Pattern still visible! This is BAD!</p>
+                                    <p class="danger-text">⚠️ Patterns preserved across ENTIRE image! This is BAD!</p>
                                 </div>
                                 
                                 <div class="image-section">
                                     <h5>CBC Mode (SECURE)</h5>
                                     <canvas id="cbc-canvas" class="demo-image"></canvas>
-                                    <p class="success-text">✅ Completely scrambled - this is GOOD!</p>
+                                    <p class="success-text">✅ ENTIRE image is static - this is GOOD!</p>
                                 </div>
                                 
                                 <div class="image-section">
                                     <h5>CTR Mode (SECURE)</h5>
                                     <canvas id="ctr-canvas" class="demo-image"></canvas>
-                                    <p class="success-text">✅ Completely scrambled - this is GOOD!</p>
+                                    <p class="success-text">✅ ENTIRE image is static - this is GOOD!</p>
                                 </div>
                             </div>
                             
@@ -404,9 +404,10 @@
                                 <h4>🎯 Key Learning Points:</h4>
                                 <ul>
                                     <li><strong>ECB Mode Problem:</strong> Identical plaintext blocks produce identical ciphertext blocks</li>
-                                    <li><strong>Pattern Preservation:</strong> You can still see the outline of the penguin in ECB mode</li>
-                                    <li><strong>Security Risk:</strong> This reveals information about the original data structure</li>
-                                    <li><strong>Better Alternatives:</strong> CBC and CTR modes completely scramble the data</li>
+                                    <li><strong>Pattern Preservation:</strong> You can still see patterns in BOTH the penguin AND background in ECB mode</li>
+                                    <li><strong>Security Risk:</strong> This reveals information about the original data structure across the entire image</li>
+                                    <li><strong>Better Alternatives:</strong> CBC and CTR modes turn the ENTIRE image into random static</li>
+                                    <li><strong>What We Want:</strong> Encrypted data should look like random noise with NO visible patterns anywhere</li>
                                     <li><strong>Real-World Impact:</strong> Never use ECB mode for anything other than single-block encryption</li>
                                 </ul>
                             </div>
