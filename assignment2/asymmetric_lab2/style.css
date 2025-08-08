@@ -26,6 +26,21 @@
   box-sizing: border-box;
 }
 
+/* Button Reset */
+button {
+  border: none !important;
+  outline: none !important;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
@@ -100,7 +115,8 @@ nav {
 
 .tab-button {
   background: transparent;
-  border: none;
+  border: none !important;
+  outline: none !important;
   padding: 15px 30px;
   margin: 0 5px;
   border-radius: 8px;
@@ -109,17 +125,31 @@ nav {
   font-weight: 600;
   transition: all 0.3s ease;
   color: #666;
+  box-shadow: none !important;
+  text-decoration: none;
 }
 
 .tab-button:hover {
   background: var(--uccs-light-gold);
   color: var(--uccs-black);
+  border: none !important;
+  outline: none !important;
+}
+
+.tab-button:focus {
+  background: var(--uccs-light-gold);
+  color: var(--uccs-black);
+  border: none !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(207, 184, 124, 0.5) !important;
 }
 
 .tab-button.active {
   background: var(--uccs-gold);
   color: var(--uccs-black);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: none !important;
+  outline: none !important;
 }
 
 /* Content Styles */
@@ -386,6 +416,63 @@ h4 {
 }
 
 /* Button Styles */
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  text-decoration: none;
+  text-align: center;
+  line-height: 1;
+}
+
+.btn--primary,
+.primary-button {
+  background: var(--uccs-gold);
+  color: var(--uccs-black);
+  border: none;
+}
+
+.btn--primary:hover,
+.primary-button:hover {
+  background: var(--uccs-dark-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn--secondary,
+.secondary-button {
+  background: #6c757d;
+  color: white;
+  border: none;
+}
+
+.btn--secondary:hover,
+.secondary-button:hover {
+  background: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--uccs-gold);
+  border: 2px solid var(--uccs-gold);
+}
+
+.btn--outline:hover {
+  background: var(--uccs-gold);
+  color: var(--uccs-black);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 .primary-button {
   background: var(--uccs-gold);
   color: var(--uccs-black);
@@ -1389,7 +1476,54 @@ h4 {
 /* CIA Theme specific */
 .cia-theme {
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  color: #fff;
+  color: #fff !important;
+}
+
+.cia-theme * {
+  color: #fff !important;
+}
+
+.cia-theme h1,
+.cia-theme h2,
+.cia-theme h3,
+.cia-theme h4,
+.cia-theme h5,
+.cia-theme h6 {
+  color: #fff !important;
+}
+
+.cia-theme .param {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cia-theme .decrypt-item {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff !important;
+}
+
+.cia-theme .decrypt-input {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333 !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.cia-theme .ai-prompt-section {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cia-theme .ai-prompt-content {
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 4px solid var(--uccs-gold);
+}
+
+.cia-theme code {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .cia-header {
@@ -1398,6 +1532,7 @@ h4 {
   border-radius: 8px;
   margin-bottom: 20px;
   text-align: center;
+  color: #fff !important;
 }
 
 /* Status and progress indicators */
