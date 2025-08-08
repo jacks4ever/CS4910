@@ -8,15 +8,15 @@
 </head>
 <body>
     <div class="container">
-        <header class="lab-header">
-            <div class="uccs-branding">
-                <img src="uccs-logo.svg" alt="University of Colorado Colorado Springs Logo" class="uccs-logo">
+        <header>
+            <div class="logo-container">
+                <img src="uccs-logo.svg" alt="University of Colorado Colorado Springs Logo" class="logo">
             </div>
-            <h1>Interactive RSA Cryptography Lab</h1>
+            <h1>INTERACTIVE RSA CRYPTOGRAPHY LAB</h1>
             <div class="course-info">
                 <p>University of Colorado Colorado Springs (UCCS)</p>
                 <p>CS4910: Introduction to Computer Security</p>
-                <p>Assignment 2: Information Theory, Cryptography, and Security Analysis</p>
+                <p>Assignment 1: Asymmetric Cryptography and RSA Analysis</p>
                 <p>Instructor: Rhett Saunders</p>
             </div>
             <div class="security-warning">
@@ -24,21 +24,26 @@
             </div>
         </header>
 
-        <!-- Tab Navigation -->
-        <nav class="tab-nav">
-            <button class="tab-btn active" data-tab="theory">Theory</button>
-            <button class="tab-btn" data-tab="practice">Practice</button>
-            <button class="tab-btn" data-tab="application">Application</button>
-            <button class="tab-btn" data-tab="challenge">Challenge</button>
+        <input type="radio" id="tab-theory" name="tabs" checked>
+        <input type="radio" id="tab-practice" name="tabs">
+        <input type="radio" id="tab-application" name="tabs">
+        <input type="radio" id="tab-challenge" name="tabs">
+        
+        <nav>
+            <label for="tab-theory" class="tab-button">Theory</label>
+            <label for="tab-practice" class="tab-button">Practice</label>
+            <label for="tab-application" class="tab-button">Application</label>
+            <label for="tab-challenge" class="tab-button">Challenge</label>
         </nav>
 
-        <!-- Theory Tab -->
-        <div id="theory" class="tab-content active">
+        <div class="content">
+            <!-- THEORY TAB -->
+            <div class="tab-content" id="theory">
             <h2>RSA Theory & Variables</h2>
             
-            <div class="ai-prompt-section">
+            <div class="info-box">
                 <h3>💡 AI Learning Prompts</h3>
-                <div class="ai-prompt-content">
+                <div class="ai-prompts">
                     <p><strong>Try asking an AI:</strong></p>
                     <code>"Explain the mathematical foundations of RSA cryptography, including why it works and the role of each parameter"</code>
                     <code>"How does the security of RSA depend on the difficulty of factoring large numbers?"</code>
@@ -156,7 +161,7 @@
                     <div class="step">
                         <p><strong>Step 1:</strong> Calculate n = p × q</p>
                         <div class="calculation">
-                            n = <input type="number" class="fill-blank" data-correct="77" placeholder="?"> 
+                            n = <input type="number" class="fill-blank" data-correct="77" placeholder="?"/> 
                             <div class="feedback"></div>
                         </div>
                     </div>
@@ -164,7 +169,7 @@
                     <div class="step">
                         <p><strong>Step 2:</strong> Calculate φ(n) = (p-1) × (q-1)</p>
                         <div class="calculation">
-                            φ(77) = <input type="number" class="fill-blank" data-correct="60" placeholder="?">
+                            φ(77) = <input type="number" class="fill-blank" data-correct="60" placeholder="?"/>
                             <div class="feedback"></div>
                         </div>
                     </div>
@@ -172,7 +177,7 @@
                     <div class="step">
                         <p><strong>Step 3:</strong> Choose e (coprime to φ(n), commonly e = 7)</p>
                         <div class="calculation">
-                            e = <input type="number" class="fill-blank" data-correct="7" placeholder="?">
+                            e = <input type="number" class="fill-blank" data-correct="7" placeholder="?"/>
                             <div class="feedback"></div>
                         </div>
                     </div>
@@ -180,114 +185,27 @@
                     <div class="step">
                         <p><strong>Step 4:</strong> Calculate d (modular inverse of e mod φ(n))</p>
                         <div class="calculation">
-                            d = <input type="number" class="fill-blank" data-correct="43" placeholder="?">
+                            d = <input type="number" class="fill-blank" data-correct="43" placeholder="?"/>
                             <div class="feedback"></div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Practice Tab -->
-        <div id="practice" class="tab-content">
-            <h2>Modular Arithmetic Practice</h2>
-            
-            <div class="ai-prompt-section">
-                <h3>💡 AI Learning Prompts</h3>
-                <div class="ai-prompt-content">
-                    <p><strong>Try asking an AI:</strong></p>
-                    <code>"Help me practice modular arithmetic operations needed for RSA implementation"</code>
-                    <code>"Explain modular exponentiation and how to calculate it efficiently"</code>
-                    <code>"What is the Extended Euclidean Algorithm and how is it used in RSA?"</code>
-                    <code>"Give me step-by-step examples of calculating modular inverses"</code>
-                </div>
+            <!-- PRACTICE TAB -->
+            <div class="tab-content" id="practice">
+                <h2>PRACTICE TAB WORKING!</h2>
+                <p>This is a minimal test of the Practice tab.</p>
+                <p>If you can see this, the Practice tab is working correctly!</p>
             </div>
 
-            <div class="progress-section">
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 0%"></div>
-                </div>
-                <span class="progress-text">0/5 Problems Completed</span>
-            </div>
-
-            <div class="practice-problems">
-                <div class="problem-card">
-                    <h4>Problem 1: Modular Multiplication</h4>
-                    <p>Calculate: 23 × 19 mod 13</p>
-                    <input type="number" class="answer-input" data-correct="8" data-hint="First multiply 23 × 19 = 437, then find 437 mod 13">
-                    <div class="problem-feedback"></div>
-                    <button class="show-steps btn btn--outline">Show Steps</button>
-                    <div class="steps-content hidden">
-                        <p>Step 1: 23 × 19 = 437</p>
-                        <p>Step 2: 437 ÷ 13 = 33 remainder 8</p>
-                        <p>Step 3: Therefore, 437 mod 13 = 8</p>
-                    </div>
-                </div>
-
-                <div class="problem-card">
-                    <h4>Problem 2: Greatest Common Divisor</h4>
-                    <p>Find GCD(48, 18) using Euclidean algorithm</p>
-                    <input type="number" class="answer-input" data-correct="6" data-hint="Use repeated division: 48 = 18×2 + 12, then 18 = 12×1 + 6, then 12 = 6×2 + 0">
-                    <div class="problem-feedback"></div>
-                    <button class="show-steps btn btn--outline">Show Steps</button>
-                    <div class="steps-content hidden">
-                        <p>Step 1: 48 = 18 × 2 + 12</p>
-                        <p>Step 2: 18 = 12 × 1 + 6</p>
-                        <p>Step 3: 12 = 6 × 2 + 0</p>
-                        <p>Therefore, GCD(48, 18) = 6</p>
-                    </div>
-                </div>
-
-                <div class="problem-card">
-                    <h4>Problem 3: Modular Inverse</h4>
-                    <p>Find the modular inverse of 7 mod 26</p>
-                    <input type="number" class="answer-input" data-correct="15" data-hint="Use extended Euclidean algorithm to find x where 7x ≡ 1 (mod 26)">
-                    <div class="problem-feedback"></div>
-                    <button class="show-steps btn btn--outline">Show Steps</button>
-                    <div class="steps-content hidden">
-                        <p>Using Extended Euclidean Algorithm:</p>
-                        <p>7 × 15 = 105</p>
-                        <p>105 mod 26 = 1</p>
-                        <p>Therefore, 7⁻¹ ≡ 15 (mod 26)</p>
-                    </div>
-                </div>
-
-                <div class="problem-card">
-                    <h4>Problem 4: Modular Exponentiation</h4>
-                    <p>Calculate: 3⁵ mod 7</p>
-                    <input type="number" class="answer-input" data-correct="5" data-hint="3^5 = 243, then find 243 mod 7">
-                    <div class="problem-feedback"></div>
-                    <button class="show-steps btn btn--outline">Show Steps</button>
-                    <div class="steps-content hidden">
-                        <p>Step 1: 3⁵ = 243</p>
-                        <p>Step 2: 243 ÷ 7 = 34 remainder 5</p>
-                        <p>Step 3: Therefore, 3⁵ mod 7 = 5</p>
-                    </div>
-                </div>
-
-                <div class="problem-card">
-                    <h4>Problem 5: Combined Operations</h4>
-                    <p>Calculate: (15 + 28) × 7 mod 11</p>
-                    <input type="number" class="answer-input" data-correct="4" data-hint="First: 15 + 28 = 43, then 43 × 7 = 301, finally 301 mod 11">
-                    <div class="problem-feedback"></div>
-                    <button class="show-steps btn btn--outline">Show Steps</button>
-                    <div class="steps-content hidden">
-                        <p>Step 1: 15 + 28 = 43</p>
-                        <p>Step 2: 43 × 7 = 301</p>
-                        <p>Step 3: 301 ÷ 11 = 27 remainder 4</p>
-                        <p>Therefore, (15 + 28) × 7 mod 11 = 4</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Application Tab -->
-        <div id="application" class="tab-content">
+            <!-- APPLICATION TAB -->
+            <div class="tab-content" id="application">
             <h2>RSA Message Encryption</h2>
             
-            <div class="ai-prompt-section">
+            <div class="info-box">
                 <h3>💡 AI Learning Prompts</h3>
-                <div class="ai-prompt-content">
+                <div class="ai-prompts">
                     <p><strong>Try asking an AI:</strong></p>
                     <code>"Walk me through encrypting a message using RSA step by step"</code>
                     <code>"How do we convert text messages to numbers for RSA encryption?"</code>
@@ -299,7 +217,7 @@
             <div class="encryption-section">
                 <div class="message-input-section">
                     <h3>Enter Your Message</h3>
-                    <input type="text" id="plaintext-input" class="form-control" placeholder="Enter your message (A-Z only)" maxlength="10">
+                    <input type="text" id="plaintext-input" class="form-control" placeholder="Enter your message (A-Z only)" maxlength="10"/>
                     <button id="convert-message" class="btn btn--primary">Convert to Numbers</button>
                 </div>
 
@@ -328,18 +246,18 @@
                     <div class="ciphertext-display"></div>
                 </div>
             </div>
-        </div>
+            </div>
 
-        <!-- Challenge Tab -->
-        <div id="challenge" class="tab-content cia-theme">
+            <!-- CHALLENGE TAB -->
+            <div class="tab-content cia-theme" id="challenge">
             <div class="cia-header">
                 <h2>🕵️ CIA Decryption Room</h2>
                 <p class="mission-brief">CLASSIFIED MISSION: Decrypt the intercepted RSA-encrypted message</p>
             </div>
             
-            <div class="ai-prompt-section">
+            <div class="info-box">
                 <h3>💡 AI Learning Prompts</h3>
-                <div class="ai-prompt-content">
+                <div class="ai-prompts">
                     <p><strong>Try asking an AI:</strong></p>
                     <code>"What are the main cryptanalytic attacks against RSA and how do they work?"</code>
                     <code>"How does the RSA decryption process work mathematically?"</code>
@@ -370,35 +288,35 @@
                 <div class="decryption-grid">
                     <div class="decrypt-item">
                         <div class="encrypted-value">42</div>
-                        <input type="number" class="decrypt-input" data-correct="14" data-letter="N">
+                        <input type="number" class="decrypt-input" data-correct="14" data-letter="N"/>
                         <div class="decrypt-feedback"></div>
                         <div class="revealed-letter hidden">N</div>
                     </div>
                     
                     <div class="decrypt-item">
                         <div class="encrypted-value">47</div>
-                        <input type="number" class="decrypt-input" data-correct="5" data-letter="E">
+                        <input type="number" class="decrypt-input" data-correct="5" data-letter="E"/>
                         <div class="decrypt-feedback"></div>
                         <div class="revealed-letter hidden">E</div>
                     </div>
                     
                     <div class="decrypt-item">
                         <div class="encrypted-value">22</div>
-                        <input type="number" class="decrypt-input" data-correct="22" data-letter="V">
+                        <input type="number" class="decrypt-input" data-correct="22" data-letter="V"/>
                         <div class="decrypt-feedback"></div>
                         <div class="revealed-letter hidden">V</div>
                     </div>
                     
                     <div class="decrypt-item">
                         <div class="encrypted-value">47</div>
-                        <input type="number" class="decrypt-input" data-correct="5" data-letter="E">
+                        <input type="number" class="decrypt-input" data-correct="5" data-letter="E"/>
                         <div class="decrypt-feedback"></div>
                         <div class="revealed-letter hidden">E</div>
                     </div>
                     
                     <div class="decrypt-item">
                         <div class="encrypted-value">39</div>
-                        <input type="number" class="decrypt-input" data-correct="18" data-letter="R">
+                        <input type="number" class="decrypt-input" data-correct="18" data-letter="R"/>
                         <div class="decrypt-feedback"></div>
                         <div class="revealed-letter hidden">R</div>
                     </div>
@@ -407,28 +325,28 @@
                     
                     <div class="decrypt-item">
                         <div class="encrypted-value">28</div>
-                        <input type="number" class="decrypt-input" data-correct="7" data-letter="G">
+                        <input type="number" class="decrypt-input" data-correct="7" data-letter="G"/>
                         <div class="decrypt-feedback"></div>
                         <div class="revealed-letter hidden">G</div>
                     </div>
                     
                     <div class="decrypt-item">
                         <div class="encrypted-value">37</div>
-                        <input type="number" class="decrypt-input" data-correct="9" data-letter="I">
+                        <input type="number" class="decrypt-input" data-correct="9" data-letter="I"/>
                         <div class="decrypt-feedback"></div>
                         <div class="revealed-letter hidden">I</div>
                     </div>
                     
                     <div class="decrypt-item">
                         <div class="encrypted-value">22</div>
-                        <input type="number" class="decrypt-input" data-correct="22" data-letter="V">
+                        <input type="number" class="decrypt-input" data-correct="22" data-letter="V"/>
                         <div class="decrypt-feedback"></div>
                         <div class="revealed-letter hidden">V</div>
                     </div>
                     
                     <div class="decrypt-item">
                         <div class="encrypted-value">47</div>
-                        <input type="number" class="decrypt-input" data-correct="5" data-letter="E">
+                        <input type="number" class="decrypt-input" data-correct="5" data-letter="E"/>
                         <div class="decrypt-feedback"></div>
                         <div class="revealed-letter hidden">E</div>
                     </div>
@@ -437,14 +355,14 @@
                     
                     <div class="decrypt-item">
                         <div class="encrypted-value">21</div>
-                        <input type="number" class="decrypt-input" data-correct="21" data-letter="U">
+                        <input type="number" class="decrypt-input" data-correct="21" data-letter="U"/>
                         <div class="decrypt-feedback"></div>
                         <div class="revealed-letter hidden">U</div>
                     </div>
                     
                     <div class="decrypt-item">
                         <div class="encrypted-value">58</div>
-                        <input type="number" class="decrypt-input" data-correct="16" data-letter="P">
+                        <input type="number" class="decrypt-input" data-correct="16" data-letter="P"/>
                         <div class="decrypt-feedback"></div>
                         <div class="revealed-letter hidden">P</div>
                     </div>
@@ -468,6 +386,6 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+
 </body>
 </html>
