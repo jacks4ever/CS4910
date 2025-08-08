@@ -16,7 +16,7 @@ fi
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR"
 
-echo "Starting RSA Cryptography Lab server..."
+echo "Starting AES Cryptography Lab server..."
 echo "Press Ctrl+C to stop the server when you're done."
 
 # Start the Python HTTP server
@@ -38,7 +38,7 @@ else
     echo "Please open your browser and navigate to: http://localhost:$PORT"
 fi
 
-echo "RSA Cryptography Lab is now running at http://localhost:$PORT"
+echo "AES Cryptography Lab is now running at http://localhost:$PORT"
 echo "Keep this terminal window open while using the lab."
 echo "Press Ctrl+C to stop the server when you're done."
 
