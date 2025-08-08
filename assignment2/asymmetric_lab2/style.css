@@ -1,4 +1,12 @@
 :root {
+  /* UCCS Brand Colors */
+  --uccs-gold: rgba(207, 184, 124, 1);
+  --uccs-black: rgba(0, 0, 0, 1);
+  --uccs-dark-gold: rgba(177, 154, 94, 1);
+  --uccs-light-gold: rgba(237, 214, 154, 1);
+  --uccs-dark-gray: rgba(88, 89, 91, 1);
+  --uccs-light-gray: rgba(221, 221, 221, 1);
+  
   /* Primitive Color Tokens */
   --color-white: rgba(255, 255, 255, 1);
   --color-black: rgba(0, 0, 0, 1);
@@ -744,6 +752,15 @@ select.form-control {
   padding: var(--space-32) 0;
   border-bottom: 2px solid var(--color-border);
   margin-bottom: var(--space-32);
+}
+
+.logo-container {
+  margin-bottom: var(--space-20);
+}
+
+.uccs-logo {
+  height: 60px;
+  width: auto;
 }
 
 .lab-header h1 {
