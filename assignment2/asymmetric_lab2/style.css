@@ -18,6 +18,12 @@
   --color-bg-secondary: #f8f9fa;
   --color-bg-dark: #343a40;
   --color-bg-light: #e9ecef;
+  
+  /* Theme Colors for consistent styling */
+  --background-color: #f8f9fa;
+  --text-color: #333333;
+  --border-color: #dee2e6;
+  --card-background: #ffffff;
 }
 
 * {
@@ -1344,16 +1350,27 @@ h4 {
 
 /* Decryption Grid */
 .decryption-grid {
-  display: grid;
-  gap: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   margin-top: 20px;
+  align-items: center;
 }
 
 .decrypt-item {
   background: #f8f9fa;
-  padding: 15px;
+  padding: 10px;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
+  width: 80px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.space-indicator {
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
 }
 
 .decrypt-input {
@@ -1473,14 +1490,14 @@ h4 {
   margin-top: 10px;
 }
 
-/* CIA Theme specific */
+/* CIA Theme specific - aligned with main theme */
 .cia-theme {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  color: #fff !important;
-}
-
-.cia-theme * {
-  color: #fff !important;
+  background: var(--background-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
 }
 
 .cia-theme h1,
@@ -1489,41 +1506,42 @@ h4 {
 .cia-theme h4,
 .cia-theme h5,
 .cia-theme h6 {
-  color: #fff !important;
+  color: var(--uccs-gold) !important;
 }
 
 .cia-theme .param {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff !important;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--card-background);
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color);
 }
 
 .cia-theme .decrypt-item {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff !important;
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
 }
 
 .cia-theme .decrypt-input {
-  background: rgba(255, 255, 255, 0.9);
-  color: #333 !important;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: var(--background-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
 }
 
 .cia-theme .ai-prompt-section {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
 }
 
 .cia-theme .ai-prompt-content {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-bg-light);
   border-left: 4px solid var(--uccs-gold);
+  color: var(--text-color);
 }
 
 .cia-theme code {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff !important;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--color-bg-light);
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color);
 }
 
 .cia-header {

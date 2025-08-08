@@ -24,14 +24,12 @@ class RSALab {
         const tabButtons = document.querySelectorAll('.tab-button');
         const tabContents = document.querySelectorAll('.tab-content');
 
-        console.log('Found', tabButtons.length, 'tab buttons');
-        console.log('Found', tabContents.length, 'tab contents');
+
 
         tabButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
                 const targetTab = button.getAttribute('data-tab');
-                console.log('Switching to tab:', targetTab);
                 
                 // Remove active class from all tabs and contents
                 tabButtons.forEach(btn => btn.classList.remove('active'));
@@ -45,6 +43,11 @@ class RSALab {
                 }
                 
                 this.currentTab = targetTab;
+                
+                // Initialize tab-specific functionality when tab becomes active
+                if (targetTab === 'practice') {
+                    this.initializePracticeTab();
+                }
             });
         });
     }
@@ -183,14 +186,31 @@ class RSALab {
             });
         });
 
+
+    }
+
+    initializePracticeTab() {
         const showStepsButtons = document.querySelectorAll('.show-steps');
+        console.log('Initializing Practice tab - Found', showStepsButtons.length, 'show steps buttons');
         showStepsButtons.forEach(button => {
+            // Remove any existing event listeners to avoid duplicates
+            button.replaceWith(button.cloneNode(true));
+        });
+        
+        // Re-query after cloning to get fresh elements
+        const freshShowStepsButtons = document.querySelectorAll('.show-steps');
+        freshShowStepsButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
+                console.log('Show steps button clicked');
                 const stepsContent = button.nextElementSibling;
+                console.log('Steps content:', stepsContent);
                 if (stepsContent) {
                     stepsContent.classList.toggle('hidden');
                     button.textContent = stepsContent.classList.contains('hidden') ? 'Show Steps' : 'Hide Steps';
+                    console.log('Toggled steps, now hidden:', stepsContent.classList.contains('hidden'));
+                } else {
+                    console.log('No steps content found');
                 }
             });
         });
