@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  asymmetric-lab:
+    build: .
+    ports:
+      - "12000:12000"
+    volumes:
+      - .:/app
+    restart: unless-stopped
