@@ -124,6 +124,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Round Function Visualization
     const processRoundButton = document.getElementById('process-round');
     const stepByStepButton = document.getElementById('step-by-step');
+    const resetRoundButton = document.getElementById('reset-round');
+    
+    // Variable to store the step-by-step interval
+    let stepByStepInterval = null;
     
     if (processRoundButton) {
         processRoundButton.addEventListener('click', function() {
@@ -133,6 +137,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!validateHex(inputState, 32) || !validateHex(roundKey, 32)) {
                 alert('Please enter exactly 32 hexadecimal characters for both state and key.');
                 return;
+            }
+            
+            // Clear any existing step-by-step interval
+            if (stepByStepInterval) {
+                clearInterval(stepByStepInterval);
+                stepByStepInterval = null;
             }
             
             processAESRound(inputState, roundKey);
@@ -149,7 +159,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
+            // Clear any existing step-by-step interval
+            if (stepByStepInterval) {
+                clearInterval(stepByStepInterval);
+                stepByStepInterval = null;
+            }
+            
+            // Reset the display before starting step-by-step
+            resetRoundDisplay();
+            
             processAESRoundStepByStep(inputState, roundKey);
+        });
+    }
+    
+    if (resetRoundButton) {
+        resetRoundButton.addEventListener('click', function() {
+            // Clear any existing step-by-step interval
+            if (stepByStepInterval) {
+                clearInterval(stepByStepInterval);
+                stepByStepInterval = null;
+            }
+            
+            resetRoundDisplay();
         });
     }
 
@@ -177,15 +208,30 @@ document.addEventListener('DOMContentLoaded', function() {
         updateMatrixDisplay('addroundkey-output', afterAddRoundKey);
     }
 
+    function resetRoundDisplay() {
+        // Reset all matrix displays to show dashes
+        const emptyMatrix = Array(16).fill('--');
+        updateMatrixDisplay('initial-state', hexToBytes(document.getElementById('input-state').value.toLowerCase()));
+        updateMatrixDisplay('subbytes-output', emptyMatrix);
+        updateMatrixDisplay('shiftrows-output', emptyMatrix);
+        updateMatrixDisplay('mixcolumns-output', emptyMatrix);
+        updateMatrixDisplay('addroundkey-output', emptyMatrix);
+    }
+
     function processAESRoundStepByStep(stateHex, keyHex) {
         const state = hexToBytes(stateHex);
         const key = hexToBytes(keyHex);
         
         let step = 0;
+        let currentState = [...state]; // Create a copy of the state array
+        
         const steps = [
-            () => updateMatrixDisplay('initial-state', state),
             () => {
-                const afterSubBytes = state.map(byte => sBox[byte]);
+                updateMatrixDisplay('initial-state', currentState);
+                return currentState;
+            },
+            () => {
+                const afterSubBytes = currentState.map(byte => sBox[byte]);
                 updateMatrixDisplay('subbytes-output', afterSubBytes);
                 return afterSubBytes;
             },
@@ -206,13 +252,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         ];
         
-        let currentState = state;
-        const interval = setInterval(() => {
+        // Store the interval in the global variable so it can be cleared if needed
+        stepByStepInterval = setInterval(() => {
             if (step < steps.length) {
                 currentState = steps[step](currentState) || currentState;
                 step++;
             } else {
-                clearInterval(interval);
+                clearInterval(stepByStepInterval);
+                stepByStepInterval = null;
             }
         }, 1000);
     }
