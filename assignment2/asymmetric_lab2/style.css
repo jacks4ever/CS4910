@@ -1383,9 +1383,15 @@ h4 {
 
 .decrypt-feedback {
   margin-top: 10px;
-  padding: 8px;
+  padding: 4px;
   border-radius: 4px;
   font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .decrypt-feedback.correct {
