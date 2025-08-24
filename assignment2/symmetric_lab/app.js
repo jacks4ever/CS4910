@@ -753,17 +753,48 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('ctr-result').innerHTML = 
                 `<div class="cipher-hex">${ctrEncrypted.ciphertext.toString()}</div>`;
             
-            // Analyze patterns
-            analyzePatterns(plaintext, ecbEncrypted.ciphertext.toString(), 'ecb-analysis');
-            analyzePatterns(plaintext, cbcEncrypted.ciphertext.toString(), 'cbc-analysis');
-            analyzePatterns(plaintext, ctrEncrypted.ciphertext.toString(), 'ctr-analysis');
+
+            // Re-render ECB with highlighted duplicate blocks
+            const ecbHex = ecbEncrypted.ciphertext.toString();
+            document.getElementById('ecb-result').innerHTML =
+                `<div class="cipher-hex">${renderCipherBlocks(ecbHex, true)}</div>`;
+
+            // Analyze patterns (show red X for duplicates, green check for unique)
+            analyzePatterns(ecbHex, 'ecb-analysis');
+            analyzePatterns(cbcEncrypted.ciphertext.toString(), 'cbc-analysis');
+            analyzePatterns(ctrEncrypted.ciphertext.toString(), 'ctr-analysis');
             
         } catch (error) {
             alert('Comparison error: ' + error.message);
         }
     }
 
-    function analyzePatterns(plaintext, ciphertext, elementId) {
+
+    function renderCipherBlocks(hex, highlightDuplicates) {
+        const blockSize = 32; // 16 bytes in hex
+        const blocks = [];
+        for (let i = 0; i < hex.length; i += blockSize) {
+            blocks.push(hex.slice(i, i + blockSize));
+        }
+
+        let dupMap = {};
+        if (highlightDuplicates) {
+            const counts = {};
+            blocks.forEach(b => counts[b] = (counts[b] || 0) + 1);
+            Object.keys(counts).forEach(b => {
+                if (counts[b] > 1) dupMap[b] = true;
+            });
+        }
+
+        return blocks.map((b) => {
+            if (highlightDuplicates && dupMap[b]) {
+                return `<span class="cipher-block dup-block" title="Duplicate block">✖ ${b}</span>`;
+            }
+            return `<span class="cipher-block">${b}</span>`;
+        }).join(' ');
+    }
+
+    function analyzePatterns(ciphertext, elementId) {
         const element = document.getElementById(elementId);
         if (element) {
             // Simple pattern analysis
@@ -776,7 +807,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const patternPreserved = uniqueBlocks.size < blocks.length;
             
             if (patternPreserved) {
-                element.innerHTML = '<span class="danger-text">⚠️ Patterns detected! Identical blocks found.</span>';
+                element.innerHTML = '<span class="danger-text">❌ Patterns detected! Identical blocks found.</span>';
             } else {
                 element.innerHTML = '<span class="success-text">✅ No patterns detected. All blocks unique.</span>';
             }
