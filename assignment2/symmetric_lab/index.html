@@ -475,14 +475,16 @@
                             <h4>Oracle Response (Hex):</h4>
                             <div id="oracle-output" class="code-output">Submit input to see encrypted result...</div>
                         </div>
-                        
+
                         <div class="challenge-progress">
                             <h4>Your Progress:</h4>
                             <div id="recovered-secret">Secret: <span id="secret-progress">???????????????</span></div>
                             <div id="challenge1-hints" class="hints-section">
                                 <button id="show-hint1" class="hint-button">Show Hint</button>
                                 <div id="hint1-content" class="hint-content hidden">
-                                    Try sending 15 'A's, then 14 'A's, then 13 'A's... and compare the first blocks of the responses.
+                                    Try sending 15 'A's, then 16 'A's, then 17 'A's…<br>
+                                    After each submission, click “Query Oracle” and observe the ciphertext.<br>
+                                    Compare the first ciphertext blocks and watch for repeating patterns.
                                 </div>
                             </div>
                         </div>
