@@ -19,6 +19,21 @@ cd "$SCRIPT_DIR"
 echo "Starting RSA Cryptography Lab server..."
 echo "Press Ctrl+C to stop the server when you're done."
 
+# Function to cleanup server process on exit
+cleanup() {
+    echo ""
+    echo "Shutting down server..."
+    if [ ! -z "$SERVER_PID" ]; then
+        kill $SERVER_PID 2>/dev/null
+        wait $SERVER_PID 2>/dev/null
+    fi
+    echo "Server stopped."
+    exit 0
+}
+
+# Set trap to catch Ctrl+C (SIGINT) and cleanup
+trap cleanup SIGINT
+
 # Start the Python HTTP server
 PORT=12000
 $PYTHON_CMD -m http.server $PORT &
@@ -39,6 +54,12 @@ else
 fi
 
 echo "RSA Cryptography Lab is now running at http://localhost:$PORT"
+echo ""
+echo "⚠️  IMPORTANT: Use Incognito/Private browsing mode!"
+echo "   Since this server runs on port 12000, your browser may cache"
+echo "   old content. Use Incognito/Private mode to ensure you see"
+echo "   the latest version of the lab."
+echo ""
 echo "Keep this terminal window open while using the lab."
 echo "Press Ctrl+C to stop the server when you're done."
 
