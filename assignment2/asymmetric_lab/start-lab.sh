@@ -42,18 +42,9 @@ SERVER_PID=$!
 # Wait a moment for the server to start
 sleep 1
 
-# Open the browser (platform-specific)
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    xdg-open "http://localhost:$PORT" 2>/dev/null
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-    open "http://localhost:$PORT"
-elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
-    start "http://localhost:$PORT"
-else
-    echo "Please open your browser and navigate to: http://localhost:$PORT"
-fi
-
 echo "RSA Cryptography Lab is now running at http://localhost:$PORT"
+echo ""
+echo "📖 Please open your browser and navigate to: http://localhost:$PORT"
 echo ""
 echo "⚠️  IMPORTANT: Use Incognito/Private browsing mode!"
 echo "   Since this server runs on port 12000, your browser may cache"
