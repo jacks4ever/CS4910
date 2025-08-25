@@ -221,7 +221,7 @@ h4 {
   border-left: 4px solid var(--uccs-gold);
 }
 
-/* AI Prompts Section - Enhanced for asymmetric_lab2 */
+/* AI Prompts Section - Enhanced for asymmetric_lab */
 .ai-prompt-section {
   background: rgba(59, 130, 246, 0.08);
   border-radius: 8px;
@@ -1063,7 +1063,7 @@ h4 {
   }
 }
 
-/* Utility Classes for asymmetric_lab2 */
+/* Utility Classes for asymmetric_lab */
 .hidden {
   display: none !important;
 }
@@ -1135,7 +1135,7 @@ h4 {
   color: #666;
 }
 
-/* Additional classes for asymmetric_lab2 content */
+/* Additional classes for asymmetric_lab content */
 .definition-select {
   width: 100%;
   padding: 8px 12px;
