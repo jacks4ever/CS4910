@@ -89,14 +89,41 @@ else
     fi
 fi
 
+# Start frontend in background
+echo ""
+echo -e "${YELLOW}Starting frontend HTTP server on port 8080...${NC}"
+cd ../frontend
+python3 -m http.server 8080 > /dev/null 2>&1 &
+FRONTEND_PID=$!
+echo -e "${GREEN}✓${NC} Frontend server started (PID: $FRONTEND_PID)"
+echo -e "${GREEN}✓${NC} Dashboard available at: http://localhost:8080"
+
+# Return to backend directory
+cd "$SCRIPT_DIR"
+
+# Setup cleanup on exit
+cleanup() {
+    echo ""
+    echo -e "${YELLOW}Shutting down...${NC}"
+    echo -e "${YELLOW}Stopping frontend server (PID: $FRONTEND_PID)...${NC}"
+    kill $FRONTEND_PID 2>/dev/null
+    echo -e "${GREEN}✓${NC} Servers stopped"
+    exit 0
+}
+
+trap cleanup SIGINT SIGTERM
+
 # Run the application
 echo ""
 echo -e "${BLUE}============================================================${NC}"
 echo -e "${GREEN}Starting Metasploit Attack Detection Backend...${NC}"
 echo -e "${BLUE}============================================================${NC}"
 echo ""
-echo -e "${YELLOW}Press CTRL+C to stop the server${NC}"
+echo -e "${GREEN}✓${NC} Backend: http://localhost:5000"
+echo -e "${GREEN}✓${NC} Frontend: http://localhost:8080"
+echo ""
+echo -e "${YELLOW}Press CTRL+C to stop both servers${NC}"
 echo ""
 
 # Run with the virtual environment's Python
-exec venv/bin/python3 app.py
+venv/bin/python3 app.py
