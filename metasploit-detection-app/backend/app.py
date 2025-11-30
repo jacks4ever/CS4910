@@ -14,6 +14,8 @@ import threading
 import json
 import re
 import time
+import socket
+import netifaces
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'metasploit-detection-secret'
@@ -82,6 +84,35 @@ class AttackDetector:
     def __init__(self):
         self.running = False
         self.sniffer_thread = None
+        self.local_ips = self.get_local_ips()
+        print(f"Local IPs detected: {self.local_ips}")
+    
+    def get_local_ips(self):
+        """Get all local IP addresses of this machine"""
+        local_ips = set()
+        try:
+            # Get hostname IPs
+            hostname = socket.gethostname()
+            local_ips.add(socket.gethostbyname(hostname))
+            
+            # Get all interface IPs
+            for interface in netifaces.interfaces():
+                addrs = netifaces.ifaddresses(interface)
+                if netifaces.AF_INET in addrs:
+                    for addr in addrs[netifaces.AF_INET]:
+                        local_ips.add(addr['addr'])
+        except Exception as e:
+            print(f"Error getting local IPs: {e}")
+            # Fallback to basic method
+            local_ips.add('127.0.0.1')
+            local_ips.add(socket.gethostbyname(socket.gethostname()))
+        
+        return local_ips
+    
+    def is_inbound_traffic(self, src_ip, dst_ip):
+        """Check if traffic is inbound (external source to local destination)"""
+        # Inbound = source is NOT local AND destination IS local
+        return src_ip not in self.local_ips and dst_ip in self.local_ips
         
     def detect_port_scan(self, src_ip, dst_port):
         """Detect port scanning activities"""
@@ -148,6 +179,10 @@ class AttackDetector:
             src_ip = packet[IP].src
             dst_ip = packet[IP].dst
             timestamp = datetime.now().isoformat()
+            
+            # Filter: Only process INBOUND traffic (external -> local)
+            if not self.is_inbound_traffic(src_ip, dst_ip):
+                return  # Skip outbound and local-to-local traffic
             
             attack_detected = None
             
