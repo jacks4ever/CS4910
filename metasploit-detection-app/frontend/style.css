@@ -130,7 +130,7 @@ body {
 }
 
 .panel-primary {
-    height: 700px;
+    min-height: calc(100vh - 200px);
     display: flex;
     flex-direction: column;
 }
@@ -325,7 +325,7 @@ body {
     flex: 1;
     overflow-y: auto;
     padding: 15px;
-    max-height: 350px;
+    min-height: calc(100vh - 400px);
 }
 
 .attack-feed::-webkit-scrollbar {
@@ -535,8 +535,6 @@ body {
 /* Exploit List */
 .exploit-list {
     padding: 15px;
-    max-height: 400px;
-    overflow-y: auto;
 }
 
 .exploit-item {
