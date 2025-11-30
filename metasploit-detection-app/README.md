@@ -93,17 +93,19 @@ Starting packet capture on interface: default
 
 #### 2. Open the Frontend Dashboard
 
-Open your web browser and navigate to:
-```
-file:///home/rhettsaunders/GitHub/CS4910/metasploit-detection-app/frontend/index.html
-```
+**Important:** Serve the frontend via HTTP to avoid CORS issues.
 
-Or serve it using Python's HTTP server (optional):
+Open a new terminal and run:
 ```bash
 cd frontend
 python3 -m http.server 8080
 ```
-Then visit: `http://localhost:8080`
+
+Then open your browser and visit:
+- **http://localhost:8080** (if on same machine)
+- **http://YOUR_IP:8080** (from other devices on network)
+
+**Note:** Do not open as `file://` - this will cause WebSocket connection failures due to browser security restrictions.
 
 ## 📊 Using the Dashboard
 
