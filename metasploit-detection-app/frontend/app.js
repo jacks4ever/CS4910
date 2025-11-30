@@ -424,6 +424,14 @@ function animateAttack(attack) {
     // Determine if this is a reverse shell (outbound from victim)
     const isReverseShell = attack.attack_type === 'reverse_shell';
     
+    console.log('Attack detected:', {
+        type: attack.attack_type,
+        name: attack.attack_name,
+        isReverseShell: isReverseShell,
+        src_ip: attack.src_ip,
+        dst_ip: attack.dst_ip
+    });
+    
     // Update IPs in diagram
     document.getElementById('attackerIP').textContent = isReverseShell ? attack.dst_ip : attack.src_ip;
     document.getElementById('targetIP').textContent = isReverseShell ? attack.src_ip : attack.dst_ip;
