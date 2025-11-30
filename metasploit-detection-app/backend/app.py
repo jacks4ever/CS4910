@@ -120,6 +120,26 @@ class AttackDetector:
         """Check if traffic is inbound (external source to local destination)"""
         # Inbound = source is NOT local AND destination IS local
         return src_ip not in self.local_ips and dst_ip in self.local_ips
+    
+    def is_outbound_traffic(self, src_ip, dst_ip):
+        """Check if traffic is outbound (local source to external destination)"""
+        # Outbound = source IS local AND destination is NOT local
+        return src_ip in self.local_ips and dst_ip not in self.local_ips
+    
+    def detect_reverse_shell(self, src_ip, dst_ip, dst_port):
+        """Detect outbound reverse shell connections"""
+        reverse_shell_ports = {4444, 4445, 8080}
+        
+        if dst_port in reverse_shell_ports and self.is_outbound_traffic(src_ip, dst_ip):
+            port_names = {4444: 'Meterpreter default', 4445: 'Meterpreter alternate', 8080: 'HTTP/Meterpreter'}
+            return {
+                'type': 'reverse_shell',
+                'name': 'Reverse Shell Connection',
+                'description': f'Outbound connection to suspected C2 server',
+                'severity': 'CRITICAL',
+                'details': f'Connection to {dst_ip}:{dst_port} ({port_names.get(dst_port, "common reverse shell port")})'
+            }
+        return None
         
     def detect_port_scan(self, src_ip, dst_port):
         """Detect port scanning activities"""
@@ -261,14 +281,22 @@ class AttackDetector:
             dst_ip = packet[IP].dst
             timestamp = datetime.now().isoformat()
             
-            # Filter: Only process INBOUND traffic (external -> local)
-            if not self.is_inbound_traffic(src_ip, dst_ip):
-                return  # Skip outbound and local-to-local traffic
-            
             attack_detected = None
             
+            # Check for OUTBOUND reverse shell connections first
+            if packet.haslayer(TCP):
+                dst_port = packet[TCP].dport
+                reverse_shell_detected = self.detect_reverse_shell(src_ip, dst_ip, dst_port)
+                if reverse_shell_detected:
+                    attack_detected = reverse_shell_detected
+            
+            # Skip remaining checks if not inbound traffic (but allow reverse shell through)
+            if not attack_detected and not self.is_inbound_traffic(src_ip, dst_ip):
+                return  # Skip outbound and local-to-local traffic
+            
             # PRIORITY 1: Check for known exploits FIRST (most specific)
-            attack_detected = self.detect_exploit(packet)
+            if not attack_detected:
+                attack_detected = self.detect_exploit(packet)
             
             # PRIORITY 2: Check for port scanning (if no exploit found)
             if not attack_detected and packet.haslayer(TCP):
