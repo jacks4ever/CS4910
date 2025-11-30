@@ -491,12 +491,14 @@ function animateAttack(attack) {
         setTimeout(() => startMarker.remove(), 500);
     }, 300);
     
-    // Create animated packet circle
+    // Create animated packet circle - BRIGHT GREEN FOR DEBUGGING
     const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     packet.setAttribute('cx', startX);
     packet.setAttribute('cy', '145');
-    packet.setAttribute('r', '8');
-    packet.setAttribute('class', `attack-packet ${severityClass}`);
+    packet.setAttribute('r', '25');  // HUGE
+    packet.setAttribute('fill', 'lime');  // BRIGHT GREEN
+    packet.setAttribute('stroke', 'black');
+    packet.setAttribute('stroke-width', '3');
     console.log(`🎯 PACKET CREATED: Initial cx=${startX} (${startX < 400 ? 'LEFT side' : 'RIGHT side'})`);
     packetGroup.appendChild(packet);
     
@@ -584,12 +586,12 @@ function animateAttack(attack) {
     
     requestAnimationFrame(animate);
     
-    // Also create multiple smaller packets for dramatic effect
-    for (let i = 1; i <= 3; i++) {
-        setTimeout(() => {
-            createSmallPacket(severityClass);
-        }, i * 300);
-    }
+    // DISABLED: Small packets for debugging
+    // for (let i = 1; i <= 3; i++) {
+    //     setTimeout(() => {
+    //         createSmallPacket(severityClass);
+    //     }, i * 300);
+    // }
 }
 
 function createSmallPacket(severityClass) {
