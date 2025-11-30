@@ -533,13 +533,6 @@ function animateAttack(attack) {
     };
     
     requestAnimationFrame(animate);
-    
-    // Create multiple smaller packets for dramatic effect (pass startX)
-    for (let i = 1; i <= 3; i++) {
-        setTimeout(() => {
-            createSmallPacket(severityClass, startX);
-        }, i * 300);
-    }
 }
 
 function createSmallPacket(severityClass, startX) {
