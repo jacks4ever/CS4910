@@ -27,6 +27,12 @@ let severityCounts = {
 let attackTypeCounts = {};
 let whitelistedIPs = new Set();
 
+// Traffic tracking for intensity meter and graph
+let trafficHistory = [];
+let recentPackets = [];
+let intensityLevel = 0;
+let trafficChart = null;
+
 // Load whitelist from localStorage
 function loadWhitelist() {
     const saved = localStorage.getItem('whitelistedIPs');
@@ -75,8 +81,14 @@ document.addEventListener('DOMContentLoaded', () => {
     loadExploits();
     loadEvents();
     
+    // Initialize traffic chart
+    initTrafficChart();
+    
     // Update timestamp every second
     setInterval(updateTimestamp, 1000);
+    
+    // Update traffic metrics every second
+    setInterval(updateTrafficMetrics, 1000);
 });
 
 // WebSocket Connection
@@ -164,8 +176,14 @@ function handleAttackDetected(attack) {
     attackTypeCounts[attack.attack_name]++;
     updateAttackTypes();
     
+    // Track packet for metrics
+    trackPacket(attack);
+    
     // Animate attack in network diagram
     animateAttack(attack);
+    
+    // Activate shield animation
+    activateShield();
     
     // Add to feed
     addAttackToFeed(attack);
@@ -352,21 +370,46 @@ function animateAttack(attack) {
     document.getElementById('targetIP').textContent = attack.dst_ip;
     document.getElementById('attackLabel').textContent = attack.attack_name;
     
-    // Get severity color class
+    // Get severity color and icon
     const severityClass = `packet-${attack.severity.toLowerCase()}`;
+    const attackIcon = getAttackIcon(attack.attack_type);
+    const trailColor = getSeverityColor(attack.severity);
     
-    // Create animated packet
+    // Create packet group (packet + icon + trail)
     const packetsGroup = document.getElementById('attackPackets');
-    const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    const packetGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     const packetId = `packet-${Date.now()}-${Math.random()}`;
+    packetGroup.setAttribute('id', packetId);
     
-    packet.setAttribute('id', packetId);
+    // Create trail path
+    const trail = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    trail.setAttribute('class', 'packet-trail');
+    trail.setAttribute('x1', '150');
+    trail.setAttribute('y1', '145');
+    trail.setAttribute('x2', '150');
+    trail.setAttribute('y2', '145');
+    trail.setAttribute('stroke', trailColor);
+    trail.style.animation = 'trailFade 0.5s ease-out forwards';
+    packetGroup.appendChild(trail);
+    
+    // Create animated packet circle
+    const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     packet.setAttribute('cx', '150');
-    packet.setAttribute('cy', '150');
+    packet.setAttribute('cy', '145');
     packet.setAttribute('r', '8');
     packet.setAttribute('class', `attack-packet ${severityClass}`);
+    packetGroup.appendChild(packet);
     
-    packetsGroup.appendChild(packet);
+    // Create icon on packet
+    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    icon.setAttribute('x', '150');
+    icon.setAttribute('y', '150');
+    icon.setAttribute('text-anchor', 'middle');
+    icon.setAttribute('font-size', '12');
+    icon.textContent = attackIcon;
+    packetGroup.appendChild(icon);
+    
+    packetsGroup.appendChild(packetGroup);
     
     // Add pulse effect to nodes
     const attackerNode = document.getElementById('attackerNode');
@@ -390,13 +433,26 @@ function animateAttack(attack) {
             : 1 - Math.pow(-2 * progress + 2, 2) / 2;
         
         position = 150 + (endPosition - 150) * easeProgress;
+        
+        // Update packet position
         packet.setAttribute('cx', position);
-        packet.setAttribute('cy', 145);  // Match the updated attack path y-coordinate
-        packet.setAttribute('opacity', 1 - progress);        if (progress < 1) {
+        packet.setAttribute('cy', 145);
+        packet.setAttribute('opacity', 1 - progress);
+        
+        // Update icon position
+        icon.setAttribute('x', position);
+        icon.setAttribute('y', 150);
+        icon.setAttribute('opacity', 1 - progress);
+        
+        // Update trail
+        trail.setAttribute('x2', position);
+        trail.setAttribute('y2', 145);
+        
+        if (progress < 1) {
             requestAnimationFrame(animate);
         } else {
             // Remove packet after animation
-            packet.remove();
+            packetGroup.remove();
             
             // Remove pulse after short delay
             setTimeout(() => {
@@ -497,6 +553,201 @@ function renderWhitelistedIPs() {
     `).join('');
 }
 
+// ============================================
+// VISUAL ENHANCEMENTS
+// ============================================
+
+// Get Attack Icon based on type
+function getAttackIcon(attackType) {
+    const icons = {
+        'ms17_010': '💀',        // EternalBlue
+        'ms08_067': '💀',        // MS08-067
+        'port_scan': '🔍',       // Port scan
+        'syn_flood': '🌊',       // SYN flood
+        'vsftpd_backdoor': '🚪', // Backdoor
+        'shellshock': '💣',      // Shellshock
+        'sql_injection': '💉',   // SQL Injection
+        'reverse_shell': '🔙',   // Reverse shell
+        'tomcat_mgr': '🐱'       // Tomcat
+    };
+    return icons[attackType] || '⚠️';
+}
+
+// Get Severity Color
+function getSeverityColor(severity) {
+    const colors = {
+        'CRITICAL': '#dc2626',
+        'HIGH': '#f97316',
+        'MEDIUM': '#eab308',
+        'LOW': '#3b82f6'
+    };
+    return colors[severity] || '#9aa0a6';
+}
+
+// Traffic Chart Initialization
+function initTrafficChart() {
+    const canvas = document.getElementById('trafficChart');
+    const ctx = canvas.getContext('2d');
+    
+    // Initialize traffic history with 60 seconds of data
+    for (let i = 0; i < 60; i++) {
+        trafficHistory.push(0);
+    }
+    
+    // Store context for later use
+    trafficChart = { canvas, ctx };
+    
+    // Start drawing loop
+    drawTrafficChart();
+    setInterval(drawTrafficChart, 1000);
+}
+
+// Draw Traffic Chart
+function drawTrafficChart() {
+    if (!trafficChart) return;
+    
+    const { canvas, ctx } = trafficChart;
+    const width = canvas.width;
+    const height = canvas.height;
+    const padding = 20;
+    const graphWidth = width - padding * 2;
+    const graphHeight = height - padding * 2;
+    
+    // Clear canvas
+    ctx.fillStyle = '#1e2139';
+    ctx.fillRect(0, 0, width, height);
+    
+    // Find max value for scaling
+    const maxValue = Math.max(...trafficHistory, 10);
+    
+    // Draw grid lines
+    ctx.strokeStyle = '#2d3250';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 5; i++) {
+        const y = padding + (graphHeight / 5) * i;
+        ctx.beginPath();
+        ctx.moveTo(padding, y);
+        ctx.lineTo(width - padding, y);
+        ctx.stroke();
+    }
+    
+    // Draw line graph
+    ctx.strokeStyle = '#4285f4';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    
+    trafficHistory.forEach((value, index) => {
+        const x = padding + (graphWidth / (trafficHistory.length - 1)) * index;
+        const y = padding + graphHeight - (value / maxValue) * graphHeight;
+        
+        if (index === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+    });
+    
+    ctx.stroke();
+    
+    // Fill area under line
+    ctx.lineTo(width - padding, padding + graphHeight);
+    ctx.lineTo(padding, padding + graphHeight);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(66, 133, 244, 0.1)';
+    ctx.fill();
+    
+    // Draw labels
+    ctx.fillStyle = '#9aa0a6';
+    ctx.font = '10px monospace';
+    ctx.fillText('60s', padding, height - 5);
+    ctx.fillText('0s', width - padding - 15, height - 5);
+    ctx.fillText(Math.round(maxValue) + ' pkt/s', padding + 5, padding + 10);
+}
+
+// Track Packet for Metrics
+function trackPacket(attack) {
+    const now = Date.now();
+    recentPackets.push(now);
+    
+    // Remove packets older than 60 seconds
+    recentPackets = recentPackets.filter(time => now - time < 60000);
+    
+    // Update intensity based on packet rate
+    updateIntensity();
+}
+
+// Update Traffic Metrics
+function updateTrafficMetrics() {
+    const now = Date.now();
+    
+    // Count packets in last second
+    const packetsLastSecond = recentPackets.filter(time => now - time < 1000).length;
+    
+    // Add to history
+    trafficHistory.push(packetsLastSecond);
+    if (trafficHistory.length > 60) {
+        trafficHistory.shift();
+    }
+    
+    // Update rate display
+    document.getElementById('intensityRate').textContent = `${packetsLastSecond} pkt/s`;
+}
+
+// Update Intensity Meter
+function updateIntensity() {
+    const packetsPerSecond = recentPackets.filter(time => Date.now() - time < 1000).length;
+    
+    // Calculate intensity percentage (0-100)
+    // Scale: 0-5 pkt/s = safe, 5-20 = medium, 20-50 = high, 50+ = critical
+    let intensity = 0;
+    if (packetsPerSecond > 50) {
+        intensity = 100;
+    } else if (packetsPerSecond > 20) {
+        intensity = 75 + ((packetsPerSecond - 20) / 30) * 25;
+    } else if (packetsPerSecond > 5) {
+        intensity = 50 + ((packetsPerSecond - 5) / 15) * 25;
+    } else {
+        intensity = (packetsPerSecond / 5) * 50;
+    }
+    
+    intensityLevel = intensity;
+    
+    // Update UI
+    const fillElement = document.getElementById('intensityFill');
+    const valueElement = document.getElementById('intensityValue');
+    
+    fillElement.style.height = `${100 - intensity}%`;
+    valueElement.textContent = `${Math.round(intensity)}%`;
+    
+    // Change color based on level
+    if (intensity > 75) {
+        valueElement.style.color = '#dc2626';
+    } else if (intensity > 50) {
+        valueElement.style.color = '#f97316';
+    } else if (intensity > 25) {
+        valueElement.style.color = '#eab308';
+    } else {
+        valueElement.style.color = '#22c55e';
+    }
+}
+
+// Activate Shield Animation
+function activateShield() {
+    const shield = document.getElementById('shieldAnimation');
+    
+    // Fade in and activate
+    shield.style.opacity = '1';
+    shield.classList.add('active');
+    
+    // Fade out after 3 seconds
+    setTimeout(() => {
+        shield.style.opacity = '0';
+        setTimeout(() => {
+            shield.classList.remove('active');
+        }, 500);
+    }, 3000);
+}
+
 // Log initialization
 console.log(`
 ╔══════════════════════════════════════════════════════╗
@@ -507,3 +758,4 @@ console.log(`
 Connected to: ${BACKEND_URL}
 WebSocket Status: Initializing...
 `);
+

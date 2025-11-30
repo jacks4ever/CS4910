@@ -64,6 +64,13 @@
                         
                         <!-- Target Node (Right) - Victim Computer -->
                         <g id="targetNode" class="node">
+                            <!-- Shield Animation (behind computer) -->
+                            <g id="shieldAnimation" opacity="0">
+                                <circle cx="700" cy="145" r="55" class="shield-outer" />
+                                <circle cx="700" cy="145" r="50" class="shield-inner" />
+                                <path d="M 700,100 L 710,110 L 700,145 L 690,110 Z" class="shield-icon" fill="#3498db"/>
+                                <path d="M 700,145 L 710,180 L 700,190 L 690,180 Z" class="shield-icon" fill="#2980b9"/>
+                            </g>
                             <!-- Computer Monitor -->
                             <rect x="660" y="115" width="80" height="55" rx="4" class="victim-monitor"/>
                             <rect x="665" y="120" width="70" height="45" class="victim-screen"/>
@@ -97,6 +104,36 @@
 
             <!-- Right Panel - Attack Statistics & Info -->
             <div class="panel-secondary">
+                <!-- Attack Intensity Meter -->
+                <div class="panel panel-stats">
+                    <div class="panel-header">
+                        <h3>⚡ Attack Intensity</h3>
+                    </div>
+                    <div class="intensity-meter-container">
+                        <div class="intensity-bar">
+                            <div id="intensityFill" class="intensity-fill" style="height: 0%"></div>
+                            <div class="intensity-zones">
+                                <div class="zone-label zone-critical">CRITICAL</div>
+                                <div class="zone-label zone-high">HIGH</div>
+                                <div class="zone-label zone-medium">MEDIUM</div>
+                                <div class="zone-label zone-safe">SAFE</div>
+                            </div>
+                        </div>
+                        <div class="intensity-stats">
+                            <div class="intensity-value" id="intensityValue">0%</div>
+                            <div class="intensity-rate" id="intensityRate">0 pkt/s</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Traffic Graph -->
+                <div class="panel panel-stats">
+                    <div class="panel-header">
+                        <h3>📊 Network Traffic</h3>
+                    </div>
+                    <canvas id="trafficChart" width="300" height="150"></canvas>
+                </div>
+
                 <!-- Severity Distribution -->
                 <div class="panel panel-stats">
                     <div class="panel-header">
