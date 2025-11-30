@@ -421,14 +421,22 @@ function escapeHtml(unsafe) {
 
 // Network Diagram Animation Functions
 function animateAttack(attack) {
+    // Debug: Log the entire attack object
+    console.log('🔍 ANIMATION DEBUG - Full attack object:', attack);
+    console.log('🔍 attack.attack_type value:', attack.attack_type);
+    console.log('🔍 typeof attack.attack_type:', typeof attack.attack_type);
+    
     // Determine if this is a reverse shell (outbound from victim)
     const isReverseShell = attack.attack_type === 'reverse_shell';
+    console.log('🔍 isReverseShell comparison result:', isReverseShell);
     
     // Debug: Log to verify
     if (isReverseShell) {
         console.log('🔙 Reverse Shell detected - animating RIGHT to LEFT');
+        console.log(`   Direction: startX=650 (RIGHT), endX=150 (LEFT)`);
     } else {
         console.log('🚨 Attack detected - animating LEFT to RIGHT');
+        console.log(`   Direction: startX=150 (LEFT), endX=650 (RIGHT)`);
     }
     
     // For reverse shells: attacker IP goes on LEFT, victim IP goes on RIGHT
