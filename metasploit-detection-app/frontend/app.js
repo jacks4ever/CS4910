@@ -150,6 +150,9 @@ function handleAttackDetected(attack) {
     attackTypeCounts[attack.attack_name]++;
     updateAttackTypes();
     
+    // Animate attack in network diagram
+    animateAttack(attack);
+    
     // Add to feed
     addAttackToFeed(attack);
     
@@ -326,6 +329,92 @@ function escapeHtml(unsafe) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+}
+
+// Network Diagram Animation Functions
+function animateAttack(attack) {
+    // Update IPs in diagram
+    document.getElementById('attackerIP').textContent = attack.src_ip;
+    document.getElementById('targetIP').textContent = attack.dst_ip;
+    document.getElementById('attackLabel').textContent = attack.attack_name;
+    
+    // Get severity color class
+    const severityClass = `packet-${attack.severity.toLowerCase()}`;
+    
+    // Create animated packet
+    const packetsGroup = document.getElementById('attackPackets');
+    const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    const packetId = `packet-${Date.now()}-${Math.random()}`;
+    
+    packet.setAttribute('id', packetId);
+    packet.setAttribute('cx', '150');
+    packet.setAttribute('cy', '150');
+    packet.setAttribute('r', '8');
+    packet.setAttribute('class', `attack-packet ${severityClass}`);
+    
+    packetsGroup.appendChild(packet);
+    
+    // Add pulse effect to nodes
+    const attackerNode = document.querySelector('.attacker-circle');
+    const targetNode = document.querySelector('.target-circle');
+    attackerNode.classList.add('attacker-active');
+    targetNode.classList.add('target-active');
+    
+    // Animate packet
+    let position = 150;
+    const endPosition = 650;
+    const duration = 2000; // 2 seconds
+    const startTime = Date.now();
+    
+    const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Ease-in-out function
+        const easeProgress = progress < 0.5
+            ? 2 * progress * progress
+            : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        
+        position = 150 + (endPosition - 150) * easeProgress;
+        packet.setAttribute('cx', position);
+        packet.setAttribute('opacity', 1 - progress);
+        
+        if (progress < 1) {
+            requestAnimationFrame(animate);
+        } else {
+            // Remove packet after animation
+            packet.remove();
+            
+            // Remove pulse after short delay
+            setTimeout(() => {
+                attackerNode.classList.remove('attacker-active');
+                targetNode.classList.remove('target-active');
+            }, 500);
+        }
+    };
+    
+    requestAnimationFrame(animate);
+    
+    // Also create multiple smaller packets for dramatic effect
+    for (let i = 1; i <= 3; i++) {
+        setTimeout(() => {
+            createSmallPacket(severityClass);
+        }, i * 300);
+    }
+}
+
+function createSmallPacket(severityClass) {
+    const packetsGroup = document.getElementById('attackPackets');
+    const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    
+    packet.setAttribute('cx', '150');
+    packet.setAttribute('cy', 150 + (Math.random() - 0.5) * 40);
+    packet.setAttribute('r', '4');
+    packet.setAttribute('class', `attack-packet ${severityClass}`);
+    
+    packetsGroup.appendChild(packet);
+    
+    setTimeout(() => packet.remove(), 2000);
 }
 
 // Whitelist Modal Functions

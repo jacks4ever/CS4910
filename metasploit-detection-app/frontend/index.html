@@ -37,12 +37,44 @@
 
         <!-- Main Dashboard -->
         <div class="dashboard">
-            <!-- Left Panel - Live Attack Feed -->
+            <!-- Left Panel - Visual Attack Map & Feed -->
             <div class="panel panel-primary">
                 <div class="panel-header">
-                    <h2>🚨 Live Attack Feed</h2>
+                    <h2>🚨 Live Attack Visualization</h2>
                     <span class="badge" id="activeBadge">0 Active</span>
                 </div>
+                
+                <!-- Network Diagram -->
+                <div class="network-diagram">
+                    <svg id="networkSvg" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet">
+                        <!-- Attacker Node (Left) -->
+                        <g id="attackerNode" class="node">
+                            <circle cx="100" cy="150" r="50" class="attacker-circle"/>
+                            <text x="100" y="145" text-anchor="middle" class="node-icon">☠️</text>
+                            <text x="100" y="170" text-anchor="middle" class="node-label">Attacker</text>
+                            <text x="100" y="220" text-anchor="middle" class="node-ip" id="attackerIP">---</text>
+                        </g>
+                        
+                        <!-- Target Node (Right) -->
+                        <g id="targetNode" class="node">
+                            <circle cx="700" cy="150" r="50" class="target-circle"/>
+                            <text x="700" y="145" text-anchor="middle" class="node-icon">🖥️</text>
+                            <text x="700" y="170" text-anchor="middle" class="node-label">Your System</text>
+                            <text x="700" y="220" text-anchor="middle" class="node-ip" id="targetIP">---</text>
+                        </g>
+                        
+                        <!-- Attack Path Line -->
+                        <line x1="150" y1="150" x2="650" y2="150" class="attack-path" id="attackPath"/>
+                        
+                        <!-- Animated Attack Packets (will be created dynamically) -->
+                        <g id="attackPackets"></g>
+                        
+                        <!-- Attack Label (Center) -->
+                        <text x="400" y="100" text-anchor="middle" class="attack-type-label" id="attackLabel">Monitoring...</text>
+                    </svg>
+                </div>
+                
+                <!-- Attack Feed Log -->
                 <div id="attackFeed" class="attack-feed">
                     <div class="no-attacks">
                         <p>🟢 No attacks detected</p>

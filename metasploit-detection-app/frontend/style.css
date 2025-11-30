@@ -135,6 +135,124 @@ body {
     flex-direction: column;
 }
 
+/* Network Diagram */
+.network-diagram {
+    background: var(--bg-tertiary);
+    padding: 20px;
+    border-bottom: 2px solid var(--border);
+}
+
+.network-diagram svg {
+    width: 100%;
+    height: 300px;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+}
+
+.node-icon {
+    font-size: 32px;
+    fill: var(--text-primary);
+}
+
+.node-label {
+    font-size: 14px;
+    font-weight: 600;
+    fill: var(--text-primary);
+}
+
+.node-ip {
+    font-size: 12px;
+    font-family: monospace;
+    fill: var(--accent-blue);
+    font-weight: 600;
+}
+
+.attacker-circle {
+    fill: var(--bg-secondary);
+    stroke: var(--critical);
+    stroke-width: 3;
+    filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.5));
+}
+
+.target-circle {
+    fill: var(--bg-secondary);
+    stroke: var(--accent-green);
+    stroke-width: 3;
+    filter: drop-shadow(0 0 10px rgba(52, 168, 83, 0.5));
+}
+
+.attack-path {
+    stroke: var(--border);
+    stroke-width: 2;
+    stroke-dasharray: 5, 5;
+    opacity: 0.5;
+}
+
+.attack-type-label {
+    font-size: 16px;
+    font-weight: 700;
+    fill: var(--accent-blue);
+    text-transform: uppercase;
+}
+
+/* Animated Attack Packets */
+.attack-packet {
+    animation: travelPath 2s ease-in-out;
+}
+
+@keyframes travelPath {
+    0% {
+        cx: 150;
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        cx: 650;
+        opacity: 0;
+    }
+}
+
+.packet-critical {
+    fill: var(--critical);
+    filter: drop-shadow(0 0 8px var(--critical));
+}
+
+.packet-high {
+    fill: var(--high);
+    filter: drop-shadow(0 0 8px var(--high));
+}
+
+.packet-medium {
+    fill: var(--medium);
+    filter: drop-shadow(0 0 8px var(--medium));
+}
+
+.packet-low {
+    fill: var(--low);
+    filter: drop-shadow(0 0 8px var(--low));
+}
+
+/* Pulse animation for nodes during attack */
+@keyframes nodePulse {
+    0%, 100% {
+        stroke-width: 3;
+        opacity: 1;
+    }
+    50% {
+        stroke-width: 6;
+        opacity: 0.7;
+    }
+}
+
+.attacker-active {
+    animation: nodePulse 1s ease-in-out infinite;
+}
+
+.target-active {
+    animation: nodePulse 1s ease-in-out infinite;
+}
+
 .panel-secondary {
     display: flex;
     flex-direction: column;
@@ -170,6 +288,7 @@ body {
     flex: 1;
     overflow-y: auto;
     padding: 15px;
+    max-height: 350px;
 }
 
 .attack-feed::-webkit-scrollbar {
