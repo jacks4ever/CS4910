@@ -47,7 +47,7 @@
                 <!-- Network Diagram -->
                 <div class="network-diagram">
                     <svg id="networkSvg" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet">
-                        <!-- Attacker Node (Left) - Metasploit Computer -->
+                        <!-- Attacker Node (Left) - Attack Computer -->
                         <g id="attackerNode" class="node">
                             <!-- Computer Monitor -->
                             <rect x="60" y="115" width="80" height="55" rx="4" class="attacker-monitor"/>
@@ -55,15 +55,10 @@
                             <!-- Monitor Stand -->
                             <rect x="92" y="170" width="16" height="10" class="attacker-stand"/>
                             <rect x="80" y="180" width="40" height="5" class="attacker-base"/>
-                            <!-- Metasploit Logo (Stylized M) -->
-                            <g transform="translate(100, 142)">
-                                <path d="M -12,-8 L -8,-8 L -8,8 L -10,8 L -10,-4 L -6,4 L -4,4 L 0,-4 L 0,8 L -2,8 L -2,-8 L 2,-8 L -4,8" 
-                                      fill="#e74c3c" stroke="#c0392b" stroke-width="0.5"/>
-                                <path d="M 2,-8 L 6,-8 L 6,8 L 4,8 L 4,-4 L 8,4 L 10,4 L 12,0 L 12,8 L 10,8 L 10,-8 L 14,-8 L 8,8" 
-                                      fill="#e74c3c" stroke="#c0392b" stroke-width="0.5"/>
-                            </g>
+                            <!-- Hacker Icon -->
+                            <image x="75" y="127" width="50" height="30" href="hacker.png" preserveAspectRatio="xMidYMid meet"/>
                             <!-- Labels -->
-                            <text x="100" y="210" text-anchor="middle" class="node-label">Metasploit Attacker</text>
+                            <text x="100" y="210" text-anchor="middle" class="node-label">Attack System</text>
                             <text x="100" y="240" text-anchor="middle" class="node-ip" id="attackerIP">---</text>
                         </g>
                         
