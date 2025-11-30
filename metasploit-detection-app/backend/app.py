@@ -91,7 +91,7 @@ class AttackDetector:
         self.running = False
         self.sniffer_thread = None
         self.local_ips = self.get_local_ips()
-        self.smb_tracker = defaultdict(lambda: {'count': 0, 'last_seen': 0})
+        self.smb_tracker = defaultdict(lambda: {'count': 0, 'last_seen': 0, 'first_seen': 0})
         print(f"Local IPs detected: {self.local_ips}")
     
     def get_local_ips(self):
@@ -161,36 +161,43 @@ class AttackDetector:
         """Detect known exploit patterns"""
         # Check port-based detection first (for exploits targeting specific ports)
         if packet.haslayer(TCP):
+            src_port = packet[TCP].sport
             dst_port = packet[TCP].dport
             
             # Special handling for SMB/EternalBlue on ports 445/139
-            if dst_port in [445, 139]:
-                # Check if it's an SMB-related packet (SYN or with payload)
-                if packet[TCP].flags & 0x02 or packet.haslayer(Raw):  # SYN flag or has payload
-                    # Count SMB connection attempts
-                    src_ip = packet[IP].src
-                    if not hasattr(self, 'smb_tracker'):
-                        self.smb_tracker = defaultdict(lambda: {'count': 0, 'last_seen': 0})
-                    
-                    current_time = time.time()
-                    tracker = self.smb_tracker[src_ip]
-                    
-                    # Reset counter if more than 60 seconds since last packet
-                    if current_time - tracker['last_seen'] > 60:
-                        tracker['count'] = 0
-                    
-                    tracker['count'] += 1
-                    tracker['last_seen'] = current_time
-                    
-                    # Detect if multiple SMB packets in short time (likely exploit attempt)
-                    if tracker['count'] >= 5:  # 5 or more SMB packets = likely EternalBlue
-                        return {
-                            'type': 'ms17_010',
-                            'name': 'EternalBlue (MS17-010)',
-                            'description': 'SMB exploit targeting Windows systems',
-                            'severity': 'CRITICAL',
-                            'details': f'SMB exploitation attempt detected on port {dst_port} ({tracker["count"]} packets)'
-                        }
+            # Check traffic in BOTH directions (dst or src)
+            is_smb_traffic = dst_port in [445, 139] or src_port in [445, 139]
+            
+            if is_smb_traffic:
+                # Count ALL SMB packets (connections, scans, data)
+                src_ip = packet[IP].src
+                if not hasattr(self, 'smb_tracker'):
+                    self.smb_tracker = defaultdict(lambda: {'count': 0, 'last_seen': 0, 'first_seen': 0})
+                
+                current_time = time.time()
+                tracker = self.smb_tracker[src_ip]
+                
+                # Reset counter if more than 30 seconds since last packet
+                if current_time - tracker['last_seen'] > 30:
+                    tracker['count'] = 0
+                    tracker['first_seen'] = current_time
+                elif tracker['count'] == 0:
+                    tracker['first_seen'] = current_time
+                
+                tracker['count'] += 1
+                tracker['last_seen'] = current_time
+                
+                # Detect SMB scanning or exploit attempt with LOW threshold
+                if tracker['count'] >= 3:  # Just 3 SMB packets = likely scanning/exploit
+                    elapsed = current_time - tracker['first_seen']
+                    target_port = dst_port if dst_port in [445, 139] else src_port
+                    return {
+                        'type': 'ms17_010',
+                        'name': 'EternalBlue (MS17-010)',
+                        'description': 'SMB scanning/exploitation attempt detected',
+                        'severity': 'CRITICAL',
+                        'details': f'SMB activity on port {target_port} ({tracker["count"]} packets in {elapsed:.1f}s)'
+                    }
         
         # Check payload patterns
         if not packet.haslayer(Raw):
