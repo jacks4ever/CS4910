@@ -20,10 +20,10 @@ import netifaces
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'metasploit-detection-secret'
 CORS(app)
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading', logger=False, engineio_logger=False)
 
-# Store attack events
-attack_events = deque(maxlen=100)
+# Store attack events (increased limit and allow unlimited storage)
+attack_events = deque(maxlen=1000)  # Increased from 100 to 1000
 connection_tracker = defaultdict(lambda: {'count': 0, 'last_seen': time.time()})
 port_scan_tracker = defaultdict(lambda: {'ports': set(), 'first_seen': time.time()})
 
@@ -340,5 +340,5 @@ if __name__ == '__main__':
     # Auto-start detector
     detector.start()
     
-    # Run Flask-SocketIO server
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True, allow_unsafe_werkzeug=True)
+    # Run Flask-SocketIO server with proper threading mode
+    socketio.run(app, host='0.0.0.0', port=5000, debug=False, allow_unsafe_werkzeug=True)
