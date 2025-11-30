@@ -130,6 +130,13 @@ class AttackDetector:
         """Detect outbound reverse shell connections"""
         reverse_shell_ports = {4444, 4445, 8080}
         
+        # Debug logging
+        if dst_port in reverse_shell_ports:
+            is_outbound = self.is_outbound_traffic(src_ip, dst_ip)
+            print(f"[DEBUG] Port {dst_port} traffic: {src_ip} -> {dst_ip}")
+            print(f"[DEBUG] Local IPs: {self.local_ips}")
+            print(f"[DEBUG] Is outbound? {is_outbound}")
+        
         if dst_port in reverse_shell_ports and self.is_outbound_traffic(src_ip, dst_ip):
             # Track active connections for heartbeat
             connection_key = f"{src_ip}:{dst_ip}:{dst_port}"
