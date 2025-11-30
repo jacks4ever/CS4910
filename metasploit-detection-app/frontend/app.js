@@ -192,9 +192,6 @@ function handleAttackDetected(attack) {
     // Animate attack in network diagram
     animateAttack(attack);
     
-    // Activate shield animation
-    activateShield();
-    
     // Add to feed
     addAttackToFeed(attack);
     
@@ -812,23 +809,6 @@ function updateTrafficMetrics() {
     if (trafficHistory.length > 60) {
         trafficHistory.shift();
     }
-}
-
-// Activate Shield Animation
-function activateShield() {
-    const shield = document.getElementById('shieldAnimation');
-    
-    // Fade in and activate
-    shield.style.opacity = '1';
-    shield.classList.add('active');
-    
-    // Fade out after 3 seconds
-    setTimeout(() => {
-        shield.style.opacity = '0';
-        setTimeout(() => {
-            shield.classList.remove('active');
-        }, 500);
-    }, 3000);
 }
 
 // Log initialization
