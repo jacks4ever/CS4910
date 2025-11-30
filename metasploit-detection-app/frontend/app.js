@@ -33,6 +33,9 @@ let recentPackets = [];
 let intensityLevel = 0;
 let trafficChart = null;
 
+// Active connection tracking
+let activeConnections = new Map(); // key: "src_ip:dst_ip:port", value: {timestamp, line_element}
+
 // Load whitelist from localStorage
 function loadWhitelist() {
     const saved = localStorage.getItem('whitelistedIPs');
@@ -89,6 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Update traffic metrics every second
     setInterval(updateTrafficMetrics, 1000);
+    
+    // Check for stale connections every 2 seconds
+    setInterval(checkStaleConnections, 2000);
 });
 
 // WebSocket Connection
@@ -365,15 +371,22 @@ function escapeHtml(unsafe) {
 
 // Network Diagram Animation Functions
 function animateAttack(attack) {
+    // Determine if this is a reverse shell (outbound from victim)
+    const isReverseShell = attack.attack_type === 'reverse_shell';
+    
     // Update IPs in diagram
-    document.getElementById('attackerIP').textContent = attack.src_ip;
-    document.getElementById('targetIP').textContent = attack.dst_ip;
+    document.getElementById('attackerIP').textContent = isReverseShell ? attack.dst_ip : attack.src_ip;
+    document.getElementById('targetIP').textContent = isReverseShell ? attack.src_ip : attack.dst_ip;
     document.getElementById('attackLabel').textContent = attack.attack_name;
     
     // Get severity color and icon
     const severityClass = `packet-${attack.severity.toLowerCase()}`;
     const attackIcon = getAttackIcon(attack.attack_type);
     const trailColor = getSeverityColor(attack.severity);
+    
+    // Determine animation direction
+    const startX = isReverseShell ? 650 : 150;  // Reverse shell starts from victim (right)
+    const endX = isReverseShell ? 150 : 650;    // Reverse shell goes to attacker (left)
     
     // Create packet group (packet + icon + trail)
     const packetsGroup = document.getElementById('attackPackets');
@@ -384,9 +397,9 @@ function animateAttack(attack) {
     // Create trail path
     const trail = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     trail.setAttribute('class', 'packet-trail');
-    trail.setAttribute('x1', '150');
+    trail.setAttribute('x1', startX);
     trail.setAttribute('y1', '145');
-    trail.setAttribute('x2', '150');
+    trail.setAttribute('x2', startX);
     trail.setAttribute('y2', '145');
     trail.setAttribute('stroke', trailColor);
     trail.style.animation = 'trailFade 0.5s ease-out forwards';
@@ -394,7 +407,7 @@ function animateAttack(attack) {
     
     // Create animated packet circle
     const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    packet.setAttribute('cx', '150');
+    packet.setAttribute('cx', startX);
     packet.setAttribute('cy', '145');
     packet.setAttribute('r', '8');
     packet.setAttribute('class', `attack-packet ${severityClass}`);
@@ -402,7 +415,7 @@ function animateAttack(attack) {
     
     // Create icon on packet
     const icon = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    icon.setAttribute('x', '150');
+    icon.setAttribute('x', startX);
     icon.setAttribute('y', '150');
     icon.setAttribute('text-anchor', 'middle');
     icon.setAttribute('font-size', '12');
@@ -417,9 +430,13 @@ function animateAttack(attack) {
     attackerNode.classList.add('attacker-active');
     targetNode.classList.add('target-active');
     
+    // For reverse shells, show persistent connection line
+    if (isReverseShell) {
+        showConnectionLine(attack.src_ip, attack.dst_ip);
+    }
+    
     // Animate packet
-    let position = 150;
-    const endPosition = 650;
+    let position = startX;
     const duration = 2000; // 2 seconds
     const startTime = Date.now();
     
@@ -432,7 +449,7 @@ function animateAttack(attack) {
             ? 2 * progress * progress
             : 1 - Math.pow(-2 * progress + 2, 2) / 2;
         
-        position = 150 + (endPosition - 150) * easeProgress;
+        position = startX + (endX - startX) * easeProgress;
         
         // Update packet position
         packet.setAttribute('cx', position);
@@ -556,6 +573,63 @@ function renderWhitelistedIPs() {
 // ============================================
 // VISUAL ENHANCEMENTS
 // ============================================
+
+// Show persistent connection line
+function showConnectionLine(srcIP, dstIP) {
+    const connectionKey = `${srcIP}:${dstIP}`;
+    
+    // Check if connection already exists
+    if (activeConnections.has(connectionKey)) {
+        // Update timestamp
+        activeConnections.get(connectionKey).timestamp = Date.now();
+        return;
+    }
+    
+    // Create connection line (victim to attacker for reverse shell)
+    const connectionGroup = document.getElementById('connectionLines');
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', '650');  // From victim
+    line.setAttribute('y1', '145');
+    line.setAttribute('x2', '150');  // To attacker
+    line.setAttribute('y2', '145');
+    line.setAttribute('class', 'connection-line');
+    line.setAttribute('id', `conn-${connectionKey.replace(/[.:]/g, '-')}`);
+    
+    connectionGroup.appendChild(line);
+    
+    // Track connection
+    activeConnections.set(connectionKey, {
+        timestamp: Date.now(),
+        line: line,
+        srcIP: srcIP,
+        dstIP: dstIP
+    });
+    
+    console.log(`Connection established: ${srcIP} → ${dstIP}`);
+}
+
+// Remove connection line
+function removeConnectionLine(connectionKey) {
+    if (activeConnections.has(connectionKey)) {
+        const conn = activeConnections.get(connectionKey);
+        conn.line.remove();
+        activeConnections.delete(connectionKey);
+        console.log(`Connection closed: ${connectionKey}`);
+    }
+}
+
+// Check for stale connections (no activity in 5 seconds = connection closed)
+function checkStaleConnections() {
+    const now = Date.now();
+    const timeout = 5000; // 5 seconds
+    
+    for (const [key, conn] of activeConnections.entries()) {
+        if (now - conn.timestamp > timeout) {
+            console.log(`Connection timeout: ${key}`);
+            removeConnectionLine(key);
+        }
+    }
+}
 
 // Get Attack Icon based on type
 function getAttackIcon(attackType) {

@@ -131,14 +131,27 @@ class AttackDetector:
         reverse_shell_ports = {4444, 4445, 8080}
         
         if dst_port in reverse_shell_ports and self.is_outbound_traffic(src_ip, dst_ip):
-            port_names = {4444: 'Meterpreter default', 4445: 'Meterpreter alternate', 8080: 'HTTP/Meterpreter'}
-            return {
-                'type': 'reverse_shell',
-                'name': 'Reverse Shell Connection',
-                'description': f'Outbound connection to suspected C2 server',
-                'severity': 'CRITICAL',
-                'details': f'Connection to {dst_ip}:{dst_port} ({port_names.get(dst_port, "common reverse shell port")})'
-            }
+            # Track active connections for heartbeat
+            connection_key = f"{src_ip}:{dst_ip}:{dst_port}"
+            if not hasattr(self, 'reverse_shell_connections'):
+                self.reverse_shell_connections = {}
+            
+            # Update or create connection tracking
+            current_time = time.time()
+            if connection_key not in self.reverse_shell_connections:
+                # New connection detected
+                port_names = {4444: 'Meterpreter default', 4445: 'Meterpreter alternate', 8080: 'HTTP/Meterpreter'}
+                self.reverse_shell_connections[connection_key] = current_time
+                return {
+                    'type': 'reverse_shell',
+                    'name': 'Reverse Shell Connection',
+                    'description': f'Outbound connection to suspected C2 server',
+                    'severity': 'CRITICAL',
+                    'details': f'Connection to {dst_ip}:{dst_port} ({port_names.get(dst_port, "common reverse shell port")})'
+                }
+            else:
+                # Existing connection - just update timestamp (heartbeat)
+                self.reverse_shell_connections[connection_key] = current_time
         return None
         
     def detect_port_scan(self, src_ip, dst_port):

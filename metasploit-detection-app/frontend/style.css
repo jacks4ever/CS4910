@@ -987,3 +987,23 @@ body {
     }
 }
 
+/* Connection Line for Active Connections */
+.connection-line {
+    stroke: #f59e0b;
+    stroke-width: 4;
+    opacity: 0.8;
+    stroke-dasharray: 10, 5;
+    animation: connectionPulse 2s infinite;
+}
+
+@keyframes connectionPulse {
+    0%, 100% {
+        opacity: 0.8;
+        stroke-width: 4;
+    }
+    50% {
+        opacity: 1;
+        stroke-width: 5;
+    }
+}
+
