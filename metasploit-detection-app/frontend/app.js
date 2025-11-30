@@ -421,23 +421,8 @@ function escapeHtml(unsafe) {
 
 // Network Diagram Animation Functions
 function animateAttack(attack) {
-    // Debug: Log the entire attack object
-    console.log('🔍 ANIMATION DEBUG - Full attack object:', attack);
-    console.log('🔍 attack.attack_type value:', attack.attack_type);
-    console.log('🔍 typeof attack.attack_type:', typeof attack.attack_type);
-    
     // Determine if this is a reverse shell (outbound from victim)
     const isReverseShell = attack.attack_type === 'reverse_shell';
-    console.log('🔍 isReverseShell comparison result:', isReverseShell);
-    
-    // Debug: Log to verify
-    if (isReverseShell) {
-        console.log('🔙 Reverse Shell detected - animating RIGHT to LEFT');
-        console.log(`   Direction: startX=650 (RIGHT), endX=150 (LEFT)`);
-    } else {
-        console.log('🚨 Attack detected - animating LEFT to RIGHT');
-        console.log(`   Direction: startX=150 (LEFT), endX=650 (RIGHT)`);
-    }
     
     // For reverse shells: attacker IP goes on LEFT, victim IP goes on RIGHT
     // For normal attacks: attacker IP goes on LEFT, victim IP goes on RIGHT
@@ -456,9 +441,6 @@ function animateAttack(attack) {
     const startX = isReverseShell ? 650 : 150;
     const endX = isReverseShell ? 150 : 650;
     
-    console.log(`🎯 ANIMATION VALUES: startX=${startX}, endX=${endX}`);
-    console.log(`🎯 This means packet will move from X=${startX} to X=${endX}`);
-    
     // Create packet group (packet + icon + trail)
     const packetsGroup = document.getElementById('attackPackets');
     const packetGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -476,30 +458,12 @@ function animateAttack(attack) {
     trail.style.animation = 'trailFade 0.5s ease-out forwards';
     packetGroup.appendChild(trail);
     
-    // Create BRIGHT YELLOW marker at start position for debugging
-    const startMarker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    startMarker.setAttribute('cx', startX);
-    startMarker.setAttribute('cy', '145');
-    startMarker.setAttribute('r', '15');
-    startMarker.setAttribute('fill', 'yellow');
-    startMarker.setAttribute('opacity', '1');
-    packetGroup.appendChild(startMarker);
-    
-    // Flash and fade the marker
-    setTimeout(() => {
-        startMarker.setAttribute('opacity', '0');
-        setTimeout(() => startMarker.remove(), 500);
-    }, 300);
-    
-    // Create animated packet circle - BRIGHT GREEN FOR DEBUGGING
+    // Create animated packet circle
     const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     packet.setAttribute('cx', startX);
     packet.setAttribute('cy', '145');
-    packet.setAttribute('r', '25');  // HUGE
-    packet.setAttribute('fill', 'lime');  // BRIGHT GREEN
-    packet.setAttribute('stroke', 'black');
-    packet.setAttribute('stroke-width', '3');
-    console.log(`🎯 PACKET CREATED: Initial cx=${startX} (${startX < 400 ? 'LEFT side' : 'RIGHT side'})`);
+    packet.setAttribute('r', '8');
+    packet.setAttribute('class', `attack-packet ${severityClass}`);
     packetGroup.appendChild(packet);
     
     // Create icon on packet
@@ -528,9 +492,8 @@ function animateAttack(attack) {
     let position = startX;
     const duration = 2000; // 2 seconds
     const startTime = Date.now();
-    let loggedOnce = false;
     
-        const animate = () => {
+    const animate = () => {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
         
@@ -540,21 +503,6 @@ function animateAttack(attack) {
             : 1 - Math.pow(-2 * progress + 2, 2) / 2;
         
         position = startX + (endX - startX) * easeProgress;
-        
-        // Debug: Log at key milestones
-        if (!loggedOnce && progress > 0.01) {
-            console.log(`🎯 ANIMATE START: progress=0%, position=${startX}`);
-            loggedOnce = true;
-        }
-        if (progress > 0.25 && progress < 0.26) {
-            console.log(`🎯 ANIMATE 25%: position=${position.toFixed(1)}, should be moving toward ${endX}`);
-        }
-        if (progress > 0.5 && progress < 0.51) {
-            console.log(`🎯 ANIMATE 50%: position=${position.toFixed(1)}, halfway between ${startX} and ${endX}`);
-        }
-        if (progress > 0.99) {
-            console.log(`🎯 ANIMATE END: position=${position.toFixed(1)}, should be at ${endX}`);
-        }
         
         // Update packet position
         packet.setAttribute('cx', position);
@@ -586,20 +534,20 @@ function animateAttack(attack) {
     
     requestAnimationFrame(animate);
     
-    // DISABLED: Small packets for debugging
-    // for (let i = 1; i <= 3; i++) {
-    //     setTimeout(() => {
-    //         createSmallPacket(severityClass);
-    //     }, i * 300);
-    // }
+    // Create multiple smaller packets for dramatic effect (pass startX)
+    for (let i = 1; i <= 3; i++) {
+        setTimeout(() => {
+            createSmallPacket(severityClass, startX);
+        }, i * 300);
+    }
 }
 
-function createSmallPacket(severityClass) {
+function createSmallPacket(severityClass, startX) {
     const packetsGroup = document.getElementById('attackPackets');
     const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     
-    packet.setAttribute('cx', '150');
-    packet.setAttribute('cy', 145 + (Math.random() - 0.5) * 40);  // Centered on new y-coordinate
+    packet.setAttribute('cx', startX);  // Use the same startX as main packet
+    packet.setAttribute('cy', 145 + (Math.random() - 0.5) * 40);
     packet.setAttribute('r', '4');
     packet.setAttribute('class', `attack-packet ${severityClass}`);
     

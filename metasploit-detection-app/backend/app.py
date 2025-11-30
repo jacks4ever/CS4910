@@ -300,13 +300,6 @@ class AttackDetector:
             dst_ip = packet[IP].dst
             timestamp = datetime.now().isoformat()
             
-            # Debug: Log ALL port 4444 traffic
-            if packet.haslayer(TCP):
-                if packet[TCP].dport == 4444 or packet[TCP].sport == 4444:
-                    print(f"[DEBUG] Port 4444 packet: {src_ip}:{packet[TCP].sport} -> {dst_ip}:{packet[TCP].dport} | Flags: {packet[TCP].flags}")
-                    print(f"[DEBUG]   is_outbound_traffic({src_ip}, {dst_ip}) = {self.is_outbound_traffic(src_ip, dst_ip)}")
-                    print(f"[DEBUG]   is_inbound_traffic({src_ip}, {dst_ip}) = {self.is_inbound_traffic(src_ip, dst_ip)}")
-            
             attack_detected = None
             
             # Check for OUTBOUND reverse shell connections first
