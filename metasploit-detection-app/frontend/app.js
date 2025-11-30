@@ -476,6 +476,21 @@ function animateAttack(attack) {
     trail.style.animation = 'trailFade 0.5s ease-out forwards';
     packetGroup.appendChild(trail);
     
+    // Create BRIGHT YELLOW marker at start position for debugging
+    const startMarker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    startMarker.setAttribute('cx', startX);
+    startMarker.setAttribute('cy', '145');
+    startMarker.setAttribute('r', '15');
+    startMarker.setAttribute('fill', 'yellow');
+    startMarker.setAttribute('opacity', '1');
+    packetGroup.appendChild(startMarker);
+    
+    // Flash and fade the marker
+    setTimeout(() => {
+        startMarker.setAttribute('opacity', '0');
+        setTimeout(() => startMarker.remove(), 500);
+    }, 300);
+    
     // Create animated packet circle
     const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     packet.setAttribute('cx', startX);
