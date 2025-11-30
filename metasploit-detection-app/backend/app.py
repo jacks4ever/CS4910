@@ -33,7 +33,7 @@ EXPLOIT_SIGNATURES = {
         'name': 'EternalBlue (MS17-010)',
         'description': 'SMB exploit targeting Windows systems',
         'ports': [445, 139],
-        'pattern': b'\\x00\\x00\\x00\\x31\\xff\\x53\\x4d\\x42',
+        'pattern': b'SMB',  # More lenient pattern to catch SMB traffic
         'severity': 'CRITICAL'
     },
     'ms08_067': {
@@ -138,8 +138,9 @@ class AttackDetector:
         tracker['count'] += 1
         tracker['last_seen'] = current_time
         
-        # Clean old entries
-        if tracker['count'] > 100 and (current_time - tracker['last_seen']) < 10:
+        # Higher threshold to avoid false positives during legitimate exploits
+        # Increased from 100 to 200 connections in 10 seconds
+        if tracker['count'] > 200 and (current_time - tracker['last_seen']) < 10:
             return {
                 'type': 'syn_flood',
                 'name': 'SYN Flood Attack',
@@ -186,20 +187,20 @@ class AttackDetector:
             
             attack_detected = None
             
-            # Check for port scanning
-            if packet.haslayer(TCP):
+            # PRIORITY 1: Check for known exploits FIRST (most specific)
+            attack_detected = self.detect_exploit(packet)
+            
+            # PRIORITY 2: Check for port scanning (if no exploit found)
+            if not attack_detected and packet.haslayer(TCP):
                 dst_port = packet[TCP].dport
                 attack_detected = self.detect_port_scan(src_ip, dst_port)
-                
-                # Check for SYN flood
-                if packet[TCP].flags == 'S':  # SYN flag
-                    syn_attack = self.detect_syn_flood(src_ip)
-                    if syn_attack and not attack_detected:
-                        attack_detected = syn_attack
             
-            # Check for known exploits
-            if not attack_detected:
-                attack_detected = self.detect_exploit(packet)
+            # PRIORITY 3: Check for SYN flood (if no exploit or port scan found)
+            # Only report SYN floods if we haven't detected a more specific attack
+            if not attack_detected and packet.haslayer(TCP) and packet[TCP].flags == 'S':
+                syn_attack = self.detect_syn_flood(src_ip)
+                if syn_attack:
+                    attack_detected = syn_attack
             
             # If attack detected, emit event
             if attack_detected:
