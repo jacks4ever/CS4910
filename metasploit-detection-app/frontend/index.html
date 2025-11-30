@@ -47,24 +47,39 @@
                 <!-- Network Diagram -->
                 <div class="network-diagram">
                     <svg id="networkSvg" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet">
-                        <!-- Attacker Node (Left) -->
+                        <!-- Attacker Node (Left) - Metasploit Computer -->
                         <g id="attackerNode" class="node">
-                            <circle cx="100" cy="150" r="50" class="attacker-circle"/>
-                            <text x="100" y="145" text-anchor="middle" class="node-icon">☠️</text>
-                            <text x="100" y="170" text-anchor="middle" class="node-label">Attacker</text>
-                            <text x="100" y="220" text-anchor="middle" class="node-ip" id="attackerIP">---</text>
+                            <!-- Computer Monitor -->
+                            <rect x="60" y="115" width="80" height="55" rx="4" class="attacker-monitor"/>
+                            <rect x="65" y="120" width="70" height="45" class="attacker-screen"/>
+                            <!-- Monitor Stand -->
+                            <rect x="92" y="170" width="16" height="10" class="attacker-stand"/>
+                            <rect x="80" y="180" width="40" height="5" class="attacker-base"/>
+                            <!-- Metasploit Logo/Skull -->
+                            <text x="100" y="150" text-anchor="middle" class="msf-icon">⚡</text>
+                            <text x="100" y="138" text-anchor="middle" class="skull-icon">☠️</text>
+                            <!-- Labels -->
+                            <text x="100" y="210" text-anchor="middle" class="node-label">Metasploit Attacker</text>
+                            <text x="100" y="240" text-anchor="middle" class="node-ip" id="attackerIP">---</text>
                         </g>
                         
-                        <!-- Target Node (Right) -->
+                        <!-- Target Node (Right) - Victim Computer -->
                         <g id="targetNode" class="node">
-                            <circle cx="700" cy="150" r="50" class="target-circle"/>
-                            <text x="700" y="145" text-anchor="middle" class="node-icon">🖥️</text>
-                            <text x="700" y="170" text-anchor="middle" class="node-label">Your System</text>
-                            <text x="700" y="220" text-anchor="middle" class="node-ip" id="targetIP">---</text>
+                            <!-- Computer Monitor -->
+                            <rect x="660" y="115" width="80" height="55" rx="4" class="victim-monitor"/>
+                            <rect x="665" y="120" width="70" height="45" class="victim-screen"/>
+                            <!-- Monitor Stand -->
+                            <rect x="692" y="170" width="16" height="10" class="victim-stand"/>
+                            <rect x="680" y="180" width="40" height="5" class="victim-base"/>
+                            <!-- Computer Icon -->
+                            <text x="700" y="150" text-anchor="middle" class="computer-icon">🖥️</text>
+                            <!-- Labels -->
+                            <text x="700" y="210" text-anchor="middle" class="node-label">Victim System</text>
+                            <text x="700" y="240" text-anchor="middle" class="node-ip" id="targetIP">---</text>
                         </g>
                         
                         <!-- Attack Path Line -->
-                        <line x1="150" y1="150" x2="650" y2="150" class="attack-path" id="attackPath"/>
+                        <line x1="150" y1="145" x2="650" y2="145" class="attack-path" id="attackPath"/>
                         
                         <!-- Animated Attack Packets (will be created dynamically) -->
                         <g id="attackPackets"></g>

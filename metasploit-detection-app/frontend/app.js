@@ -369,8 +369,8 @@ function animateAttack(attack) {
     packetsGroup.appendChild(packet);
     
     // Add pulse effect to nodes
-    const attackerNode = document.querySelector('.attacker-circle');
-    const targetNode = document.querySelector('.target-circle');
+    const attackerNode = document.getElementById('attackerNode');
+    const targetNode = document.getElementById('targetNode');
     attackerNode.classList.add('attacker-active');
     targetNode.classList.add('target-active');
     
@@ -380,7 +380,7 @@ function animateAttack(attack) {
     const duration = 2000; // 2 seconds
     const startTime = Date.now();
     
-    const animate = () => {
+        const animate = () => {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
         
@@ -391,9 +391,8 @@ function animateAttack(attack) {
         
         position = 150 + (endPosition - 150) * easeProgress;
         packet.setAttribute('cx', position);
-        packet.setAttribute('opacity', 1 - progress);
-        
-        if (progress < 1) {
+        packet.setAttribute('cy', 145);  // Match the updated attack path y-coordinate
+        packet.setAttribute('opacity', 1 - progress);        if (progress < 1) {
             requestAnimationFrame(animate);
         } else {
             // Remove packet after animation
@@ -422,7 +421,7 @@ function createSmallPacket(severityClass) {
     const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     
     packet.setAttribute('cx', '150');
-    packet.setAttribute('cy', 150 + (Math.random() - 0.5) * 40);
+    packet.setAttribute('cy', 145 + (Math.random() - 0.5) * 40);  // Centered on new y-coordinate
     packet.setAttribute('r', '4');
     packet.setAttribute('class', `attack-packet ${severityClass}`);
     
