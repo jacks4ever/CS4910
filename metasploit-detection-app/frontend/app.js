@@ -456,6 +456,9 @@ function animateAttack(attack) {
     const startX = isReverseShell ? 650 : 150;
     const endX = isReverseShell ? 150 : 650;
     
+    console.log(`🎯 ANIMATION VALUES: startX=${startX}, endX=${endX}`);
+    console.log(`🎯 This means packet will move from X=${startX} to X=${endX}`);
+    
     // Create packet group (packet + icon + trail)
     const packetsGroup = document.getElementById('attackPackets');
     const packetGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -507,6 +510,7 @@ function animateAttack(attack) {
     let position = startX;
     const duration = 2000; // 2 seconds
     const startTime = Date.now();
+    let loggedOnce = false;
     
         const animate = () => {
         const elapsed = Date.now() - startTime;
@@ -518,6 +522,12 @@ function animateAttack(attack) {
             : 1 - Math.pow(-2 * progress + 2, 2) / 2;
         
         position = startX + (endX - startX) * easeProgress;
+        
+        // Debug: Log once at start
+        if (!loggedOnce && progress > 0.01) {
+            console.log(`🎯 ANIMATE FUNCTION: startX=${startX}, endX=${endX}, current position=${position.toFixed(1)}`);
+            loggedOnce = true;
+        }
         
         // Update packet position
         packet.setAttribute('cx', position);
