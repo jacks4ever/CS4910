@@ -31,6 +31,7 @@
             </div>
             <div class="status-item">
                 <button id="clearBtn" class="btn btn-secondary">Clear Events</button>
+                <button id="whitelistBtn" class="btn btn-secondary">🛡️ Whitelist IPs</button>
             </div>
         </div>
 
@@ -94,6 +95,31 @@
                     </div>
                     <div id="attackTypes" class="attack-types">
                         <p class="no-data">No attacks detected yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- IP Whitelist Modal -->
+        <div id="whitelistModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🛡️ IP Whitelist - Suppress False Positives</h2>
+                    <span class="modal-close" id="closeModal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-description">Add trusted IP addresses to suppress false positive detections. Common examples: internal services, RDP sessions, backup servers.</p>
+                    
+                    <div class="whitelist-input-group">
+                        <input type="text" id="whitelistIP" placeholder="Enter IP address (e.g., 192.168.1.100)" class="whitelist-input">
+                        <button id="addIPBtn" class="btn btn-primary">Add IP</button>
+                    </div>
+                    
+                    <div class="whitelist-list">
+                        <h3>Whitelisted IPs:</h3>
+                        <div id="whitelistedIPs" class="whitelisted-ips">
+                            <p class="no-data">No IPs whitelisted</p>
+                        </div>
                     </div>
                 </div>
             </div>

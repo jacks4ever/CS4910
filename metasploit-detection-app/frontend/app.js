@@ -11,13 +11,48 @@ let severityCounts = {
     LOW: 0
 };
 let attackTypeCounts = {};
+let whitelistedIPs = new Set();
+
+// Load whitelist from localStorage
+function loadWhitelist() {
+    const saved = localStorage.getItem('whitelistedIPs');
+    if (saved) {
+        whitelistedIPs = new Set(JSON.parse(saved));
+    }
+}
+
+// Save whitelist to localStorage
+function saveWhitelist() {
+    localStorage.setItem('whitelistedIPs', JSON.stringify([...whitelistedIPs]));
+}
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing Metasploit Attack Detection Dashboard...');
     
+    // Load whitelist
+    loadWhitelist();
+    
     // Setup event listeners
     document.getElementById('clearBtn').addEventListener('click', clearEvents);
+    document.getElementById('whitelistBtn').addEventListener('click', openWhitelistModal);
+    document.getElementById('closeModal').addEventListener('click', closeWhitelistModal);
+    document.getElementById('addIPBtn').addEventListener('click', addWhitelistIP);
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+        const modal = document.getElementById('whitelistModal');
+        if (e.target === modal) {
+            closeWhitelistModal();
+        }
+    });
+    
+    // Add IP on Enter key
+    document.getElementById('whitelistIP').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            addWhitelistIP();
+        }
+    });
     
     // Connect to WebSocket
     connectWebSocket();
@@ -92,6 +127,12 @@ function updateSystemStatus(message, statusClass) {
 
 // Handle attack detection
 function handleAttackDetected(attack) {
+    // Check if source IP is whitelisted
+    if (whitelistedIPs.has(attack.src_ip)) {
+        console.log(`Suppressed: ${attack.attack_name} from whitelisted IP ${attack.src_ip}`);
+        return; // Suppress this detection
+    }
+    
     // Update counts
     totalDetections++;
     document.getElementById('totalDetections').textContent = totalDetections;
@@ -285,6 +326,73 @@ function escapeHtml(unsafe) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+}
+
+// Whitelist Modal Functions
+function openWhitelistModal() {
+    document.getElementById('whitelistModal').style.display = 'block';
+    renderWhitelistedIPs();
+}
+
+function closeWhitelistModal() {
+    document.getElementById('whitelistModal').style.display = 'none';
+}
+
+function addWhitelistIP() {
+    const input = document.getElementById('whitelistIP');
+    const ip = input.value.trim();
+    
+    // Validate IP address format
+    const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+    if (!ipPattern.test(ip)) {
+        alert('Please enter a valid IP address (e.g., 192.168.1.100)');
+        return;
+    }
+    
+    // Check each octet is 0-255
+    const octets = ip.split('.');
+    if (octets.some(octet => parseInt(octet) > 255)) {
+        alert('Invalid IP address: octets must be between 0-255');
+        return;
+    }
+    
+    if (whitelistedIPs.has(ip)) {
+        alert('This IP is already whitelisted');
+        return;
+    }
+    
+    whitelistedIPs.add(ip);
+    saveWhitelist();
+    renderWhitelistedIPs();
+    input.value = '';
+    
+    console.log(`Whitelisted IP: ${ip}`);
+}
+
+function removeWhitelistIP(ip) {
+    if (confirm(`Remove ${ip} from whitelist?`)) {
+        whitelistedIPs.delete(ip);
+        saveWhitelist();
+        renderWhitelistedIPs();
+        console.log(`Removed from whitelist: ${ip}`);
+    }
+}
+
+function renderWhitelistedIPs() {
+    const container = document.getElementById('whitelistedIPs');
+    
+    if (whitelistedIPs.size === 0) {
+        container.innerHTML = '<p class="no-data">No IPs whitelisted</p>';
+        return;
+    }
+    
+    const sortedIPs = [...whitelistedIPs].sort();
+    container.innerHTML = sortedIPs.map(ip => `
+        <div class="whitelist-item">
+            <span class="whitelist-ip">${escapeHtml(ip)}</span>
+            <button class="whitelist-remove" onclick="removeWhitelistIP('${escapeHtml(ip)}')">Remove</button>
+        </div>
+    `).join('');
 }
 
 // Log initialization
