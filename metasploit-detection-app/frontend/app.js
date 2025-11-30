@@ -482,6 +482,7 @@ function animateAttack(attack) {
     packet.setAttribute('cy', '145');
     packet.setAttribute('r', '8');
     packet.setAttribute('class', `attack-packet ${severityClass}`);
+    console.log(`🎯 PACKET CREATED: Initial cx=${startX} (${startX < 400 ? 'LEFT side' : 'RIGHT side'})`);
     packetGroup.appendChild(packet);
     
     // Create icon on packet
