@@ -33,7 +33,13 @@ EXPLOIT_SIGNATURES = {
         'name': 'EternalBlue (MS17-010)',
         'description': 'SMB exploit targeting Windows systems',
         'ports': [445, 139],
-        'pattern': b'SMB',  # More lenient pattern to catch SMB traffic
+        'patterns': [  # Multiple patterns to detect various stages
+            b'\xffSMB',  # SMB protocol identifier
+            b'SMB',      # Generic SMB
+            b'\x00\x00\x00\x31\xff\x53\x4d\x42',  # Original pattern
+            b'NT LM 0.12',  # SMB negotiation
+            b'\xfe\x53\x4d\x42',  # SMB2 header
+        ],
         'severity': 'CRITICAL'
     },
     'ms08_067': {
@@ -85,6 +91,7 @@ class AttackDetector:
         self.running = False
         self.sniffer_thread = None
         self.local_ips = self.get_local_ips()
+        self.smb_tracker = defaultdict(lambda: {'count': 0, 'last_seen': 0})
         print(f"Local IPs detected: {self.local_ips}")
     
     def get_local_ips(self):
@@ -152,23 +159,63 @@ class AttackDetector:
     
     def detect_exploit(self, packet):
         """Detect known exploit patterns"""
+        # Check port-based detection first (for exploits targeting specific ports)
+        if packet.haslayer(TCP):
+            dst_port = packet[TCP].dport
+            
+            # Special handling for SMB/EternalBlue on ports 445/139
+            if dst_port in [445, 139]:
+                # Check if it's an SMB-related packet (SYN or with payload)
+                if packet[TCP].flags & 0x02 or packet.haslayer(Raw):  # SYN flag or has payload
+                    # Count SMB connection attempts
+                    src_ip = packet[IP].src
+                    if not hasattr(self, 'smb_tracker'):
+                        self.smb_tracker = defaultdict(lambda: {'count': 0, 'last_seen': 0})
+                    
+                    current_time = time.time()
+                    tracker = self.smb_tracker[src_ip]
+                    
+                    # Reset counter if more than 60 seconds since last packet
+                    if current_time - tracker['last_seen'] > 60:
+                        tracker['count'] = 0
+                    
+                    tracker['count'] += 1
+                    tracker['last_seen'] = current_time
+                    
+                    # Detect if multiple SMB packets in short time (likely exploit attempt)
+                    if tracker['count'] >= 5:  # 5 or more SMB packets = likely EternalBlue
+                        return {
+                            'type': 'ms17_010',
+                            'name': 'EternalBlue (MS17-010)',
+                            'description': 'SMB exploit targeting Windows systems',
+                            'severity': 'CRITICAL',
+                            'details': f'SMB exploitation attempt detected on port {dst_port} ({tracker["count"]} packets)'
+                        }
+        
+        # Check payload patterns
         if not packet.haslayer(Raw):
             return None
             
         payload = bytes(packet[Raw].load)
         
         for exploit_id, exploit_info in EXPLOIT_SIGNATURES.items():
-            if exploit_info['pattern'] in payload:
-                dst_port = packet[TCP].dport if packet.haslayer(TCP) else (packet[UDP].dport if packet.haslayer(UDP) else 0)
-                
-                if dst_port in exploit_info['ports'] or not exploit_info['ports']:
-                    return {
-                        'type': exploit_id,
-                        'name': exploit_info['name'],
-                        'description': exploit_info['description'],
-                        'severity': exploit_info['severity'],
-                        'details': f'Pattern detected in payload to port {dst_port}'
-                    }
+            # Handle both single pattern and multiple patterns
+            patterns = exploit_info.get('patterns', [exploit_info.get('pattern')])
+            if not isinstance(patterns, list):
+                patterns = [patterns]
+            
+            for pattern in patterns:
+                if pattern and pattern in payload:
+                    dst_port = packet[TCP].dport if packet.haslayer(TCP) else (packet[UDP].dport if packet.haslayer(UDP) else 0)
+                    
+                    if dst_port in exploit_info['ports'] or not exploit_info['ports']:
+                        return {
+                            'type': exploit_id,
+                            'name': exploit_info['name'],
+                            'description': exploit_info['description'],
+                            'severity': exploit_info['severity'],
+                            'details': f'Exploit signature detected in payload to port {dst_port}'
+                        }
         return None
     
     def packet_handler(self, packet):
