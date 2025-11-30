@@ -136,8 +136,13 @@ class AttackDetector:
             if not hasattr(self, 'reverse_shell_connections'):
                 self.reverse_shell_connections = {}
             
-            # Update or create connection tracking
+            # Clean up expired connections (older than 10 seconds = connection died)
             current_time = time.time()
+            expired_keys = [k for k, v in self.reverse_shell_connections.items() if current_time - v > 10]
+            for k in expired_keys:
+                del self.reverse_shell_connections[k]
+            
+            # Update or create connection tracking
             if connection_key not in self.reverse_shell_connections:
                 # New connection detected
                 port_names = {4444: 'Meterpreter default', 4445: 'Meterpreter alternate', 8080: 'HTTP/Meterpreter'}
