@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('whitelistBtn').addEventListener('click', openWhitelistModal);
     document.getElementById('closeModal').addEventListener('click', closeWhitelistModal);
     document.getElementById('addIPBtn').addEventListener('click', addWhitelistIP);
+    document.getElementById('clearProgressBtn').addEventListener('click', clearExploitProgress);
     
     // Close modal when clicking outside
     window.addEventListener('click', (e) => {
@@ -182,6 +183,9 @@ function handleAttackDetected(attack) {
     attackTypeCounts[attack.attack_name]++;
     updateAttackTypes();
     
+    // Mark exploit as detected in the checklist
+    markExploitDetected(attack.attack_type);
+    
     // Track packet for metrics
     trackPacket(attack);
     
@@ -283,6 +287,9 @@ function updateActiveBadge() {
     badge.textContent = `${activeCount} Active`;
 }
 
+// Track detected exploits
+let detectedExploits = new Set();
+
 // Load detectable exploits
 async function loadExploits() {
     try {
@@ -292,13 +299,22 @@ async function loadExploits() {
         const exploitList = document.getElementById('exploitList');
         
         if (data.exploits && data.exploits.length > 0) {
-            exploitList.innerHTML = data.exploits.map(exploit => `
-                <div class="exploit-item">
-                    <div class="exploit-name">${escapeHtml(exploit.name)}</div>
-                    <div class="exploit-description">${escapeHtml(exploit.description)}</div>
-                    <div class="exploit-ports">Ports: ${exploit.ports.join(', ') || 'Any'}</div>
-                </div>
-            `).join('');
+            exploitList.innerHTML = data.exploits.map(exploit => {
+                const exploitId = exploit.id || exploit.name.toLowerCase().replace(/\s+/g, '_');
+                const isDetected = detectedExploits.has(exploitId);
+                return `
+                    <div class="exploit-item ${isDetected ? 'exploit-detected' : ''}" data-exploit-id="${exploitId}">
+                        <div class="exploit-checkbox">
+                            <span class="checkbox-icon">${isDetected ? '✅' : '⬜'}</span>
+                        </div>
+                        <div class="exploit-details">
+                            <div class="exploit-name">${escapeHtml(exploit.name)}</div>
+                            <div class="exploit-description">${escapeHtml(exploit.description)}</div>
+                            <div class="exploit-ports">Ports: ${exploit.ports.join(', ') || 'Any'}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         } else {
             exploitList.innerHTML = '<p class="no-data">No exploit signatures loaded</p>';
         }
@@ -307,6 +323,43 @@ async function loadExploits() {
         document.getElementById('exploitList').innerHTML = 
             '<p class="no-data" style="color: var(--accent-red);">Error loading exploits</p>';
     }
+}
+
+// Mark exploit as detected
+function markExploitDetected(attackType) {
+    // Add to detected set
+    detectedExploits.add(attackType);
+    
+    // Update the UI
+    const exploitItem = document.querySelector(`[data-exploit-id="${attackType}"]`);
+    if (exploitItem && !exploitItem.classList.contains('exploit-detected')) {
+        exploitItem.classList.add('exploit-detected');
+        const checkbox = exploitItem.querySelector('.checkbox-icon');
+        if (checkbox) {
+            checkbox.textContent = '✅';
+            
+            // Animate the check
+            exploitItem.style.animation = 'exploitCheckAnimation 0.5s ease-out';
+            setTimeout(() => {
+                exploitItem.style.animation = '';
+            }, 500);
+        }
+    }
+}
+
+// Clear exploit progress
+function clearExploitProgress() {
+    if (!confirm('Reset all exploit detection progress?')) {
+        return;
+    }
+    
+    // Clear the detected set
+    detectedExploits.clear();
+    
+    // Reload the exploit list to reset checkboxes
+    loadExploits();
+    
+    console.log('Exploit detection progress reset');
 }
 
 // Load existing events
@@ -745,9 +798,6 @@ function trackPacket(attack) {
     
     // Remove packets older than 60 seconds
     recentPackets = recentPackets.filter(time => now - time < 60000);
-    
-    // Update intensity based on packet rate
-    updateIntensity();
 }
 
 // Update Traffic Metrics
@@ -761,47 +811,6 @@ function updateTrafficMetrics() {
     trafficHistory.push(packetsLastSecond);
     if (trafficHistory.length > 60) {
         trafficHistory.shift();
-    }
-    
-    // Update rate display
-    document.getElementById('intensityRate').textContent = `${packetsLastSecond} pkt/s`;
-}
-
-// Update Intensity Meter
-function updateIntensity() {
-    const packetsPerSecond = recentPackets.filter(time => Date.now() - time < 1000).length;
-    
-    // Calculate intensity percentage (0-100)
-    // Scale: 0-5 pkt/s = safe, 5-20 = medium, 20-50 = high, 50+ = critical
-    let intensity = 0;
-    if (packetsPerSecond > 50) {
-        intensity = 100;
-    } else if (packetsPerSecond > 20) {
-        intensity = 75 + ((packetsPerSecond - 20) / 30) * 25;
-    } else if (packetsPerSecond > 5) {
-        intensity = 50 + ((packetsPerSecond - 5) / 15) * 25;
-    } else {
-        intensity = (packetsPerSecond / 5) * 50;
-    }
-    
-    intensityLevel = intensity;
-    
-    // Update UI
-    const fillElement = document.getElementById('intensityFill');
-    const valueElement = document.getElementById('intensityValue');
-    
-    fillElement.style.height = `${100 - intensity}%`;
-    valueElement.textContent = `${Math.round(intensity)}%`;
-    
-    // Change color based on level
-    if (intensity > 75) {
-        valueElement.style.color = '#dc2626';
-    } else if (intensity > 50) {
-        valueElement.style.color = '#f97316';
-    } else if (intensity > 25) {
-        valueElement.style.color = '#eab308';
-    } else {
-        valueElement.style.color = '#22c55e';
     }
 }
 

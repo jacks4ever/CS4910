@@ -107,28 +107,6 @@
 
             <!-- Right Panel - Attack Statistics & Info -->
             <div class="panel-secondary">
-                <!-- Attack Intensity Meter -->
-                <div class="panel panel-stats">
-                    <div class="panel-header">
-                        <h3>⚡ Attack Intensity</h3>
-                    </div>
-                    <div class="intensity-meter-container">
-                        <div class="intensity-bar">
-                            <div id="intensityFill" class="intensity-fill" style="height: 0%"></div>
-                            <div class="intensity-zones">
-                                <div class="zone-label zone-critical">CRITICAL</div>
-                                <div class="zone-label zone-high">HIGH</div>
-                                <div class="zone-label zone-medium">MEDIUM</div>
-                                <div class="zone-label zone-safe">SAFE</div>
-                            </div>
-                        </div>
-                        <div class="intensity-stats">
-                            <div class="intensity-value" id="intensityValue">0%</div>
-                            <div class="intensity-rate" id="intensityRate">0 pkt/s</div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Traffic Graph -->
                 <div class="panel panel-stats">
                     <div class="panel-header">
@@ -164,8 +142,9 @@
 
                 <!-- Detectable Exploits -->
                 <div class="panel panel-info">
-                    <div class="panel-header">
+                    <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <h3>🔍 Detectable Exploits</h3>
+                        <button id="clearProgressBtn" class="btn btn-secondary btn-small">Reset Progress</button>
                     </div>
                     <div id="exploitList" class="exploit-list">
                         <p class="loading">Loading exploit signatures...</p>

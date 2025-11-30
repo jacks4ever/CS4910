@@ -535,7 +535,7 @@ body {
 /* Exploit List */
 .exploit-list {
     padding: 15px;
-    max-height: 300px;
+    max-height: 400px;
     overflow-y: auto;
 }
 
@@ -545,6 +545,48 @@ body {
     border-radius: 6px;
     margin-bottom: 10px;
     border-left: 3px solid var(--accent-blue);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transition: all 0.3s ease;
+}
+
+.exploit-item.exploit-detected {
+    border-left-color: var(--accent-green);
+    background: linear-gradient(90deg, rgba(52, 168, 83, 0.1) 0%, var(--bg-tertiary) 100%);
+}
+
+.exploit-checkbox {
+    flex-shrink: 0;
+    font-size: 1.5rem;
+    line-height: 1;
+    padding-top: 2px;
+}
+
+.checkbox-icon {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.exploit-detected .checkbox-icon {
+    transform: scale(1.2);
+}
+
+.exploit-details {
+    flex: 1;
+}
+
+@keyframes exploitCheckAnimation {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(52, 168, 83, 0.5);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 .exploit-name {
@@ -613,6 +655,11 @@ body {
 .btn-secondary:hover {
     background: var(--border);
     transform: translateY(-2px);
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 0.8rem;
 }
 
 /* Footer */
