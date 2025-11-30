@@ -539,10 +539,19 @@ function animateAttack(attack) {
         
         position = startX + (endX - startX) * easeProgress;
         
-        // Debug: Log once at start
+        // Debug: Log at key milestones
         if (!loggedOnce && progress > 0.01) {
-            console.log(`🎯 ANIMATE FUNCTION: startX=${startX}, endX=${endX}, current position=${position.toFixed(1)}`);
+            console.log(`🎯 ANIMATE START: progress=0%, position=${startX}`);
             loggedOnce = true;
+        }
+        if (progress > 0.25 && progress < 0.26) {
+            console.log(`🎯 ANIMATE 25%: position=${position.toFixed(1)}, should be moving toward ${endX}`);
+        }
+        if (progress > 0.5 && progress < 0.51) {
+            console.log(`🎯 ANIMATE 50%: position=${position.toFixed(1)}, halfway between ${startX} and ${endX}`);
+        }
+        if (progress > 0.99) {
+            console.log(`🎯 ANIMATE END: position=${position.toFixed(1)}, should be at ${endX}`);
         }
         
         // Update packet position
