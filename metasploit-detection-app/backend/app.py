@@ -127,6 +127,32 @@ class AttackDetector:
         tracker = port_scan_tracker[src_ip]
         tracker['ports'].add(dst_port)
         
+        # Check for SQL database port scanning (SQLi reconnaissance)
+        sql_ports = {3306, 1433, 5432}  # MySQL, MSSQL, PostgreSQL
+        sql_ports_scanned = tracker['ports'].intersection(sql_ports)
+        
+        # Immediate detection for database port probing
+        if dst_port in sql_ports:
+            db_names = {3306: 'MySQL', 1433: 'MSSQL', 5432: 'PostgreSQL'}
+            if len(sql_ports_scanned) >= 2:
+                # Multiple database ports = definite SQLi reconnaissance
+                return {
+                    'type': 'sql_injection',
+                    'name': 'SQL Injection Attempt',
+                    'description': 'Multiple database port reconnaissance detected',
+                    'severity': 'HIGH',
+                    'details': f'Probing database ports: {", ".join(map(str, sorted(sql_ports_scanned)))}'
+                }
+            else:
+                # Single database port = likely SQLi attempt
+                return {
+                    'type': 'sql_injection',
+                    'name': 'SQL Injection Attempt',
+                    'description': f'{db_names[dst_port]} database reconnaissance',
+                    'severity': 'HIGH',
+                    'details': f'Connection attempt to {db_names[dst_port]} port {dst_port}'
+                }
+        
         # If scanning multiple ports in short time
         if len(tracker['ports']) > 10 and (current_time - tracker['first_seen']) < 60:
             return {
