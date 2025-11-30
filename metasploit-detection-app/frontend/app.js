@@ -424,15 +424,15 @@ function animateAttack(attack) {
     // Determine if this is a reverse shell (outbound from victim)
     const isReverseShell = attack.attack_type === 'reverse_shell';
     
-    console.log('Attack detected:', {
-        type: attack.attack_type,
-        name: attack.attack_name,
-        isReverseShell: isReverseShell,
-        src_ip: attack.src_ip,
-        dst_ip: attack.dst_ip
-    });
+    // Debug: Log to verify
+    if (isReverseShell) {
+        console.log('🔙 Reverse Shell detected - animating RIGHT to LEFT');
+    } else {
+        console.log('🚨 Attack detected - animating LEFT to RIGHT');
+    }
     
-    // Update IPs in diagram
+    // For reverse shells: attacker IP goes on LEFT, victim IP goes on RIGHT
+    // For normal attacks: attacker IP goes on LEFT, victim IP goes on RIGHT
     document.getElementById('attackerIP').textContent = isReverseShell ? attack.dst_ip : attack.src_ip;
     document.getElementById('targetIP').textContent = isReverseShell ? attack.src_ip : attack.dst_ip;
     document.getElementById('attackLabel').textContent = attack.attack_name;
@@ -443,8 +443,10 @@ function animateAttack(attack) {
     const trailColor = getSeverityColor(attack.severity);
     
     // Determine animation direction
-    const startX = isReverseShell ? 650 : 150;  // Reverse shell starts from victim (right)
-    const endX = isReverseShell ? 150 : 650;    // Reverse shell goes to attacker (left)
+    // Normal attacks: LEFT (150) to RIGHT (650) - attacker to victim
+    // Reverse shell: RIGHT (650) to LEFT (150) - victim to attacker
+    const startX = isReverseShell ? 650 : 150;
+    const endX = isReverseShell ? 150 : 650;
     
     // Create packet group (packet + icon + trail)
     const packetsGroup = document.getElementById('attackPackets');
