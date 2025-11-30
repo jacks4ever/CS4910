@@ -1,7 +1,21 @@
 // Metasploit Attack Detection Dashboard - JavaScript
 
-// Configuration
-const BACKEND_URL = 'http://localhost:5000';
+// Configuration - Auto-detect backend URL
+function getBackendURL() {
+    // If frontend is served from a web server, use that host
+    const currentHost = window.location.hostname;
+    
+    // If localhost or file://, try localhost first
+    if (!currentHost || currentHost === '' || window.location.protocol === 'file:') {
+        return 'http://localhost:5000';
+    }
+    
+    // Use the same host as the frontend is served from
+    return `http://${currentHost}:5000`;
+}
+
+const BACKEND_URL = getBackendURL();
+console.log(`Backend URL: ${BACKEND_URL}`);
 let socket;
 let totalDetections = 0;
 let severityCounts = {
