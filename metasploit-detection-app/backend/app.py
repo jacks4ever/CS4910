@@ -1,0 +1,309 @@
+#!/usr/bin/env python3
+"""
+Metasploit Attack Detection System - Backend
+Real-time monitoring and detection of common Metasploit attacks
+"""
+
+from flask import Flask, render_template, jsonify
+from flask_socketio import SocketIO, emit
+from flask_cors import CORS
+from scapy.all import sniff, IP, TCP, UDP, Raw, ICMP
+from collections import defaultdict, deque
+from datetime import datetime
+import threading
+import json
+import re
+import time
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'metasploit-detection-secret'
+CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
+
+# Store attack events
+attack_events = deque(maxlen=100)
+connection_tracker = defaultdict(lambda: {'count': 0, 'last_seen': time.time()})
+port_scan_tracker = defaultdict(lambda: {'ports': set(), 'first_seen': time.time()})
+
+# Common Metasploit exploit patterns
+EXPLOIT_SIGNATURES = {
+    'ms17_010': {
+        'name': 'EternalBlue (MS17-010)',
+        'description': 'SMB exploit targeting Windows systems',
+        'ports': [445, 139],
+        'pattern': b'\\x00\\x00\\x00\\x31\\xff\\x53\\x4d\\x42',
+        'severity': 'CRITICAL'
+    },
+    'ms08_067': {
+        'name': 'MS08-067 Netapi',
+        'description': 'Windows Server Service RPC exploit',
+        'ports': [445],
+        'pattern': b'\\x5c\\x00\\x5c\\x00',
+        'severity': 'CRITICAL'
+    },
+    'vsftpd_backdoor': {
+        'name': 'VSFTPD Backdoor',
+        'description': 'VSFTPD 2.3.4 backdoor exploitation',
+        'ports': [21],
+        'pattern': b':)',
+        'severity': 'HIGH'
+    },
+    'tomcat_mgr': {
+        'name': 'Tomcat Manager Deploy',
+        'description': 'Apache Tomcat Manager application deployment',
+        'ports': [8080, 8180],
+        'pattern': b'/manager/html',
+        'severity': 'MEDIUM'
+    },
+    'shellshock': {
+        'name': 'Shellshock (CVE-2014-6271)',
+        'description': 'Bash environment variable injection',
+        'ports': [80, 443],
+        'pattern': b'() { :; };',
+        'severity': 'CRITICAL'
+    },
+    'sql_injection': {
+        'name': 'SQL Injection Attempt',
+        'description': 'Database exploitation attempt',
+        'ports': [3306, 1433, 5432],
+        'pattern': b"' OR '1'='1",
+        'severity': 'HIGH'
+    },
+    'reverse_shell': {
+        'name': 'Reverse Shell Connection',
+        'description': 'Meterpreter or reverse shell callback',
+        'ports': [4444, 4445, 8080],
+        'pattern': b'meterpreter',
+        'severity': 'CRITICAL'
+    }
+}
+
+class AttackDetector:
+    def __init__(self):
+        self.running = False
+        self.sniffer_thread = None
+        
+    def detect_port_scan(self, src_ip, dst_port):
+        """Detect port scanning activities"""
+        current_time = time.time()
+        tracker = port_scan_tracker[src_ip]
+        tracker['ports'].add(dst_port)
+        
+        # If scanning multiple ports in short time
+        if len(tracker['ports']) > 10 and (current_time - tracker['first_seen']) < 60:
+            return {
+                'type': 'port_scan',
+                'name': 'Port Scan Detected',
+                'description': f'Multiple ports scanned from {src_ip}',
+                'severity': 'MEDIUM',
+                'details': f'Scanned {len(tracker["ports"])} ports in last 60 seconds'
+            }
+        return None
+    
+    def detect_syn_flood(self, src_ip):
+        """Detect SYN flood attacks"""
+        current_time = time.time()
+        tracker = connection_tracker[src_ip]
+        tracker['count'] += 1
+        tracker['last_seen'] = current_time
+        
+        # Clean old entries
+        if tracker['count'] > 100 and (current_time - tracker['last_seen']) < 10:
+            return {
+                'type': 'syn_flood',
+                'name': 'SYN Flood Attack',
+                'description': f'High volume of SYN packets from {src_ip}',
+                'severity': 'HIGH',
+                'details': f'{tracker["count"]} connections in 10 seconds'
+            }
+        return None
+    
+    def detect_exploit(self, packet):
+        """Detect known exploit patterns"""
+        if not packet.haslayer(Raw):
+            return None
+            
+        payload = bytes(packet[Raw].load)
+        
+        for exploit_id, exploit_info in EXPLOIT_SIGNATURES.items():
+            if exploit_info['pattern'] in payload:
+                dst_port = packet[TCP].dport if packet.haslayer(TCP) else (packet[UDP].dport if packet.haslayer(UDP) else 0)
+                
+                if dst_port in exploit_info['ports'] or not exploit_info['ports']:
+                    return {
+                        'type': exploit_id,
+                        'name': exploit_info['name'],
+                        'description': exploit_info['description'],
+                        'severity': exploit_info['severity'],
+                        'details': f'Pattern detected in payload to port {dst_port}'
+                    }
+        return None
+    
+    def packet_handler(self, packet):
+        """Process each captured packet"""
+        try:
+            if not packet.haslayer(IP):
+                return
+            
+            src_ip = packet[IP].src
+            dst_ip = packet[IP].dst
+            timestamp = datetime.now().isoformat()
+            
+            attack_detected = None
+            
+            # Check for port scanning
+            if packet.haslayer(TCP):
+                dst_port = packet[TCP].dport
+                attack_detected = self.detect_port_scan(src_ip, dst_port)
+                
+                # Check for SYN flood
+                if packet[TCP].flags == 'S':  # SYN flag
+                    syn_attack = self.detect_syn_flood(src_ip)
+                    if syn_attack and not attack_detected:
+                        attack_detected = syn_attack
+            
+            # Check for known exploits
+            if not attack_detected:
+                attack_detected = self.detect_exploit(packet)
+            
+            # If attack detected, emit event
+            if attack_detected:
+                event = {
+                    'timestamp': timestamp,
+                    'src_ip': src_ip,
+                    'dst_ip': dst_ip,
+                    'attack_type': attack_detected['type'],
+                    'attack_name': attack_detected['name'],
+                    'description': attack_detected['description'],
+                    'severity': attack_detected['severity'],
+                    'details': attack_detected['details']
+                }
+                
+                attack_events.append(event)
+                socketio.emit('attack_detected', event)
+                print(f"[ALERT] {attack_detected['severity']} - {attack_detected['name']} from {src_ip}")
+                
+        except Exception as e:
+            print(f"Error processing packet: {e}")
+    
+    def start_sniffing(self, interface=None):
+        """Start packet capture"""
+        self.running = True
+        print(f"Starting packet capture on interface: {interface or 'default'}")
+        
+        try:
+            # Sniff packets - requires root/admin privileges
+            sniff(prn=self.packet_handler, store=False, iface=interface)
+        except PermissionError:
+            print("ERROR: Root privileges required for packet capture")
+            print("Please run with sudo: sudo python3 app.py")
+            self.running = False
+        except Exception as e:
+            print(f"Error starting packet capture: {e}")
+            self.running = False
+    
+    def start(self, interface=None):
+        """Start detector in background thread"""
+        if not self.running:
+            self.sniffer_thread = threading.Thread(
+                target=self.start_sniffing,
+                args=(interface,),
+                daemon=True
+            )
+            self.sniffer_thread.start()
+    
+    def stop(self):
+        """Stop detector"""
+        self.running = False
+
+# Initialize detector
+detector = AttackDetector()
+
+@app.route('/')
+def index():
+    """Serve frontend"""
+    return """
+    <html>
+    <head><title>Metasploit Attack Detection System</title></head>
+    <body>
+        <h1>Metasploit Attack Detection System</h1>
+        <p>Backend is running. Access the frontend at /frontend/index.html</p>
+        <p>WebSocket endpoint: ws://localhost:5000</p>
+    </body>
+    </html>
+    """
+
+@app.route('/api/status')
+def status():
+    """Get system status"""
+    return jsonify({
+        'status': 'running' if detector.running else 'stopped',
+        'total_events': len(attack_events),
+        'timestamp': datetime.now().isoformat()
+    })
+
+@app.route('/api/events')
+def get_events():
+    """Get recent attack events"""
+    return jsonify({
+        'events': list(attack_events),
+        'count': len(attack_events)
+    })
+
+@app.route('/api/exploits')
+def get_exploits():
+    """Get list of detectable exploits"""
+    exploits = []
+    for exploit_id, info in EXPLOIT_SIGNATURES.items():
+        exploits.append({
+            'id': exploit_id,
+            'name': info['name'],
+            'description': info['description'],
+            'severity': info['severity'],
+            'ports': info['ports']
+        })
+    return jsonify({'exploits': exploits})
+
+@socketio.on('connect')
+def handle_connect():
+    """Handle client connection"""
+    print('Client connected')
+    emit('status', {'message': 'Connected to attack detection system'})
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    """Handle client disconnection"""
+    print('Client disconnected')
+
+@socketio.on('start_monitoring')
+def handle_start_monitoring(data):
+    """Start monitoring"""
+    interface = data.get('interface') if data else None
+    if not detector.running:
+        detector.start(interface)
+        emit('status', {'message': 'Monitoring started'})
+    else:
+        emit('status', {'message': 'Monitoring already running'})
+
+@socketio.on('stop_monitoring')
+def handle_stop_monitoring():
+    """Stop monitoring"""
+    detector.stop()
+    emit('status', {'message': 'Monitoring stopped'})
+
+if __name__ == '__main__':
+    import sys
+    
+    print("=" * 60)
+    print("Metasploit Attack Detection System - Backend")
+    print("=" * 60)
+    print("\nNOTE: This application requires ROOT privileges to capture packets")
+    print("Run with: sudo python3 app.py")
+    print("\nStarting Flask-SocketIO server on http://0.0.0.0:5000")
+    print("=" * 60)
+    
+    # Auto-start detector
+    detector.start()
+    
+    # Run Flask-SocketIO server
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True, allow_unsafe_werkzeug=True)

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metasploit Attack Detection - Blue Team Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🛡️ Metasploit Attack Detection System</h1>
+            <p class="subtitle">Real-Time Blue Team Security Monitoring Dashboard</p>
+        </header>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-item">
+                <span class="status-label">Status:</span>
+                <span id="systemStatus" class="status-value status-running">●  Running</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Total Detections:</span>
+                <span id="totalDetections" class="status-value">0</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Last Update:</span>
+                <span id="lastUpdate" class="status-value">Never</span>
+            </div>
+            <div class="status-item">
+                <button id="clearBtn" class="btn btn-secondary">Clear Events</button>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div class="dashboard">
+            <!-- Left Panel - Live Attack Feed -->
+            <div class="panel panel-primary">
+                <div class="panel-header">
+                    <h2>🚨 Live Attack Feed</h2>
+                    <span class="badge" id="activeBadge">0 Active</span>
+                </div>
+                <div id="attackFeed" class="attack-feed">
+                    <div class="no-attacks">
+                        <p>🟢 No attacks detected</p>
+                        <p class="subtitle-small">System is monitoring network traffic...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Attack Statistics & Info -->
+            <div class="panel-secondary">
+                <!-- Severity Distribution -->
+                <div class="panel panel-stats">
+                    <div class="panel-header">
+                        <h3>Severity Distribution</h3>
+                    </div>
+                    <div class="severity-stats">
+                        <div class="severity-item severity-critical">
+                            <div class="severity-label">CRITICAL</div>
+                            <div class="severity-count" id="criticalCount">0</div>
+                        </div>
+                        <div class="severity-item severity-high">
+                            <div class="severity-label">HIGH</div>
+                            <div class="severity-count" id="highCount">0</div>
+                        </div>
+                        <div class="severity-item severity-medium">
+                            <div class="severity-label">MEDIUM</div>
+                            <div class="severity-count" id="mediumCount">0</div>
+                        </div>
+                        <div class="severity-item severity-low">
+                            <div class="severity-label">LOW</div>
+                            <div class="severity-count" id="lowCount">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detectable Exploits -->
+                <div class="panel panel-info">
+                    <div class="panel-header">
+                        <h3>🔍 Detectable Exploits</h3>
+                    </div>
+                    <div id="exploitList" class="exploit-list">
+                        <p class="loading">Loading exploit signatures...</p>
+                    </div>
+                </div>
+
+                <!-- Attack Types -->
+                <div class="panel panel-info">
+                    <div class="panel-header">
+                        <h3>📊 Attack Type Breakdown</h3>
+                    </div>
+                    <div id="attackTypes" class="attack-types">
+                        <p class="no-data">No attacks detected yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Connection Status Footer -->
+        <footer class="footer">
+            <div class="connection-status">
+                <span id="wsStatus" class="ws-connecting">⚪ Connecting to backend...</span>
+            </div>
+            <div class="footer-info">
+                <span>CS4910 Security Course - Blue Team Training Dashboard</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
