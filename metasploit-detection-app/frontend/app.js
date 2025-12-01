@@ -764,7 +764,7 @@ function checkStaleConnections() {
 function getAttackIcon(attackType) {
     const icons = {
         'ms17_010': '💀',        // EternalBlue
-        'heartbleed': '💔',      // Heartbleed
+        'struts2_rce': '☕',      // Apache Struts2
         'port_scan': '🔍',       // Port scan
         'syn_flood': '🌊',       // SYN flood
         'vsftpd_backdoor': '🚪', // Backdoor
@@ -787,10 +787,10 @@ function getExploitVisuals(attackType) {
             pulseSpeed: 'fast',
             trailEffect: 'electric'
         },
-        // Heartbleed: OpenSSL memory leak, deep red (CVE-2014-0160)
-        'heartbleed': {
-            color: '#991b1b',
-            glowColor: '#dc2626',
+        // Apache Struts2: Java web framework RCE, coffee brown (CVE-2017-5638)
+        'struts2_rce': {
+            color: '#92400e',
+            glowColor: '#d97706',
             size: 10,
             pulseSpeed: 'medium',
             trailEffect: 'solid'

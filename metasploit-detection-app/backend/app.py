@@ -42,11 +42,11 @@ EXPLOIT_SIGNATURES = {
         ],
         'severity': 'CRITICAL'
     },
-    'heartbleed': {
-        'name': 'Heartbleed (CVE-2014-0160)',
-        'description': 'OpenSSL heartbeat memory disclosure',
-        'ports': [443, 8443],
-        'pattern': b'\x01\x00\x40\x00',
+    'struts2_rce': {
+        'name': 'Apache Struts2 RCE (CVE-2017-5638)',
+        'description': 'Apache Struts2 Content-Type RCE',
+        'ports': [80, 8080, 443, 8443],
+        'pattern': b'Content-Type:',
         'severity': 'CRITICAL'
     },
     'vsftpd_backdoor': {
