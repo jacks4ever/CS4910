@@ -224,12 +224,52 @@ class AttackDetector:
     
     def detect_exploit(self, packet):
         """Detect known exploit patterns"""
-        # Check port-based detection first (for exploits targeting specific ports)
+        
+        # PRIORITY 1: Check payload patterns first for specific exploits
+        if packet.haslayer(Raw):
+            payload = bytes(packet[Raw].load)
+            
+            # Check for MS08-067 specific pattern BEFORE generic SMB detection
+            if packet.haslayer(TCP):
+                dst_port = packet[TCP].dport
+                if dst_port == 445 and b'\\x5c\\x00\\x5c\\x00' in payload:
+                    return {
+                        'type': 'ms08_067',
+                        'name': 'MS08-067 Netapi',
+                        'description': 'Windows Server Service RPC exploit',
+                        'severity': 'CRITICAL',
+                        'details': f'Exploit signature detected in payload to port {dst_port}'
+                    }
+            
+            # Check other payload patterns
+            for exploit_id, exploit_info in EXPLOIT_SIGNATURES.items():
+                # Skip ms08_067 as we already checked it above
+                if exploit_id == 'ms08_067':
+                    continue
+                    
+                # Handle both single pattern and multiple patterns
+                patterns = exploit_info.get('patterns', [exploit_info.get('pattern')])
+                if not isinstance(patterns, list):
+                    patterns = [patterns]
+                
+                for pattern in patterns:
+                    if pattern and pattern in payload:
+                        dst_port = packet[TCP].dport if packet.haslayer(TCP) else (packet[UDP].dport if packet.haslayer(UDP) else 0)
+                        
+                        if dst_port in exploit_info['ports'] or not exploit_info['ports']:
+                            return {
+                                'type': exploit_id,
+                                'name': exploit_info['name'],
+                                'description': exploit_info['description'],
+                                'severity': exploit_info['severity'],
+                                'details': f'Exploit signature detected in payload to port {dst_port}'
+                            }
+        
+        # PRIORITY 2: Generic SMB/EternalBlue detection (only if no specific exploit found)
         if packet.haslayer(TCP):
             src_port = packet[TCP].sport
             dst_port = packet[TCP].dport
             
-            # Special handling for SMB/EternalBlue on ports 445/139
             # Check traffic in BOTH directions (dst or src)
             is_smb_traffic = dst_port in [445, 139] or src_port in [445, 139]
             
@@ -264,30 +304,6 @@ class AttackDetector:
                         'details': f'SMB activity on port {target_port} ({tracker["count"]} packets in {elapsed:.1f}s)'
                     }
         
-        # Check payload patterns
-        if not packet.haslayer(Raw):
-            return None
-            
-        payload = bytes(packet[Raw].load)
-        
-        for exploit_id, exploit_info in EXPLOIT_SIGNATURES.items():
-            # Handle both single pattern and multiple patterns
-            patterns = exploit_info.get('patterns', [exploit_info.get('pattern')])
-            if not isinstance(patterns, list):
-                patterns = [patterns]
-            
-            for pattern in patterns:
-                if pattern and pattern in payload:
-                    dst_port = packet[TCP].dport if packet.haslayer(TCP) else (packet[UDP].dport if packet.haslayer(UDP) else 0)
-                    
-                    if dst_port in exploit_info['ports'] or not exploit_info['ports']:
-                        return {
-                            'type': exploit_id,
-                            'name': exploit_info['name'],
-                            'description': exploit_info['description'],
-                            'severity': exploit_info['severity'],
-                            'details': f'Exploit signature detected in payload to port {dst_port}'
-                        }
         return None
     
     def packet_handler(self, packet):
