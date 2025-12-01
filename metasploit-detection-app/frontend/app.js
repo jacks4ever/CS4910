@@ -342,6 +342,57 @@ function markExploitDetected(attackType) {
             }, 500);
         }
     }
+    
+    // Check if all exploits are detected
+    checkAllExploitsDetected();
+}
+
+// Check if all exploits have been detected and trigger confetti
+function checkAllExploitsDetected() {
+    const allExploits = document.querySelectorAll('.exploit-item');
+    const totalExploits = allExploits.length;
+    const detectedCount = detectedExploits.size;
+    
+    if (totalExploits > 0 && detectedCount === totalExploits) {
+        // All exploits detected! Launch confetti
+        launchConfetti();
+    }
+}
+
+// Confetti animation
+function launchConfetti() {
+    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f7dc6f', '#bb8fce', '#52b788'];
+    const confettiCount = 100;
+    
+    for (let i = 0; i < confettiCount; i++) {
+        setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animationDelay = Math.random() * 0.3 + 's';
+            confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            document.body.appendChild(confetti);
+            
+            // Remove confetti after animation
+            setTimeout(() => confetti.remove(), 4000);
+        }, i * 10);
+    }
+    
+    // Show celebration message
+    showCelebrationMessage();
+}
+
+function showCelebrationMessage() {
+    const message = document.createElement('div');
+    message.className = 'celebration-message';
+    message.innerHTML = '🎉 All Exploits Detected! 🎉';
+    document.body.appendChild(message);
+    
+    setTimeout(() => {
+        message.style.opacity = '0';
+        setTimeout(() => message.remove(), 500);
+    }, 3000);
 }
 
 // Clear exploit progress

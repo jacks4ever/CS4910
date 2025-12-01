@@ -1052,3 +1052,58 @@ body {
     }
 }
 
+/* Confetti Animation */
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    top: -10px;
+    z-index: 9999;
+    animation: confettiFall linear forwards;
+    pointer-events: none;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(0) rotateZ(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotateZ(720deg);
+        opacity: 0;
+    }
+}
+
+/* Celebration Message */
+.celebration-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px 60px;
+    border-radius: 20px;
+    font-size: 2.5em;
+    font-weight: bold;
+    text-align: center;
+    z-index: 10000;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: celebrationPop 0.5s ease-out;
+    transition: opacity 0.5s;
+}
+
+@keyframes celebrationPop {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
