@@ -1,4 +1,4 @@
-/* Metasploit Attack Detection Dashboard - Styles */
+/* Exploit Attack Detection Dashboard - Styles */
 
 * {
     margin: 0;
@@ -161,7 +161,7 @@ body {
     font-weight: 600;
 }
 
-/* Attacker Computer - Metasploit (Red) */
+/* Attacker Computer - Exploit (Red) */
 .attacker-monitor {
     fill: var(--bg-tertiary);
     stroke: var(--critical);

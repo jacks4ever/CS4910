@@ -1,4 +1,4 @@
-// Metasploit Attack Detection Dashboard - JavaScript
+// Exploit Attack Detection Dashboard - JavaScript
 
 // Configuration - Auto-detect backend URL
 function getBackendURL() {
@@ -77,7 +77,7 @@ function stopOverheatSound() {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Initializing Metasploit Attack Detection Dashboard...');
+    console.log('Initializing Exploit Attack Detection Dashboard...');
     
     // Load whitelist
     loadWhitelist();
@@ -1175,7 +1175,7 @@ function updateTrafficMetrics() {
 // Log initialization
 console.log(`
 ╔══════════════════════════════════════════════════════╗
-║   Metasploit Attack Detection Dashboard v1.0        ║
+║   Exploit Attack Detection Dashboard v1.0        ║
 ║   Blue Team Security Monitoring System              ║
 ╚══════════════════════════════════════════════════════╝
 

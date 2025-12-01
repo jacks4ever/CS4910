@@ -1,4 +1,4 @@
-# Audio Files for Metasploit Detection Dashboard
+# Audio Files for Exploit Detection Dashboard
 
 This directory should contain the following audio files for sound effects:
 
