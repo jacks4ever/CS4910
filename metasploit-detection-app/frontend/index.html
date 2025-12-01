@@ -49,34 +49,34 @@
                     <svg id="networkSvg" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet">
                         <!-- Attacker Node (Left) - Attack Computer -->
                         <g id="attackerNode" class="node">
-                            <!-- Computer Monitor -->
-                            <rect x="60" y="115" width="80" height="55" rx="4" class="attacker-monitor"/>
-                            <rect x="65" y="120" width="70" height="45" class="attacker-screen"/>
+                            <!-- Computer Monitor (2x larger) -->
+                            <rect x="20" y="80" width="160" height="110" rx="6" class="attacker-monitor"/>
+                            <rect x="30" y="90" width="140" height="90" class="attacker-screen"/>
                             <!-- Monitor Stand -->
-                            <rect x="92" y="170" width="16" height="10" class="attacker-stand"/>
-                            <rect x="80" y="180" width="40" height="5" class="attacker-base"/>
+                            <rect x="84" y="190" width="32" height="20" class="attacker-stand"/>
+                            <rect x="60" y="210" width="80" height="10" class="attacker-base"/>
                             <!-- Hacker Icon -->
-                            <image x="75" y="127" width="50" height="30" href="hacker.png" preserveAspectRatio="xMidYMid meet"/>
+                            <image x="50" y="105" width="100" height="60" href="hacker.png" preserveAspectRatio="xMidYMid meet"/>
                             <!-- Labels -->
-                            <text x="100" y="210" text-anchor="middle" class="node-label">Attack System</text>
-                            <text x="100" y="240" text-anchor="middle" class="node-ip" id="attackerIP">---</text>
+                            <text x="100" y="240" text-anchor="middle" class="node-label">Attack System</text>
+                            <text x="100" y="265" text-anchor="middle" class="node-ip" id="attackerIP">---</text>
                         </g>
                         
                         <!-- Target Node (Right) - Victim Computer -->
                         <g id="targetNode" class="node">
-                            <!-- Computer Monitor -->
-                            <rect x="660" y="115" width="80" height="55" rx="4" class="victim-monitor"/>
-                            <rect x="665" y="120" width="70" height="45" class="victim-screen"/>
+                            <!-- Computer Monitor (2x larger) -->
+                            <rect x="620" y="80" width="160" height="110" rx="6" class="victim-monitor"/>
+                            <rect x="630" y="90" width="140" height="90" class="victim-screen"/>
                             <!-- Monitor Stand -->
-                            <rect x="692" y="170" width="16" height="10" class="victim-stand"/>
-                            <rect x="680" y="180" width="40" height="5" class="victim-base"/>
+                            <rect x="684" y="190" width="32" height="20" class="victim-stand"/>
+                            <rect x="660" y="210" width="80" height="10" class="victim-base"/>
                             <!-- Labels -->
-                            <text x="700" y="210" text-anchor="middle" class="node-label">Victim System</text>
-                            <text x="700" y="240" text-anchor="middle" class="node-ip" id="targetIP">---</text>
+                            <text x="700" y="240" text-anchor="middle" class="node-label">Victim System</text>
+                            <text x="700" y="265" text-anchor="middle" class="node-ip" id="targetIP">---</text>
                         </g>
                         
-                        <!-- Attack Path Line -->
-                        <line x1="150" y1="145" x2="650" y2="145" class="attack-path" id="attackPath"/>
+                        <!-- Attack Path Line (adjusted for larger monitors) -->
+                        <line x1="180" y1="135" x2="620" y2="135" class="attack-path" id="attackPath"/>
                         
                         <!-- Active Connection Lines (will be created dynamically) -->
                         <g id="connectionLines"></g>

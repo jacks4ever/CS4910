@@ -537,10 +537,10 @@ function animateAttack(attack) {
     const attackIcon = getAttackIcon(attack.attack_type);
     
     // Determine animation direction
-    // Normal attacks: LEFT (150) to RIGHT (650) - attacker to victim
-    // Reverse shell: RIGHT (650) to LEFT (150) - victim to attacker
-    const startX = isReverseShell ? 650 : 150;
-    const endX = isReverseShell ? 150 : 650;
+    // Normal attacks: LEFT (180) to RIGHT (620) - attacker to victim
+    // Reverse shell: RIGHT (620) to LEFT (180) - victim to attacker
+    const startX = isReverseShell ? 620 : 180;
+    const endX = isReverseShell ? 180 : 620;
     
     // Create packet group (packet + icon + trail)
     const packetsGroup = document.getElementById('attackPackets');
@@ -552,9 +552,9 @@ function animateAttack(attack) {
     const trail = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     trail.setAttribute('class', 'packet-trail');
     trail.setAttribute('x1', startX);
-    trail.setAttribute('y1', '145');
+    trail.setAttribute('y1', '135');
     trail.setAttribute('x2', startX);
-    trail.setAttribute('y2', '145');
+    trail.setAttribute('y2', '135');
     trail.setAttribute('stroke', exploitVisuals.glowColor);
     trail.setAttribute('stroke-width', exploitVisuals.trailEffect === 'solid-thick' ? '8' : '5');
     
@@ -574,7 +574,7 @@ function animateAttack(attack) {
     // Create animated packet circle with glow effect
     const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     packet.setAttribute('cx', startX);
-    packet.setAttribute('cy', '145');
+    packet.setAttribute('cy', '135');
     packet.setAttribute('r', exploitVisuals.size);
     packet.setAttribute('fill', exploitVisuals.color);
     packet.setAttribute('stroke', exploitVisuals.glowColor);
@@ -590,7 +590,7 @@ function animateAttack(attack) {
     // Create icon on packet
     const icon = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     icon.setAttribute('x', startX);
-    icon.setAttribute('y', '150');
+    icon.setAttribute('y', '140');
     icon.setAttribute('text-anchor', 'middle');
     icon.setAttribute('font-size', '20');
     icon.textContent = attackIcon;
@@ -635,17 +635,17 @@ function animateAttack(attack) {
         // Update packet position with pronounced wave motion
         const wave = Math.sin(progress * Math.PI * 3) * 15;
         packet.setAttribute('cx', position);
-        packet.setAttribute('cy', 145 + wave);
+        packet.setAttribute('cy', 135 + wave);
         packet.setAttribute('opacity', 1 - progress * 0.3);
         
         // Update icon position
         icon.setAttribute('x', position);
-        icon.setAttribute('y', 150 + wave);
+        icon.setAttribute('y', 140 + wave);
         icon.setAttribute('opacity', 1 - progress * 0.3);
         
         // Update trail
         trail.setAttribute('x2', position);
-        trail.setAttribute('y2', 145 + wave);
+        trail.setAttribute('y2', 135 + wave);
         
         if (progress < 1) {
             requestAnimationFrame(animate);
@@ -706,28 +706,28 @@ function createCracksGroup() {
 
 // Add a crack line to the victim computer (glass-breaking effect)
 function addCrack(cracksGroup, crackNumber) {
-    // Glass shatter patterns - realistic branching cracks with spider-web effect
+    // Glass shatter patterns - realistic branching cracks with spider-web effect (adjusted for 2x larger screen)
     const crackPatterns = [
-        // Crack 1: Top-left impact with branches
-        'M 680 130 L 690 140 M 685 135 L 675 128 M 690 140 L 695 145 L 685 150 M 690 140 L 688 148',
+        // Crack 1: Top-left impact with branches (adjusted for new screen coords)
+        'M 640 90 L 650 105 M 645 95 L 635 88 M 650 105 L 655 115 M 650 105 L 648 118',
         
         // Crack 2: Top-right with multiple branches
-        'M 720 125 L 715 135 M 720 125 L 725 120 M 715 135 L 710 145 M 715 135 L 720 142 L 725 150',
+        'M 760 85 L 755 100 M 760 85 L 765 80 M 755 100 L 750 115 M 755 100 L 760 112 L 765 125',
         
         // Crack 3: Left side spider-web
-        'M 670 140 L 680 145 M 675 143 L 668 146 M 680 145 L 685 150 M 680 145 L 682 138',
+        'M 630 110 L 645 120 M 638 118 L 628 125 M 645 120 L 655 130 M 645 120 L 648 108',
         
         // Crack 4: Right side radiating cracks
-        'M 730 135 L 722 145 M 726 140 L 733 138 M 722 145 L 718 152 M 722 145 L 728 150 M 722 145 L 725 155',
+        'M 770 105 L 762 120 M 766 115 L 773 108 M 762 120 L 758 132 M 762 120 L 768 130 M 762 120 L 765 140',
         
         // Crack 5: Center impact with star pattern
-        'M 700 135 L 700 145 M 700 140 L 692 137 M 700 140 L 708 137 M 700 145 L 695 152 M 700 145 L 705 152 M 700 145 L 700 155',
+        'M 700 105 L 700 120 M 700 115 L 692 107 M 700 115 L 708 107 M 700 120 L 695 132 M 700 120 L 705 132 M 700 120 L 700 140',
         
         // Crack 6: Bottom diagonal with spreading
-        'M 675 155 L 690 148 M 682 152 L 675 160 M 690 148 L 700 145 M 690 148 L 695 155 M 700 145 L 710 148 M 710 148 L 720 152 M 710 148 L 715 155',
+        'M 635 140 L 650 128 M 642 137 L 635 150 M 650 128 L 700 120 M 650 128 L 655 140 M 700 120 L 710 128 M 710 128 L 720 137 M 710 128 L 715 140',
         
-        // Crack 7: Final devastating full shatter
-        'M 665 120 L 700 147 M 665 120 L 672 115 M 665 120 L 660 125 M 700 147 L 735 170 M 700 147 L 730 165 M 735 170 L 738 173 M 680 125 L 700 140 M 720 128 L 710 140 M 685 160 L 695 150 M 715 160 L 705 150 M 670 135 L 690 145 M 730 140 L 710 145'
+        // Crack 7: Final devastating full shatter (adjusted for larger screen)
+        'M 625 80 L 700 135 M 625 80 L 632 70 M 625 80 L 620 90 M 700 135 L 775 180 M 700 135 L 770 165 M 775 180 L 778 185 M 640 85 L 700 120 M 760 88 L 750 110 M 645 160 L 655 140 M 755 160 L 745 140 M 630 105 L 650 125 M 770 110 L 750 125'
     ];
     
     if (crackNumber <= crackPatterns.length) {
@@ -885,15 +885,15 @@ function showConnectionLine(srcIP, dstIP) {
     // Create connection line (victim to attacker for reverse shell)
     const connectionGroup = document.getElementById('connectionLines');
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', '650');  // From victim (right)
-    line.setAttribute('y1', '145');
-    line.setAttribute('x2', '150');  // To attacker (left)
-    line.setAttribute('y2', '145');
+    line.setAttribute('x1', '620');  // From victim (right)
+    line.setAttribute('y1', '135');
+    line.setAttribute('x2', '180');  // To attacker (left)
+    line.setAttribute('y2', '135');
     line.setAttribute('class', 'connection-line');
     line.setAttribute('id', `conn-${connectionKey.replace(/[.:]/g, '-')}`);
     
     // Calculate line length for animation (distance from right to left)
-    const lineLength = 500; // 650 - 150 = 500
+    const lineLength = 440; // 620 - 180 = 440
     
     // Set up stroke-dasharray for drawing animation
     line.style.strokeDasharray = lineLength;
