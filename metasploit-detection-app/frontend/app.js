@@ -437,7 +437,7 @@ function launchConfetti() {
 function showCelebrationMessage() {
     const message = document.createElement('div');
     message.className = 'celebration-message';
-    message.innerHTML = '🎉 All Exploits Detected! 🎉';
+    message.innerHTML = '💀 You have been pwned 💀';
     document.body.appendChild(message);
     
     setTimeout(() => {
