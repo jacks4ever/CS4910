@@ -52,6 +52,7 @@ function saveWhitelist() {
 // Audio Effects Functions
 let audioContext = null;
 let audioInitialized = false;
+let audioAutoPrimed = false;
 let webAudioSupported = !!(window.AudioContext || window.webkitAudioContext);
 const optionalAudioSources = {
     glassBreak: ['sounds/glass_break.mp3', 'sounds/glass_break.wav'],
@@ -110,6 +111,7 @@ async function initAudioOnInteraction() {
         await resumeAudioContext();
         console.log('Audio initialization complete');
     }
+    enableAudioOnLoad(true);
 }
 
 
@@ -117,6 +119,47 @@ async function initAudioOnInteraction() {
 document.addEventListener('click', initAudioOnInteraction, { once: false });
 document.addEventListener('keydown', initAudioOnInteraction, { once: false });
 document.addEventListener('touchstart', initAudioOnInteraction, { once: false });
+
+async function primeAudioElement(elementId) {
+    const audioEl = document.getElementById(elementId);
+    if (!audioEl || (!audioEl.src && !audioEl.currentSrc)) {
+        return false;
+    }
+
+    try {
+        audioEl.muted = true;
+        audioEl.currentTime = 0;
+        const playPromise = audioEl.play();
+        if (playPromise && typeof playPromise.then === 'function') {
+            await playPromise;
+        }
+        audioEl.pause();
+        audioEl.currentTime = 0;
+        console.log(`Primed audio element: ${elementId}`);
+        return true;
+    } catch (err) {
+        console.log(`Auto-prime blocked for ${elementId}:`, err);
+        return false;
+    } finally {
+        audioEl.muted = false;
+    }
+}
+
+async function enableAudioOnLoad(force = false) {
+    if (audioAutoPrimed && !force) {
+        return;
+    }
+
+    console.log('Attempting to auto-enable audio...');
+    await resumeAudioContext();
+
+    const ids = ['glassBreakSound', 'overheatSound', 'pacmanDeathSound'];
+    const results = await Promise.all(ids.map(primeAudioElement));
+    if (results.some((success) => success)) {
+        audioAutoPrimed = true;
+        console.log('Audio primed automatically');
+    }
+}
 
 // Probe optional audio files so we only load ones that exist
 async function detectOptionalAudio() {
@@ -567,7 +610,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load whitelist
     loadWhitelist();
 
-    detectOptionalAudio();
+    detectOptionalAudio().finally(() => {
+        enableAudioOnLoad();
+    });
+    enableAudioOnLoad();
     startRandomSkullFloat();
 
     // Setup event listeners
@@ -610,6 +656,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Check for stale connections every 2 seconds
     setInterval(checkStaleConnections, 2000);
+});
+
+window.addEventListener('load', () => {
+    enableAudioOnLoad();
 });
 
 // WebSocket Connection
