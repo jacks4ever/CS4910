@@ -704,36 +704,86 @@ function createCracksGroup() {
     return cracksGroup;
 }
 
-// Add a crack line to the victim computer
+// Add a crack line to the victim computer (glass-breaking effect)
 function addCrack(cracksGroup, crackNumber) {
-    const crack = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    crack.setAttribute('stroke', '#ff0000');
-    crack.setAttribute('stroke-width', '2');
-    crack.setAttribute('fill', 'none');
-    crack.setAttribute('opacity', '0');
-    crack.style.filter = 'drop-shadow(0 0 3px #ff0000)';
-    
-    // Different crack patterns for each exploit
+    // Glass shatter patterns - realistic branching cracks with spider-web effect
     const crackPatterns = [
-        'M 680 130 L 690 145 L 685 160',  // Top left
-        'M 720 125 L 715 140 L 725 155',  // Top right
-        'M 670 140 L 695 145 L 670 150',  // Left side
-        'M 730 135 L 715 145 L 735 160',  // Right side
-        'M 685 125 L 700 145 L 715 125',  // Top center
-        'M 675 155 L 700 145 L 725 165',  // Bottom diagonal
-        'M 665 120 L 700 147 L 735 170',  // Final devastating crack
+        // Crack 1: Top-left impact with branches
+        'M 680 130 L 690 140 M 685 135 L 675 128 M 690 140 L 695 145 L 685 150 M 690 140 L 688 148',
+        
+        // Crack 2: Top-right with multiple branches
+        'M 720 125 L 715 135 M 720 125 L 725 120 M 715 135 L 710 145 M 715 135 L 720 142 L 725 150',
+        
+        // Crack 3: Left side spider-web
+        'M 670 140 L 680 145 M 675 143 L 668 146 M 680 145 L 685 150 M 680 145 L 682 138',
+        
+        // Crack 4: Right side radiating cracks
+        'M 730 135 L 722 145 M 726 140 L 733 138 M 722 145 L 718 152 M 722 145 L 728 150 M 722 145 L 725 155',
+        
+        // Crack 5: Center impact with star pattern
+        'M 700 135 L 700 145 M 700 140 L 692 137 M 700 140 L 708 137 M 700 145 L 695 152 M 700 145 L 705 152 M 700 145 L 700 155',
+        
+        // Crack 6: Bottom diagonal with spreading
+        'M 675 155 L 690 148 M 682 152 L 675 160 M 690 148 L 700 145 M 690 148 L 695 155 M 700 145 L 710 148 M 710 148 L 720 152 M 710 148 L 715 155',
+        
+        // Crack 7: Final devastating full shatter
+        'M 665 120 L 700 147 M 665 120 L 672 115 M 665 120 L 660 125 M 700 147 L 735 170 M 700 147 L 730 165 M 735 170 L 738 173 M 680 125 L 700 140 M 720 128 L 710 140 M 685 160 L 695 150 M 715 160 L 705 150 M 670 135 L 690 145 M 730 140 L 710 145'
     ];
     
     if (crackNumber <= crackPatterns.length) {
+        const crack = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         crack.setAttribute('d', crackPatterns[crackNumber - 1]);
+        crack.setAttribute('stroke', '#ffffff');  // White cracks like broken glass
+        crack.setAttribute('stroke-width', crackNumber === 7 ? '2.5' : '1.5');
+        crack.setAttribute('fill', 'none');
+        crack.setAttribute('opacity', '0');
+        crack.setAttribute('stroke-linecap', 'round');
+        crack.setAttribute('stroke-linejoin', 'round');
+        
+        // Glass-like effect with blue-white shimmer
+        crack.style.filter = 'drop-shadow(0 0 2px rgba(100, 200, 255, 0.8)) drop-shadow(0 0 4px rgba(255, 255, 255, 0.6))';
+        
         cracksGroup.appendChild(crack);
         
-        // Animate crack appearing
+        // Animate crack appearing with glass-breaking effect
         setTimeout(() => {
-            crack.setAttribute('opacity', '0.9');
-            crack.style.transition = 'opacity 0.3s';
-        }, 100);
+            crack.setAttribute('opacity', '0.85');
+            crack.style.transition = 'opacity 0.2s ease-out';
+        }, 50);
+        
+        // Add glass fragment highlights
+        if (crackNumber >= 3) {
+            addGlassFragments(cracksGroup, crackNumber);
+        }
     }
+}
+
+// Add glass fragment highlights for more realistic shattering
+function addGlassFragments(cracksGroup, crackNumber) {
+    const fragmentPositions = [
+        { x: 685, y: 145 },
+        { x: 710, y: 140 },
+        { x: 695, y: 155 }
+    ];
+    
+    fragmentPositions.forEach((pos, index) => {
+        if (index < crackNumber - 2) {
+            const fragment = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            fragment.setAttribute('cx', pos.x);
+            fragment.setAttribute('cy', pos.y);
+            fragment.setAttribute('r', '1.5');
+            fragment.setAttribute('fill', '#ffffff');
+            fragment.setAttribute('opacity', '0');
+            fragment.style.filter = 'blur(0.5px)';
+            
+            cracksGroup.appendChild(fragment);
+            
+            setTimeout(() => {
+                fragment.setAttribute('opacity', '0.7');
+                fragment.style.transition = 'opacity 0.3s';
+            }, 100 + index * 50);
+        }
+    });
 }
 
 function createSmallPacket(severityClass, startX) {
