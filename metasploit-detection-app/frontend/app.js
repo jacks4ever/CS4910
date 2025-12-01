@@ -556,7 +556,7 @@ function animateAttack(attack) {
     trail.setAttribute('x2', startX);
     trail.setAttribute('y2', '145');
     trail.setAttribute('stroke', exploitVisuals.glowColor);
-    trail.setAttribute('stroke-width', exploitVisuals.trailEffect === 'solid-thick' ? '4' : '2');
+    trail.setAttribute('stroke-width', exploitVisuals.trailEffect === 'solid-thick' ? '8' : '5');
     
     // Apply trail effect styling
     if (exploitVisuals.trailEffect === 'dashed') {
@@ -578,8 +578,8 @@ function animateAttack(attack) {
     packet.setAttribute('r', exploitVisuals.size);
     packet.setAttribute('fill', exploitVisuals.color);
     packet.setAttribute('stroke', exploitVisuals.glowColor);
-    packet.setAttribute('stroke-width', '2');
-    packet.style.filter = `drop-shadow(0 0 8px ${exploitVisuals.glowColor})`;
+    packet.setAttribute('stroke-width', '4');
+    packet.style.filter = `drop-shadow(0 0 20px ${exploitVisuals.glowColor}) drop-shadow(0 0 10px ${exploitVisuals.glowColor})`;
     
     // Add pulsing animation based on speed
     const pulseClass = `pulse-${exploitVisuals.pulseSpeed}`;
@@ -592,7 +592,7 @@ function animateAttack(attack) {
     icon.setAttribute('x', startX);
     icon.setAttribute('y', '150');
     icon.setAttribute('text-anchor', 'middle');
-    icon.setAttribute('font-size', '12');
+    icon.setAttribute('font-size', '20');
     icon.textContent = attackIcon;
     packetGroup.appendChild(icon);
     
@@ -613,12 +613,12 @@ function animateAttack(attack) {
     }
     
     // Make animation more pronounced with larger packet
-    packet.setAttribute('r', exploitVisuals.size * 1.5);
-    packet.setAttribute('stroke-width', '3');
+    packet.setAttribute('r', exploitVisuals.size * 2.2);
+    packet.setAttribute('stroke-width', '5');
     
     // Animate packet
     let position = startX;
-    const duration = 2500; // 2.5 seconds for more dramatic effect
+    const duration = 3000; // 3 seconds for more dramatic effect
     const startTime = Date.now();
     
     const animate = () => {
@@ -632,8 +632,8 @@ function animateAttack(attack) {
         
         position = startX + (endX - startX) * easeProgress;
         
-        // Update packet position with slight wave motion
-        const wave = Math.sin(progress * Math.PI * 3) * 8;
+        // Update packet position with pronounced wave motion
+        const wave = Math.sin(progress * Math.PI * 3) * 15;
         packet.setAttribute('cx', position);
         packet.setAttribute('cy', 145 + wave);
         packet.setAttribute('opacity', 1 - progress * 0.3);
@@ -914,7 +914,7 @@ function getExploitVisuals(attackType) {
         'ms17_010': {
             color: '#3b82f6',
             glowColor: '#60a5fa',
-            size: 12,
+            size: 18,
             pulseSpeed: 'fast',
             trailEffect: 'electric'
         },
@@ -922,7 +922,7 @@ function getExploitVisuals(attackType) {
         'struts2_rce': {
             color: '#92400e',
             glowColor: '#d97706',
-            size: 10,
+            size: 16,
             pulseSpeed: 'medium',
             trailEffect: 'solid'
         },
@@ -930,7 +930,7 @@ function getExploitVisuals(attackType) {
         'vsftpd_backdoor': {
             color: '#7c3aed',
             glowColor: '#a78bfa',
-            size: 9,
+            size: 15,
             pulseSpeed: 'slow',
             trailEffect: 'dashed'
         },
@@ -938,7 +938,7 @@ function getExploitVisuals(attackType) {
         'tomcat_mgr': {
             color: '#ea580c',
             glowColor: '#fb923c',
-            size: 10,
+            size: 16,
             pulseSpeed: 'medium',
             trailEffect: 'dotted'
         },
@@ -946,7 +946,7 @@ function getExploitVisuals(attackType) {
         'shellshock': {
             color: '#16a34a',
             glowColor: '#4ade80',
-            size: 11,
+            size: 17,
             pulseSpeed: 'fast',
             trailEffect: 'electric'
         },
@@ -954,7 +954,7 @@ function getExploitVisuals(attackType) {
         'sql_injection': {
             color: '#0891b2',
             glowColor: '#22d3ee',
-            size: 10,
+            size: 16,
             pulseSpeed: 'medium',
             trailEffect: 'wavy'
         },
@@ -962,7 +962,7 @@ function getExploitVisuals(attackType) {
         'reverse_shell': {
             color: '#dc2626',
             glowColor: '#ef4444',
-            size: 11,
+            size: 18,
             pulseSpeed: 'fast',
             trailEffect: 'solid-thick'
         }
