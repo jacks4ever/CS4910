@@ -309,24 +309,74 @@ body {
     transform-origin: center;
 }
 
-/* Final destruction effect */
+/* Final destruction effect - overheating and complete meltdown */
 .computer-destroyed .victim-monitor {
-    fill: #300000;
-    stroke: #ff0000;
-    filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.9)) brightness(0.5);
-    animation: flickerDestroyed 0.5s ease-in-out;
+    fill: #ff0000;
+    stroke: #ff4444;
+    stroke-width: 4;
+    filter: drop-shadow(0 0 40px rgba(255, 0, 0, 1)) 
+            drop-shadow(0 0 60px rgba(255, 100, 0, 0.8))
+            drop-shadow(0 0 20px rgba(255, 0, 0, 1));
+    animation: overheatPulse 0.8s ease-in-out infinite, 
+               flickerDestroyed 0.5s ease-in-out;
+}
+
+@keyframes overheatPulse {
+    0%, 100% { 
+        fill: #ff0000;
+        filter: drop-shadow(0 0 40px rgba(255, 0, 0, 1)) 
+                drop-shadow(0 0 60px rgba(255, 100, 0, 0.8));
+    }
+    50% { 
+        fill: #ff3333;
+        filter: drop-shadow(0 0 50px rgba(255, 50, 0, 1)) 
+                drop-shadow(0 0 80px rgba(255, 150, 0, 1));
+    }
 }
 
 @keyframes flickerDestroyed {
     0%, 100% { opacity: 1; }
-    25% { opacity: 0.3; }
-    50% { opacity: 0.8; }
-    75% { opacity: 0.4; }
+    25% { opacity: 0.8; }
+    50% { opacity: 0.9; }
+    75% { opacity: 0.7; }
 }
 
 .computer-destroyed .victim-screen {
-    fill: #ff0000;
-    opacity: 0.2;
+    fill: #ff3300;
+    opacity: 0.9;
+    animation: screenMeltdown 1s ease-in-out infinite;
+}
+
+@keyframes screenMeltdown {
+    0%, 100% { 
+        fill: #ff3300;
+        opacity: 0.9;
+    }
+    50% { 
+        fill: #ff6600;
+        opacity: 1;
+    }
+}
+
+.computer-destroyed .victim-stand {
+    fill: #cc0000;
+    animation: overheatGlow 1s ease-in-out infinite;
+}
+
+.computer-destroyed .victim-base {
+    fill: #cc0000;
+    animation: overheatGlow 1s ease-in-out infinite;
+}
+
+@keyframes overheatGlow {
+    0%, 100% { 
+        fill: #cc0000;
+        opacity: 1;
+    }
+    50% { 
+        fill: #ff4444;
+        opacity: 0.8;
+    }
 }
 
 .panel-secondary {
