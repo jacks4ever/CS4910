@@ -50,20 +50,325 @@ function saveWhitelist() {
 }
 
 // Audio Effects Functions
-function playGlassBreakSound() {
-    const audio = document.getElementById('glassBreakSound');
-    if (audio) {
-        audio.currentTime = 0; // Reset to beginning
-        audio.volume = 0.6; // Moderate volume
-        audio.play().catch(e => console.log('Glass break sound failed:', e));
+let audioContext = null;
+let audioInitialized = false;
+let webAudioSupported = !!(window.AudioContext || window.webkitAudioContext);
+const optionalAudioSources = {
+    glassBreak: ['sounds/glass_break.mp3', 'sounds/glass_break.wav'],
+    overheat: ['sounds/overheat.mp3', 'sounds/overheat.wav']
+};
+const audioAvailability = {
+    glassBreak: false,
+    overheat: false
+};
+
+console.log('Web Audio API supported:', webAudioSupported);
+
+function initAudioContext() {
+    if (!audioContext) {
+        if (!webAudioSupported) {
+            console.error('Web Audio API not supported in this browser');
+            return null;
+        }
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            console.log('Audio context created, state:', audioContext.state);
+        } catch (e) {
+            console.error('Failed to create audio context:', e);
+            return null;
+        }
+    }
+    return audioContext;
+}
+
+async function resumeAudioContext() {
+    const ctx = initAudioContext();
+    if (ctx.state === 'suspended') {
+        try {
+            await ctx.resume();
+            console.log('Audio context resumed, state:', ctx.state);
+            audioInitialized = true;
+            updateAudioStatus();
+        } catch (e) {
+            console.log('Failed to resume audio context:', e);
+        }
+    } else if (ctx.state === 'running') {
+        audioInitialized = true;
+        updateAudioStatus();
+    }
+    return audioInitialized;
+}
+
+// Update audio status indicator
+function updateAudioStatus() {
+    const audioStatusEl = document.getElementById('audioStatus');
+    if (audioInitialized) {
+        audioStatusEl.textContent = '🔊 Ready';
+        audioStatusEl.className = 'status-value status-ready';
+    } else {
+        audioStatusEl.textContent = '⏸️ Click to Enable';
+        audioStatusEl.className = 'status-value status-waiting';
     }
 }
 
-function playOverheatSound() {
+// Initialize audio on user interaction
+async function initAudioOnInteraction() {
+    if (!audioInitialized) {
+        console.log('Initializing audio on user interaction...');
+        await resumeAudioContext();
+        console.log('Audio initialization complete');
+    }
+}
+
+// Dedicated audio enable function
+async function enableAudio() {
+    console.log('Enable Audio button clicked');
+    const btn = document.getElementById('enableAudioBtn');
+    btn.textContent = '⏳ Enabling...';
+    btn.disabled = true;
+
+    try {
+        await initAudioOnInteraction();
+        if (audioInitialized) {
+            btn.textContent = '✅ Audio Enabled';
+            btn.style.background = '#34a853';
+            console.log('Audio successfully enabled');
+
+            // Show success message
+            showAudioNotification('Audio enabled! Try the test buttons below.', 'success');
+        } else {
+            btn.textContent = '❌ Failed - Try Again';
+            btn.style.background = '#ea4335';
+            btn.disabled = false;
+            console.log('Audio enable failed');
+
+            // Show error message
+            showAudioNotification('Audio failed to enable. Check console for details.', 'error');
+        }
+    } catch (e) {
+        console.error('Error enabling audio:', e);
+        btn.textContent = '❌ Error - Try Again';
+        btn.style.background = '#ea4335';
+        btn.disabled = false;
+
+        // Show error message
+        showAudioNotification('Error enabling audio: ' + e.message, 'error');
+    }
+}
+
+// Show audio notification
+function showAudioNotification(message, type) {
+    // Remove existing notification
+    const existing = document.getElementById('audio-notification');
+    if (existing) existing.remove();
+
+    // Create notification
+    const notification = document.createElement('div');
+    notification.id = 'audio-notification';
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        z-index: 10000;
+        max-width: 300px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    `;
+
+    if (type === 'success') {
+        notification.style.background = '#34a853';
+    } else {
+        notification.style.background = '#ea4335';
+    }
+
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// Add user interaction listeners
+document.addEventListener('click', initAudioOnInteraction, { once: false });
+document.addEventListener('keydown', initAudioOnInteraction, { once: false });
+document.addEventListener('touchstart', initAudioOnInteraction, { once: false });
+
+// Probe optional audio files so we only load ones that exist
+async function detectOptionalAudio() {
+    if (!window.fetch) {
+        console.log('Fetch API unavailable; skipping optional audio detection');
+        return;
+    }
+
+    const assets = [
+        { key: 'glassBreak', elementId: 'glassBreakSound' },
+        { key: 'overheat', elementId: 'overheatSound' }
+    ];
+
+    await Promise.all(assets.map(async ({ key, elementId }) => {
+        const audioEl = document.getElementById(elementId);
+        if (!audioEl) {
+            console.log(`Audio element ${elementId} not found`);
+            return;
+        }
+
+        for (const src of optionalAudioSources[key]) {
+            try {
+                const response = await fetch(src, { method: 'HEAD' });
+                if (response.ok) {
+                    audioEl.src = src;
+                    audioAvailability[key] = true;
+                    console.log(`Loaded optional audio asset: ${src}`);
+                    return;
+                }
+                console.log(`Optional audio not found (${response.status}): ${src}`);
+            } catch (err) {
+                console.log(`Optional audio probe failed for ${src}:`, err);
+            }
+        }
+
+        console.log(`No optional audio files detected for ${key}; Web Audio fallback only`);
+    }));
+}
+
+// Fallback sound generation using Web Audio API
+async function playGlassBreakSound() {
+    // Ensure audio context is ready
+    if (!audioInitialized) {
+        await resumeAudioContext();
+    }
+
+    // First try HTML5 audio
+    const audio = document.getElementById('glassBreakSound');
+    if (audio && audio.readyState >= 2) { // HAVE_CURRENT_DATA or better
+        audio.currentTime = 0;
+        audio.volume = 0.6;
+        try {
+            await audio.play();
+            console.log('Glass break sound played successfully');
+            return;
+        } catch (error) {
+            console.log('HTML5 audio failed, using Web Audio fallback:', error);
+        }
+    }
+
+    // Fallback: Generate glass break sound
+    console.log('Using Web Audio fallback for glass break');
+    playGlassBreakFallback();
+}
+
+async function playOverheatSound() {
+    // Ensure audio context is ready
+    if (!audioInitialized) {
+        await resumeAudioContext();
+    }
+
+    // First try HTML5 audio
     const audio = document.getElementById('overheatSound');
-    if (audio) {
-        audio.volume = 0.4; // Lower volume for background effect
-        audio.play().catch(e => console.log('Overheat sound failed:', e));
+    if (audio && audio.readyState >= 2) {
+        audio.volume = 0.4;
+        try {
+            await audio.play();
+            console.log('Overheat sound started successfully');
+            return;
+        } catch (error) {
+            console.log('HTML5 audio failed, using Web Audio fallback:', error);
+        }
+    }
+
+    // Fallback: Generate overheat sound
+    console.log('Using Web Audio fallback for overheat');
+    playOverheatFallback();
+}
+
+function playGlassBreakFallback() {
+    try {
+        const ctx = initAudioContext();
+        console.log('Playing glass break fallback, context state:', ctx ? ctx.state : 'No context');
+        if (!ctx || ctx.state !== 'running') {
+            console.log('Audio context not ready for glass break fallback');
+            return;
+        }
+
+        console.log('Creating glass break sound...');
+        // Create a short, sharp sound like glass breaking
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+
+        // Start with high frequency, drop quickly
+        oscillator.frequency.setValueAtTime(800, ctx.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.1);
+
+        // Quick attack and decay
+        gainNode.gain.setValueAtTime(0, ctx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+
+        oscillator.start(ctx.currentTime);
+        oscillator.stop(ctx.currentTime + 0.15);
+        console.log('Glass break fallback sound generated');
+    } catch (e) {
+        console.log('Web Audio fallback failed:', e);
+    }
+}
+
+function playOverheatFallback() {
+    try {
+        const ctx = initAudioContext();
+        if (!ctx || ctx.state !== 'running') {
+            console.log('Audio context not ready for overheat fallback');
+            return;
+        }
+
+        // Create a continuous crackling/buzzing sound
+        const oscillator1 = ctx.createOscillator();
+        const oscillator2 = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+
+        oscillator1.connect(filter);
+        oscillator2.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(ctx.destination);
+
+        // Set up filter for crackly sound
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1000, ctx.currentTime);
+        filter.Q.setValueAtTime(10, ctx.currentTime);
+
+        // Two oscillators for complex sound
+        oscillator1.frequency.setValueAtTime(60, ctx.currentTime);
+        oscillator2.frequency.setValueAtTime(120, ctx.currentTime);
+
+        // Add some frequency modulation
+        oscillator1.frequency.setValueAtTime(60, ctx.currentTime);
+        oscillator1.frequency.linearRampToValueAtTime(40, ctx.currentTime + 2);
+        oscillator2.frequency.setValueAtTime(120, ctx.currentTime);
+        oscillator2.frequency.linearRampToValueAtTime(80, ctx.currentTime + 2);
+
+        // Volume envelope
+        gainNode.gain.setValueAtTime(0, ctx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.1);
+        gainNode.gain.setValueAtTime(0.2, ctx.currentTime + 1.9);
+        gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + 2);
+
+        oscillator1.start(ctx.currentTime);
+        oscillator2.start(ctx.currentTime);
+        oscillator1.stop(ctx.currentTime + 2);
+        oscillator2.stop(ctx.currentTime + 2);
+        console.log('Overheat fallback sound generated');
+    } catch (e) {
+        console.log('Web Audio fallback failed:', e);
     }
 }
 
@@ -75,17 +380,107 @@ function stopOverheatSound() {
     }
 }
 
+// Test audio function
+async function testAudio() {
+    console.log('=== AUDIO TEST STARTED ===');
+    console.log('Web Audio API supported:', webAudioSupported);
+    console.log('Audio context exists:', !!audioContext);
+    console.log('Audio context state:', audioContext ? audioContext.state : 'No context');
+    console.log('Audio initialized:', audioInitialized);
+
+    if (!webAudioSupported) {
+        alert('Web Audio API not supported in this browser');
+        return;
+    }
+
+    if (!audioInitialized) {
+        console.log('Audio not initialized, attempting to initialize...');
+        await initAudioOnInteraction();
+        console.log('After initialization - Audio context state:', audioContext ? audioContext.state : 'No context');
+        console.log('Audio initialized:', audioInitialized);
+    }
+
+    // Try a simple beep first
+    console.log('Playing simple beep...');
+    playSimpleBeep();
+
+    // Wait a bit, then try glass break
+    setTimeout(async () => {
+        console.log('Playing glass break sound...');
+        await playGlassBreakSound();
+        console.log('=== AUDIO TEST COMPLETE ===');
+    }, 500);
+}
+
+// Simulate attack detection for testing
+function simulateAttack() {
+    console.log('Simulating attack detection...');
+
+    // Create a fake attack event
+    const fakeAttack = {
+        timestamp: new Date().toISOString(),
+        src_ip: '192.168.1.100',
+        dst_ip: '10.0.0.1',
+        src_port: 4444,
+        dst_port: 80,
+        protocol: 'TCP',
+        exploit: {
+            name: 'Test Exploit',
+            severity: 'HIGH',
+            description: 'Simulated attack for testing'
+        },
+        packet_data: 'Simulated packet data'
+    };
+
+    // Trigger the attack handling logic
+    handleAttack(fakeAttack);
+}
+
+// Simple beep function for testing
+function playSimpleBeep() {
+    try {
+        const ctx = initAudioContext();
+        if (!ctx || ctx.state !== 'running') {
+            console.log('Cannot play beep - audio context not ready');
+            return;
+        }
+
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+
+        oscillator.frequency.setValueAtTime(800, ctx.currentTime);
+        gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+
+        oscillator.start(ctx.currentTime);
+        oscillator.stop(ctx.currentTime + 0.5);
+        console.log('Simple beep played');
+    } catch (e) {
+        console.error('Simple beep failed:', e);
+    }
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing Exploit Attack Detection Dashboard...');
-    
+
     // Load whitelist
     loadWhitelist();
-    
+
+    // Initialize audio status
+    updateAudioStatus();
+    detectOptionalAudio();
+
     // Setup event listeners
     document.getElementById('clearBtn').addEventListener('click', clearEvents);
     document.getElementById('whitelistBtn').addEventListener('click', openWhitelistModal);
     document.getElementById('closeModal').addEventListener('click', closeWhitelistModal);
+    document.getElementById('enableAudioBtn').addEventListener('click', enableAudio);
+    document.getElementById('testAudioBtn').addEventListener('click', testAudio);
+    document.getElementById('simulateAttackBtn').addEventListener('click', simulateAttack);
     document.getElementById('addIPBtn').addEventListener('click', addWhitelistIP);
     document.getElementById('clearProgressBtn').addEventListener('click', clearExploitProgress);
     

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exploit Attack Detection - Blue Team Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='14' cy='14' r='10' stroke='%23ffffff' stroke-width='3' fill='none'/%3E%3Cline x1='20' y1='20' x2='28' y2='28' stroke='%23ffffff' stroke-width='3'/%3E%3C/svg%3E">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 </head>
@@ -30,6 +31,13 @@
                 <span id="lastUpdate" class="status-value">Never</span>
             </div>
             <div class="status-item">
+                <span class="status-label">Audio:</span>
+                <span id="audioStatus" class="status-value status-waiting">⏸️ Click to Enable</span>
+            </div>
+            <div class="status-item">
+                <button id="enableAudioBtn" class="btn btn-primary" style="background: #4285f4; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">🎵 Enable Audio</button>
+                <button id="testAudioBtn" class="btn btn-secondary">🔊 Test Sound</button>
+                <button id="simulateAttackBtn" class="btn btn-secondary">⚠️ Simulate Attack</button>
                 <button id="clearBtn" class="btn btn-secondary">Clear Events</button>
                 <button id="whitelistBtn" class="btn btn-secondary">🛡️ Whitelist IPs</button>
             </div>
@@ -194,14 +202,10 @@
 
     <!-- Audio Effects -->
     <audio id="glassBreakSound" preload="auto">
-        <source src="sounds/glass_break.mp3" type="audio/mpeg">
-        <source src="sounds/glass_break.wav" type="audio/wav">
         Your browser does not support the audio element.
     </audio>
     
     <audio id="overheatSound" preload="auto" loop>
-        <source src="sounds/overheat.mp3" type="audio/mpeg">
-        <source src="sounds/overheat.wav" type="audio/wav">
         Your browser does not support the audio element.
     </audio>
 

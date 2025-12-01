@@ -106,6 +106,14 @@ body {
     color: var(--accent-red);
 }
 
+.status-waiting {
+    color: var(--accent-yellow);
+}
+
+.status-ready {
+    color: var(--accent-green);
+}
+
 /* Dashboard Layout */
 .dashboard {
     display: grid;
