@@ -88,3 +88,12 @@ Search terms:
 - **First interaction**: Audio context initializes
 - **Test Sound button**: Plays beep + glass break
 - **Real attacks**: Automatic sound effects during live detection
+
+## Bundled Glass Break Sample
+
+- `sounds/glass_break.wav` now ships with the dashboard so you have a natural glass-shatter reference without hunting for assets.
+- **Source**: Clip `1-20133-A-39.wav` from the [ESC-50 environmental sound dataset](https://github.com/karoldvl/ESC-50) curated by Karol J. Piczak.
+- **License**: Creative Commons Attribution 4.0 (CC BY 4.0). See the [license summary](https://creativecommons.org/licenses/by/4.0/) for details.
+- **Required credit** (include somewhere in your report or demo video):
+	`Glass breaking sample "1-20133-A-39.wav" © Karol J. Piczak / ESC-50 (CC BY 4.0)`
+- The frontend automatically discovers this `.wav` via the existing optional-audio probe logic, so no code changes are necessary—just keep the file in `frontend/sounds/`.
