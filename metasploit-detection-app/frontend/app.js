@@ -685,14 +685,27 @@ function showConnectionLine(srcIP, dstIP) {
     // Create connection line (victim to attacker for reverse shell)
     const connectionGroup = document.getElementById('connectionLines');
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', '650');  // From victim
+    line.setAttribute('x1', '650');  // From victim (right)
     line.setAttribute('y1', '145');
-    line.setAttribute('x2', '150');  // To attacker
+    line.setAttribute('x2', '150');  // To attacker (left)
     line.setAttribute('y2', '145');
     line.setAttribute('class', 'connection-line');
     line.setAttribute('id', `conn-${connectionKey.replace(/[.:]/g, '-')}`);
     
+    // Calculate line length for animation (distance from right to left)
+    const lineLength = 500; // 650 - 150 = 500
+    
+    // Set up stroke-dasharray for drawing animation
+    line.style.strokeDasharray = lineLength;
+    line.style.strokeDashoffset = lineLength;
+    
     connectionGroup.appendChild(line);
+    
+    // Animate line drawing from right to left over 2 seconds
+    setTimeout(() => {
+        line.style.transition = 'stroke-dashoffset 2s ease-out';
+        line.style.strokeDashoffset = '0';
+    }, 10);
     
     // Track connection
     activeConnections.set(connectionKey, {
