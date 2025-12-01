@@ -361,22 +361,57 @@ function checkAllExploitsDetected() {
 
 // Confetti animation
 function launchConfetti() {
-    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f7dc6f', '#bb8fce', '#52b788'];
-    const confettiCount = 100;
+    const colors = [
+        '#FFD700', '#FF6B9D', '#C724B1', '#4169E1', '#00CED1', 
+        '#FF4500', '#32CD32', '#FFD700', '#FF1493', '#1E90FF'
+    ];
+    const confettiCount = 150;
     
     for (let i = 0; i < confettiCount; i++) {
         setTimeout(() => {
             const confetti = document.createElement('div');
             confetti.className = 'confetti';
+            
+            // Random shapes: square, rectangle, or circle
+            const shapes = ['square', 'rectangle', 'circle'];
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            
+            if (shape === 'square') {
+                confetti.style.width = '8px';
+                confetti.style.height = '8px';
+            } else if (shape === 'rectangle') {
+                confetti.style.width = Math.random() > 0.5 ? '12px' : '6px';
+                confetti.style.height = Math.random() > 0.5 ? '6px' : '12px';
+            } else {
+                confetti.style.width = '8px';
+                confetti.style.height = '8px';
+                confetti.style.borderRadius = '50%';
+            }
+            
+            // Position and color
             confetti.style.left = Math.random() * 100 + '%';
             confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            // Add metallic shine
+            if (Math.random() > 0.5) {
+                confetti.style.background = `linear-gradient(135deg, ${colors[Math.floor(Math.random() * colors.length)]} 0%, ${colors[Math.floor(Math.random() * colors.length)]} 100%)`;
+            }
+            
+            // Random physics
+            const drift = (Math.random() - 0.5) * 200; // horizontal drift
+            const rotation = Math.random() * 1440 - 720; // -720 to 720 degrees
+            const duration = Math.random() * 2 + 2.5;
+            
+            confetti.style.setProperty('--drift', drift + 'px');
+            confetti.style.setProperty('--rotation', rotation + 'deg');
+            confetti.style.animationDuration = duration + 's';
             confetti.style.animationDelay = Math.random() * 0.3 + 's';
-            confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            
             document.body.appendChild(confetti);
             
             // Remove confetti after animation
-            setTimeout(() => confetti.remove(), 4000);
-        }, i * 10);
+            setTimeout(() => confetti.remove(), (duration + 0.3) * 1000);
+        }, i * 8);
     }
     
     // Show celebration message
