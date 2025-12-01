@@ -42,11 +42,11 @@ EXPLOIT_SIGNATURES = {
         ],
         'severity': 'CRITICAL'
     },
-    'ms08_067': {
-        'name': 'MS08-067 Netapi',
-        'description': 'Windows Server Service RPC exploit',
-        'ports': [445],
-        'pattern': b'\x5c\x00\x5c\x00',
+    'heartbleed': {
+        'name': 'Heartbleed (CVE-2014-0160)',
+        'description': 'OpenSSL heartbeat memory disclosure',
+        'ports': [443, 8443],
+        'pattern': b'\x01\x00\x40\x00',
         'severity': 'CRITICAL'
     },
     'vsftpd_backdoor': {
@@ -229,31 +229,8 @@ class AttackDetector:
         if packet.haslayer(Raw):
             payload = bytes(packet[Raw].load)
             
-            # Check for MS08-067 specific pattern BEFORE generic SMB detection
-            if packet.haslayer(TCP):
-                dst_port = packet[TCP].dport
-                if dst_port == 445:
-                    # Debug: Show what's in the payload
-                    print(f"[DEBUG] Port 445 payload length: {len(payload)}")
-                    print(f"[DEBUG] Payload (hex): {payload.hex()}")
-                    print(f"[DEBUG] Looking for MS08-067 pattern: 5c005c00")
-                    if b'\x5c\x00\x5c\x00' in payload:
-                        print(f"[DEBUG] ✓ MS08-067 pattern FOUND!")
-                        return {
-                            'type': 'ms08_067',
-                            'name': 'MS08-067 Netapi',
-                            'description': 'Windows Server Service RPC exploit',
-                            'severity': 'CRITICAL',
-                            'details': f'Exploit signature detected in payload to port {dst_port}'
-                        }
-                    else:
-                        print(f"[DEBUG] ✗ MS08-067 pattern NOT found")
-            
-            # Check other payload patterns
+            # Check payload patterns for all exploits
             for exploit_id, exploit_info in EXPLOIT_SIGNATURES.items():
-                # Skip ms08_067 as we already checked it above
-                if exploit_id == 'ms08_067':
-                    continue
                     
                 # Handle both single pattern and multiple patterns
                 patterns = exploit_info.get('patterns', [exploit_info.get('pattern')])

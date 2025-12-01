@@ -764,7 +764,7 @@ function checkStaleConnections() {
 function getAttackIcon(attackType) {
     const icons = {
         'ms17_010': '💀',        // EternalBlue
-        'ms08_067': '💀',        // MS08-067
+        'heartbleed': '💔',      // Heartbleed
         'port_scan': '🔍',       // Port scan
         'syn_flood': '🌊',       // SYN flood
         'vsftpd_backdoor': '🚪', // Backdoor
@@ -787,8 +787,8 @@ function getExploitVisuals(attackType) {
             pulseSpeed: 'fast',
             trailEffect: 'electric'
         },
-        // MS08-067: Classic RPC overflow, deep red (legendary Windows exploit)
-        'ms08_067': {
+        // Heartbleed: OpenSSL memory leak, deep red (CVE-2014-0160)
+        'heartbleed': {
             color: '#991b1b',
             glowColor: '#dc2626',
             size: 10,
