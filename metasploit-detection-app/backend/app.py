@@ -46,7 +46,7 @@ EXPLOIT_SIGNATURES = {
         'name': 'MS08-067 Netapi',
         'description': 'Windows Server Service RPC exploit',
         'ports': [445],
-        'pattern': b'\\x5c\\x00\\x5c\\x00',
+        'pattern': b'\x5c\x00\x5c\x00',
         'severity': 'CRITICAL'
     },
     'vsftpd_backdoor': {
@@ -232,7 +232,7 @@ class AttackDetector:
             # Check for MS08-067 specific pattern BEFORE generic SMB detection
             if packet.haslayer(TCP):
                 dst_port = packet[TCP].dport
-                if dst_port == 445 and b'\\x5c\\x00\\x5c\\x00' in payload:
+                if dst_port == 445 and b'\x5c\x00\x5c\x00' in payload:
                     return {
                         'type': 'ms08_067',
                         'name': 'MS08-067 Netapi',
