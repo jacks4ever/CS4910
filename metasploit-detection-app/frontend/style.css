@@ -290,6 +290,45 @@ body {
     animation: nodePulse 1s ease-in-out infinite;
 }
 
+/* Computer shake effect on exploit impact */
+@keyframes computerShake {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    10% { transform: translate(-3px, 2px) rotate(-1deg); }
+    20% { transform: translate(3px, -2px) rotate(1deg); }
+    30% { transform: translate(-3px, -2px) rotate(-1deg); }
+    40% { transform: translate(3px, 2px) rotate(1deg); }
+    50% { transform: translate(-2px, 2px) rotate(-0.5deg); }
+    60% { transform: translate(2px, -2px) rotate(0.5deg); }
+    70% { transform: translate(-2px, -1px) rotate(-0.5deg); }
+    80% { transform: translate(2px, 1px) rotate(0.5deg); }
+    90% { transform: translate(-1px, 1px) rotate(-0.25deg); }
+}
+
+.computer-shake {
+    animation: computerShake 0.6s ease-in-out;
+    transform-origin: center;
+}
+
+/* Final destruction effect */
+.computer-destroyed .victim-monitor {
+    fill: #300000;
+    stroke: #ff0000;
+    filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.9)) brightness(0.5);
+    animation: flickerDestroyed 0.5s ease-in-out;
+}
+
+@keyframes flickerDestroyed {
+    0%, 100% { opacity: 1; }
+    25% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+    75% { opacity: 0.4; }
+}
+
+.computer-destroyed .victim-screen {
+    fill: #ff0000;
+    opacity: 0.2;
+}
+
 .panel-secondary {
     display: flex;
     flex-direction: column;

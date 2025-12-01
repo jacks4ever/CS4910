@@ -322,6 +322,10 @@ async function loadExploits() {
     }
 }
 
+// Track active animations
+let activeAnimations = 0;
+let allExploitsDetectedPending = false;
+
 // Mark exploit as detected
 function markExploitDetected(attackType) {
     // Add to detected set
@@ -354,7 +358,16 @@ function checkAllExploitsDetected() {
     const detectedCount = detectedExploits.size;
     
     if (totalExploits > 0 && detectedCount === totalExploits) {
-        // All exploits detected! Launch confetti
+        // Mark as pending, wait for animations to finish
+        allExploitsDetectedPending = true;
+        checkAndLaunchConfetti();
+    }
+}
+
+// Launch confetti only when all animations complete
+function checkAndLaunchConfetti() {
+    if (allExploitsDetectedPending && activeAnimations === 0) {
+        allExploitsDetectedPending = false;
         launchConfetti();
     }
 }
@@ -582,6 +595,9 @@ function animateAttack(attack) {
     
     packetsGroup.appendChild(packetGroup);
     
+    // Track active animation
+    activeAnimations++;
+    
     // Add pulse effect to nodes
     const attackerNode = document.getElementById('attackerNode');
     const targetNode = document.getElementById('targetNode');
@@ -593,9 +609,13 @@ function animateAttack(attack) {
         showConnectionLine(attack.src_ip, attack.dst_ip);
     }
     
+    // Make animation more pronounced with larger packet
+    packet.setAttribute('r', exploitVisuals.size * 1.5);
+    packet.setAttribute('stroke-width', '3');
+    
     // Animate packet
     let position = startX;
-    const duration = 2000; // 2 seconds
+    const duration = 2500; // 2.5 seconds for more dramatic effect
     const startTime = Date.now();
     
     const animate = () => {
@@ -609,23 +629,27 @@ function animateAttack(attack) {
         
         position = startX + (endX - startX) * easeProgress;
         
-        // Update packet position
+        // Update packet position with slight wave motion
+        const wave = Math.sin(progress * Math.PI * 3) * 8;
         packet.setAttribute('cx', position);
-        packet.setAttribute('cy', 145);
-        packet.setAttribute('opacity', 1 - progress);
+        packet.setAttribute('cy', 145 + wave);
+        packet.setAttribute('opacity', 1 - progress * 0.3);
         
         // Update icon position
         icon.setAttribute('x', position);
-        icon.setAttribute('y', 150);
-        icon.setAttribute('opacity', 1 - progress);
+        icon.setAttribute('y', 150 + wave);
+        icon.setAttribute('opacity', 1 - progress * 0.3);
         
         // Update trail
         trail.setAttribute('x2', position);
-        trail.setAttribute('y2', 145);
+        trail.setAttribute('y2', 145 + wave);
         
         if (progress < 1) {
             requestAnimationFrame(animate);
         } else {
+            // Impact: shake victim computer and add crack
+            shakeAndCrackVictim();
+            
             // Remove packet after animation
             packetGroup.remove();
             
@@ -633,11 +657,80 @@ function animateAttack(attack) {
             setTimeout(() => {
                 attackerNode.classList.remove('attacker-active');
                 targetNode.classList.remove('target-active');
-            }, 500);
+                
+                // Animation complete
+                activeAnimations--;
+                checkAndLaunchConfetti();
+            }, 800);
         }
     };
     
     requestAnimationFrame(animate);
+}
+
+// Shake and crack victim computer on exploit impact
+function shakeAndCrackVictim() {
+    const targetNode = document.getElementById('targetNode');
+    const victimMonitor = targetNode.querySelector('.victim-monitor');
+    
+    // Add shake effect
+    targetNode.classList.add('computer-shake');
+    setTimeout(() => targetNode.classList.remove('computer-shake'), 600);
+    
+    // Add progressive crack effect
+    const crackCount = detectedExploits.size;
+    const cracksGroup = document.getElementById('computerCracks') || createCracksGroup();
+    
+    // Add new crack based on exploit count
+    addCrack(cracksGroup, crackCount);
+    
+    // On 7th (final) exploit, make it dramatic
+    if (crackCount === 7) {
+        setTimeout(() => {
+            targetNode.classList.add('computer-destroyed');
+        }, 600);
+    }
+}
+
+// Create SVG group for cracks
+function createCracksGroup() {
+    const targetNode = document.getElementById('targetNode');
+    const cracksGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    cracksGroup.setAttribute('id', 'computerCracks');
+    targetNode.appendChild(cracksGroup);
+    return cracksGroup;
+}
+
+// Add a crack line to the victim computer
+function addCrack(cracksGroup, crackNumber) {
+    const crack = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    crack.setAttribute('stroke', '#ff0000');
+    crack.setAttribute('stroke-width', '2');
+    crack.setAttribute('fill', 'none');
+    crack.setAttribute('opacity', '0');
+    crack.style.filter = 'drop-shadow(0 0 3px #ff0000)';
+    
+    // Different crack patterns for each exploit
+    const crackPatterns = [
+        'M 680 130 L 690 145 L 685 160',  // Top left
+        'M 720 125 L 715 140 L 725 155',  // Top right
+        'M 670 140 L 695 145 L 670 150',  // Left side
+        'M 730 135 L 715 145 L 735 160',  // Right side
+        'M 685 125 L 700 145 L 715 125',  // Top center
+        'M 675 155 L 700 145 L 725 165',  // Bottom diagonal
+        'M 665 120 L 700 147 L 735 170',  // Final devastating crack
+    ];
+    
+    if (crackNumber <= crackPatterns.length) {
+        crack.setAttribute('d', crackPatterns[crackNumber - 1]);
+        cracksGroup.appendChild(crack);
+        
+        // Animate crack appearing
+        setTimeout(() => {
+            crack.setAttribute('opacity', '0.9');
+            crack.style.transition = 'opacity 0.3s';
+        }, 100);
+    }
 }
 
 function createSmallPacket(severityClass, startX) {
