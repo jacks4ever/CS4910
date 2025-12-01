@@ -58,10 +58,9 @@ Search terms:
 - **Autoplay Blocked**: Automatic audio playback is blocked without user consent
 
 ### How It Works:
-1. **Initial State**: Audio shows "⏸️ Click to Enable" (yellow)
-2. **User Interaction**: Click anywhere, press a key, or touch the screen
-3. **Audio Enabled**: Status changes to "🔊 Ready" (green)
-4. **Sound Effects**: Glass break and overheat sounds will now play during attacks
+1. **Page Load**: Audio elements pre-load any optional MP3/WAV files automatically (no toggle needed).
+2. **Browser Consent**: Click anywhere, press a key, or touch the screen once after load to satisfy autoplay policies.
+3. **Automatic Playback**: After that first interaction, every exploit-driven event (glass break, overheat, Pac-Man sting) plays without further action.
 
 ### Troubleshooting:
 - If sounds don't play, try clicking anywhere on the page first
@@ -77,25 +76,24 @@ Search terms:
 ## Testing Audio
 
 ### Quick Audio Test:
-1. Load the dashboard in your browser
-2. Click the **"🔊 Test Sound"** button in the status bar
-3. Check the browser console (F12) for debug messages
-4. You should hear a beep followed by a glass break sound
+1. Load the dashboard in your browser and click anywhere once to unlock audio playback.
+2. Open DevTools (F12) and run `playGlassBreakSound();` in the console to trigger the glass shatter cue manually.
+3. Optionally run `playPacmanDeathSound();` to preview the final exploit sting.
+4. Watch the console for confirmation messages (e.g., "Glass break sound played successfully").
 
 ### Full Attack Simulation:
 1. Run the backend detector and generate real attack traffic (or replay the sample test traffic) so the server emits `attack_detected` events
 2. When a live exploit fires, the dashboard will exercise the complete visual + audio sequence automatically
 
 ### Manual Testing Steps:
-1. **Click "🎵 Enable Audio"** in the status bar (or click anywhere/press a key) to satisfy browser policies
-2. **Audio status should change** from "⏸️ Click to Enable" to "🔊 Ready"
-3. **Use test buttons** to verify audio works
-4. **Check browser console** for detailed debug information
+1. **Interact once** (click/key/touch) immediately after the dashboard loads to unlock audio.
+2. **Generate traffic** by running the backend detector plus sample traffic (`test_traffic.py`) so real `attack_detected` events fire.
+3. **Observe logs** in the browser console for audio messages if you need to verify playback details.
 
 ### Expected Behavior:
-- **First interaction**: Audio context initializes
-- **Test Sound button**: Plays beep + glass break
-- **Real attacks**: Automatic sound effects during live detection
+\- **First interaction**: Audio context initializes as soon as you interact with the page.
+\- **Manual console call (optional)**: Running `playGlassBreakSound()` or `playPacmanDeathSound()` triggers the corresponding cue immediately.
+\- **Real attacks**: Automatic sound effects fire during live detection once the browser has been unlocked.
 
 ## Bundled Glass Break Sample
 

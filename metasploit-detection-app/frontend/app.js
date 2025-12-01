@@ -90,27 +90,13 @@ async function resumeAudioContext() {
             await ctx.resume();
             console.log('Audio context resumed, state:', ctx.state);
             audioInitialized = true;
-            updateAudioStatus();
         } catch (e) {
             console.log('Failed to resume audio context:', e);
         }
     } else if (ctx.state === 'running') {
         audioInitialized = true;
-        updateAudioStatus();
     }
     return audioInitialized;
-}
-
-// Update audio status indicator
-function updateAudioStatus() {
-    const audioStatusEl = document.getElementById('audioStatus');
-    if (audioInitialized) {
-        audioStatusEl.textContent = '🔊 Ready';
-        audioStatusEl.className = 'status-value status-ready';
-    } else {
-        audioStatusEl.textContent = '⏸️ Click to Enable';
-        audioStatusEl.className = 'status-value status-waiting';
-    }
 }
 
 // Initialize audio on user interaction
@@ -122,80 +108,6 @@ async function initAudioOnInteraction() {
     }
 }
 
-// Dedicated audio enable function
-async function enableAudio() {
-    console.log('Enable Audio button clicked');
-    const btn = document.getElementById('enableAudioBtn');
-    btn.textContent = '⏳ Enabling...';
-    btn.disabled = true;
-
-    try {
-        await initAudioOnInteraction();
-        if (audioInitialized) {
-            btn.textContent = '✅ Audio Enabled';
-            btn.style.background = '#34a853';
-            console.log('Audio successfully enabled');
-
-            // Show success message
-            showAudioNotification('Audio enabled! Try the test buttons below.', 'success');
-        } else {
-            btn.textContent = '❌ Failed - Try Again';
-            btn.style.background = '#ea4335';
-            btn.disabled = false;
-            console.log('Audio enable failed');
-
-            // Show error message
-            showAudioNotification('Audio failed to enable. Check console for details.', 'error');
-        }
-    } catch (e) {
-        console.error('Error enabling audio:', e);
-        btn.textContent = '❌ Error - Try Again';
-        btn.style.background = '#ea4335';
-        btn.disabled = false;
-
-        // Show error message
-        showAudioNotification('Error enabling audio: ' + e.message, 'error');
-    }
-}
-
-// Show audio notification
-function showAudioNotification(message, type) {
-    // Remove existing notification
-    const existing = document.getElementById('audio-notification');
-    if (existing) existing.remove();
-
-    // Create notification
-    const notification = document.createElement('div');
-    notification.id = 'audio-notification';
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 20px;
-        border-radius: 8px;
-        color: white;
-        font-weight: bold;
-        z-index: 10000;
-        max-width: 300px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    `;
-
-    if (type === 'success') {
-        notification.style.background = '#34a853';
-    } else {
-        notification.style.background = '#ea4335';
-    }
-
-    notification.textContent = message;
-    document.body.appendChild(notification);
-
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.remove();
-        }
-    }, 5000);
-}
 
 // Add user interaction listeners
 document.addEventListener('click', initAudioOnInteraction, { once: false });
@@ -610,64 +522,6 @@ function playPacmanDeathFallback() {
     }
 }
 
-// Test audio function
-async function testAudio() {
-    console.log('=== AUDIO TEST STARTED ===');
-    console.log('Web Audio API supported:', webAudioSupported);
-    console.log('Audio context exists:', !!audioContext);
-    console.log('Audio context state:', audioContext ? audioContext.state : 'No context');
-    console.log('Audio initialized:', audioInitialized);
-
-    if (!webAudioSupported) {
-        alert('Web Audio API not supported in this browser');
-        return;
-    }
-
-    if (!audioInitialized) {
-        console.log('Audio not initialized, attempting to initialize...');
-        await initAudioOnInteraction();
-        console.log('After initialization - Audio context state:', audioContext ? audioContext.state : 'No context');
-        console.log('Audio initialized:', audioInitialized);
-    }
-
-    // Try a simple beep first
-    console.log('Playing simple beep...');
-    playSimpleBeep();
-
-    // Wait a bit, then try glass break
-    setTimeout(async () => {
-        console.log('Playing glass break sound...');
-        await playGlassBreakSound();
-        console.log('=== AUDIO TEST COMPLETE ===');
-    }, 500);
-}
-
-// Simple beep function for testing
-function playSimpleBeep() {
-    try {
-        const ctx = initAudioContext();
-        if (!ctx || ctx.state !== 'running') {
-            console.log('Cannot play beep - audio context not ready');
-            return;
-        }
-
-        const oscillator = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-
-        oscillator.connect(gainNode);
-        gainNode.connect(ctx.destination);
-
-        oscillator.frequency.setValueAtTime(800, ctx.currentTime);
-        gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-
-        oscillator.start(ctx.currentTime);
-        oscillator.stop(ctx.currentTime + 0.5);
-        console.log('Simple beep played');
-    } catch (e) {
-        console.error('Simple beep failed:', e);
-    }
-}
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -676,16 +530,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load whitelist
     loadWhitelist();
 
-    // Initialize audio status
-    updateAudioStatus();
     detectOptionalAudio();
 
     // Setup event listeners
     document.getElementById('clearBtn').addEventListener('click', clearEvents);
     document.getElementById('whitelistBtn').addEventListener('click', openWhitelistModal);
     document.getElementById('closeModal').addEventListener('click', closeWhitelistModal);
-    document.getElementById('enableAudioBtn').addEventListener('click', enableAudio);
-    document.getElementById('testAudioBtn').addEventListener('click', testAudio);
     document.getElementById('addIPBtn').addEventListener('click', addWhitelistIP);
     document.getElementById('clearProgressBtn').addEventListener('click', clearExploitProgress);
     
