@@ -232,14 +232,22 @@ class AttackDetector:
             # Check for MS08-067 specific pattern BEFORE generic SMB detection
             if packet.haslayer(TCP):
                 dst_port = packet[TCP].dport
-                if dst_port == 445 and b'\x5c\x00\x5c\x00' in payload:
-                    return {
-                        'type': 'ms08_067',
-                        'name': 'MS08-067 Netapi',
-                        'description': 'Windows Server Service RPC exploit',
-                        'severity': 'CRITICAL',
-                        'details': f'Exploit signature detected in payload to port {dst_port}'
-                    }
+                if dst_port == 445:
+                    # Debug: Show what's in the payload
+                    print(f"[DEBUG] Port 445 payload length: {len(payload)}")
+                    print(f"[DEBUG] Payload (hex): {payload.hex()}")
+                    print(f"[DEBUG] Looking for MS08-067 pattern: 5c005c00")
+                    if b'\x5c\x00\x5c\x00' in payload:
+                        print(f"[DEBUG] ✓ MS08-067 pattern FOUND!")
+                        return {
+                            'type': 'ms08_067',
+                            'name': 'MS08-067 Netapi',
+                            'description': 'Windows Server Service RPC exploit',
+                            'severity': 'CRITICAL',
+                            'details': f'Exploit signature detected in payload to port {dst_port}'
+                        }
+                    else:
+                        print(f"[DEBUG] ✗ MS08-067 pattern NOT found")
             
             # Check other payload patterns
             for exploit_id, exploit_info in EXPLOIT_SIGNATURES.items():
