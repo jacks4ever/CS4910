@@ -528,13 +528,21 @@ function playPacmanDeathFallback() {
 
 function startRandomSkullFloat() {
     const skull = document.getElementById('attackerSkull');
-    if (!skull) {
+    const monitor = document.querySelector('#attackerNode .attacker-screen');
+    if (!skull || !monitor) {
         return;
     }
 
+    const skullBox = skull.getBBox();
+    const monitorBox = monitor.getBBox();
+    const margin = 6;
+
+    const horizontalRange = Math.max(0, (monitorBox.width - skullBox.width) / 2 - margin);
+    const verticalRange = Math.max(0, (monitorBox.height - skullBox.height) / 2 - margin);
+
     const bounds = {
-        x: { min: -45, max: 45 },
-        y: { min: -30, max: 30 }
+        x: { min: -horizontalRange, max: horizontalRange },
+        y: { min: -verticalRange, max: verticalRange }
     };
     const timing = { min: 3500, max: 6500 };
 
