@@ -66,6 +66,10 @@ const audioAvailability = {
 
 console.log('Web Audio API supported:', webAudioSupported);
 
+function randomBetween(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
 function initAudioContext() {
     if (!audioContext) {
         if (!webAudioSupported) {
@@ -522,6 +526,31 @@ function playPacmanDeathFallback() {
     }
 }
 
+function startRandomSkullFloat() {
+    const skull = document.getElementById('attackerSkull');
+    if (!skull) {
+        return;
+    }
+
+    const bounds = {
+        x: { min: -45, max: 45 },
+        y: { min: -30, max: 30 }
+    };
+    const timing = { min: 3500, max: 6500 };
+
+    const moveSkull = () => {
+        const targetX = randomBetween(bounds.x.min, bounds.x.max);
+        const targetY = randomBetween(bounds.y.min, bounds.y.max);
+        skull.style.transform = `translate(${targetX}px, ${targetY}px)`;
+
+        const nextDelay = randomBetween(timing.min, timing.max);
+        setTimeout(moveSkull, nextDelay);
+    };
+
+    // Kick off after first layout paint
+    setTimeout(moveSkull, 500);
+}
+
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -531,6 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadWhitelist();
 
     detectOptionalAudio();
+    startRandomSkullFloat();
 
     // Setup event listeners
     document.getElementById('clearBtn').addEventListener('click', clearEvents);

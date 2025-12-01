@@ -198,27 +198,10 @@ body {
     font-size: 64px;
     fill: var(--critical);
     filter: drop-shadow(0 0 3px rgba(220, 38, 38, 0.8));
-    animation: skullFloat 5s ease-in-out infinite;
     transform-box: fill-box;
     transform-origin: center;
-}
-
-@keyframes skullFloat {
-    0% {
-        transform: translate(-6px, -4px);
-    }
-    25% {
-        transform: translate(5px, -2px);
-    }
-    50% {
-        transform: translate(6px, 4px);
-    }
-    75% {
-        transform: translate(-4px, 3px);
-    }
-    100% {
-        transform: translate(-6px, -4px);
-    }
+    transition: transform 4s ease-in-out;
+    will-change: transform;
 }
 
 /* Victim Computer (Blue) */
