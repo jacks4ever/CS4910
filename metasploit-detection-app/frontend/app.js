@@ -368,7 +368,10 @@ function checkAllExploitsDetected() {
 function checkAndLaunchConfetti() {
     if (allExploitsDetectedPending && activeAnimations === 0) {
         allExploitsDetectedPending = false;
-        launchConfetti();
+        // Wait 5 seconds after last exploit before showing celebration
+        setTimeout(() => {
+            launchConfetti();
+        }, 5000);
     }
 }
 
