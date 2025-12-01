@@ -463,11 +463,25 @@ if __name__ == '__main__':
     print("=" * 60)
     print("\nNOTE: This application requires ROOT privileges to capture packets")
     print("Run with: sudo python3 app.py")
-    print("\nStarting Flask-SocketIO server on http://0.0.0.0:5000")
+    # Determine the best bind address: prefer real interface IP, fall back to localhost
+    def resolve_bind_host():
+        try:
+            hostname = socket.gethostname()
+            resolved_ip = socket.gethostbyname(hostname)
+            if resolved_ip and not resolved_ip.startswith('127.'):
+                return resolved_ip
+        except socket.gaierror:
+            pass
+        return '127.0.0.1'
+
+    bind_host = resolve_bind_host()
+    bind_port = 5000
+
+    print(f"\nStarting Flask-SocketIO server on http://{bind_host}:{bind_port}")
     print("=" * 60)
     
     # Auto-start detector
     detector.start()
     
     # Run Flask-SocketIO server with proper threading mode
-    socketio.run(app, host='0.0.0.0', port=5001, debug=False, allow_unsafe_werkzeug=True)
+    socketio.run(app, host=bind_host, port=bind_port, debug=False, allow_unsafe_werkzeug=True)
