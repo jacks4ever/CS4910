@@ -49,6 +49,32 @@ function saveWhitelist() {
     localStorage.setItem('whitelistedIPs', JSON.stringify([...whitelistedIPs]));
 }
 
+// Audio Effects Functions
+function playGlassBreakSound() {
+    const audio = document.getElementById('glassBreakSound');
+    if (audio) {
+        audio.currentTime = 0; // Reset to beginning
+        audio.volume = 0.6; // Moderate volume
+        audio.play().catch(e => console.log('Glass break sound failed:', e));
+    }
+}
+
+function playOverheatSound() {
+    const audio = document.getElementById('overheatSound');
+    if (audio) {
+        audio.volume = 0.4; // Lower volume for background effect
+        audio.play().catch(e => console.log('Overheat sound failed:', e));
+    }
+}
+
+function stopOverheatSound() {
+    const audio = document.getElementById('overheatSound');
+    if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+    }
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing Metasploit Attack Detection Dashboard...');
@@ -691,6 +717,8 @@ function shakeAndCrackVictim() {
     if (crackCount === 7) {
         setTimeout(() => {
             targetNode.classList.add('computer-destroyed');
+            // Start overheating sound effect
+            playOverheatSound();
         }, 600);
     }
 }
@@ -744,6 +772,9 @@ function addCrack(cracksGroup, crackNumber) {
         crack.style.filter = 'drop-shadow(0 0 2px rgba(100, 200, 255, 0.8)) drop-shadow(0 0 4px rgba(255, 255, 255, 0.6))';
         
         cracksGroup.appendChild(crack);
+        
+        // Play glass breaking sound effect
+        playGlassBreakSound();
         
         // Animate crack appearing with glass-breaking effect
         setTimeout(() => {
