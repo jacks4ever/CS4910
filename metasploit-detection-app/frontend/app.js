@@ -481,10 +481,9 @@ function animateAttack(attack) {
     document.getElementById('targetIP').textContent = isReverseShell ? attack.src_ip : attack.dst_ip;
     document.getElementById('attackLabel').textContent = attack.attack_name;
     
-    // Get severity color and icon
-    const severityClass = `packet-${attack.severity.toLowerCase()}`;
+    // Get exploit-specific visuals
+    const exploitVisuals = getExploitVisuals(attack.attack_type);
     const attackIcon = getAttackIcon(attack.attack_type);
-    const trailColor = getSeverityColor(attack.severity);
     
     // Determine animation direction
     // Normal attacks: LEFT (150) to RIGHT (650) - attacker to victim
@@ -498,23 +497,43 @@ function animateAttack(attack) {
     const packetId = `packet-${Date.now()}-${Math.random()}`;
     packetGroup.setAttribute('id', packetId);
     
-    // Create trail path
+    // Create trail path with exploit-specific styling
     const trail = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     trail.setAttribute('class', 'packet-trail');
     trail.setAttribute('x1', startX);
     trail.setAttribute('y1', '145');
     trail.setAttribute('x2', startX);
     trail.setAttribute('y2', '145');
-    trail.setAttribute('stroke', trailColor);
+    trail.setAttribute('stroke', exploitVisuals.glowColor);
+    trail.setAttribute('stroke-width', exploitVisuals.trailEffect === 'solid-thick' ? '4' : '2');
+    
+    // Apply trail effect styling
+    if (exploitVisuals.trailEffect === 'dashed') {
+        trail.setAttribute('stroke-dasharray', '8,4');
+    } else if (exploitVisuals.trailEffect === 'dotted') {
+        trail.setAttribute('stroke-dasharray', '2,4');
+    } else if (exploitVisuals.trailEffect === 'electric') {
+        trail.setAttribute('stroke-dasharray', '3,3');
+        trail.style.filter = 'drop-shadow(0 0 3px ' + exploitVisuals.glowColor + ')';
+    }
+    
     trail.style.animation = 'trailFade 0.5s ease-out forwards';
     packetGroup.appendChild(trail);
     
-    // Create animated packet circle
+    // Create animated packet circle with glow effect
     const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     packet.setAttribute('cx', startX);
     packet.setAttribute('cy', '145');
-    packet.setAttribute('r', '8');
-    packet.setAttribute('class', `attack-packet ${severityClass}`);
+    packet.setAttribute('r', exploitVisuals.size);
+    packet.setAttribute('fill', exploitVisuals.color);
+    packet.setAttribute('stroke', exploitVisuals.glowColor);
+    packet.setAttribute('stroke-width', '2');
+    packet.style.filter = `drop-shadow(0 0 8px ${exploitVisuals.glowColor})`;
+    
+    // Add pulsing animation based on speed
+    const pulseClass = `pulse-${exploitVisuals.pulseSpeed}`;
+    packet.classList.add(pulseClass);
+    
     packetGroup.appendChild(packet);
     
     // Create icon on packet
@@ -755,6 +774,76 @@ function getAttackIcon(attackType) {
         'tomcat_mgr': '🐱'       // Tomcat
     };
     return icons[attackType] || '⚠️';
+}
+
+// Get exploit-specific visual properties
+function getExploitVisuals(attackType) {
+    const exploitStyles = {
+        // EternalBlue: Devastating worm-like spread, blue glow (NSA tool leaked)
+        'ms17_010': {
+            color: '#3b82f6',
+            glowColor: '#60a5fa',
+            size: 12,
+            pulseSpeed: 'fast',
+            trailEffect: 'electric'
+        },
+        // MS08-067: Classic RPC overflow, deep red (legendary Windows exploit)
+        'ms08_067': {
+            color: '#991b1b',
+            glowColor: '#dc2626',
+            size: 10,
+            pulseSpeed: 'medium',
+            trailEffect: 'solid'
+        },
+        // VSFTPD Backdoor: Stealthy backdoor, purple/magenta (hidden smiley face trigger)
+        'vsftpd_backdoor': {
+            color: '#7c3aed',
+            glowColor: '#a78bfa',
+            size: 9,
+            pulseSpeed: 'slow',
+            trailEffect: 'dashed'
+        },
+        // Tomcat Manager: Web-based deployment, orange (manager console abuse)
+        'tomcat_mgr': {
+            color: '#ea580c',
+            glowColor: '#fb923c',
+            size: 10,
+            pulseSpeed: 'medium',
+            trailEffect: 'dotted'
+        },
+        // Shellshock: Bash exploit, green terminal (environment variable injection)
+        'shellshock': {
+            color: '#16a34a',
+            glowColor: '#4ade80',
+            size: 11,
+            pulseSpeed: 'fast',
+            trailEffect: 'electric'
+        },
+        // SQL Injection: Database attack, cyan/teal (query manipulation)
+        'sql_injection': {
+            color: '#0891b2',
+            glowColor: '#22d3ee',
+            size: 10,
+            pulseSpeed: 'medium',
+            trailEffect: 'wavy'
+        },
+        // Reverse Shell: Callback connection, bright red (attacker control)
+        'reverse_shell': {
+            color: '#dc2626',
+            glowColor: '#ef4444',
+            size: 11,
+            pulseSpeed: 'fast',
+            trailEffect: 'solid-thick'
+        }
+    };
+    
+    return exploitStyles[attackType] || {
+        color: '#9aa0a6',
+        glowColor: '#6b7280',
+        size: 8,
+        pulseSpeed: 'medium',
+        trailEffect: 'solid'
+    };
 }
 
 // Get Severity Color
