@@ -55,11 +55,13 @@ let audioInitialized = false;
 let webAudioSupported = !!(window.AudioContext || window.webkitAudioContext);
 const optionalAudioSources = {
     glassBreak: ['sounds/glass_break.mp3', 'sounds/glass_break.wav'],
-    overheat: ['sounds/overheat.mp3', 'sounds/overheat.wav']
+    overheat: ['sounds/overheat.mp3', 'sounds/overheat.wav'],
+    pacmanDeath: ['sounds/Pacman-death-sound.mp3']
 };
 const audioAvailability = {
     glassBreak: false,
-    overheat: false
+    overheat: false,
+    pacmanDeath: false
 };
 
 console.log('Web Audio API supported:', webAudioSupported);
@@ -209,7 +211,8 @@ async function detectOptionalAudio() {
 
     const assets = [
         { key: 'glassBreak', elementId: 'glassBreakSound' },
-        { key: 'overheat', elementId: 'overheatSound' }
+        { key: 'overheat', elementId: 'overheatSound' },
+        { key: 'pacmanDeath', elementId: 'pacmanDeathSound' }
     ];
 
     await Promise.all(assets.map(async ({ key, elementId }) => {
@@ -286,6 +289,29 @@ async function playOverheatSound() {
     // Fallback: Generate overheat sound
     console.log('Using Web Audio fallback for overheat');
     playOverheatFallback();
+}
+
+async function playPacmanDeathSound() {
+    // Ensure audio context is ready
+    if (!audioInitialized) {
+        await resumeAudioContext();
+    }
+
+    const audio = document.getElementById('pacmanDeathSound');
+    if (audio && audio.readyState >= 2) {
+        audio.currentTime = 0;
+        audio.volume = 0.8;
+        try {
+            await audio.play();
+            console.log('Pac-Man death sound played successfully');
+            return;
+        } catch (error) {
+            console.log('HTML5 audio failed for Pac-Man sound, using fallback:', error);
+        }
+    }
+
+    console.log('Using Web Audio fallback for Pac-Man death sound');
+    playPacmanDeathFallback();
 }
 
 function playGlassBreakFallback() {
@@ -551,6 +577,36 @@ function stopOverheatSound() {
     if (audio) {
         audio.pause();
         audio.currentTime = 0;
+    }
+}
+
+function playPacmanDeathFallback() {
+    try {
+        const ctx = initAudioContext();
+        if (!ctx || ctx.state !== 'running') {
+            console.log('Audio context not ready for Pac-Man fallback');
+            return;
+        }
+
+        const retroNotes = [1046, 880, 698, 523];
+        const start = ctx.currentTime;
+
+        retroNotes.forEach((freq, index) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, start + index * 0.08);
+            gain.gain.setValueAtTime(0.15, start + index * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + index * 0.08 + 0.12);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start + index * 0.08);
+            osc.stop(start + index * 0.08 + 0.2);
+        });
+
+        console.log('Pac-Man death fallback sound generated');
+    } catch (e) {
+        console.log('Pac-Man fallback generation failed:', e);
     }
 }
 
@@ -1322,6 +1378,10 @@ function addCrack(cracksGroup, crackNumber) {
         
         // Play glass breaking sound effect
         playGlassBreakSound();
+
+        if (crackNumber === 7) {
+            playPacmanDeathSound();
+        }
         
         // Animate crack appearing with glass-breaking effect
         setTimeout(() => {

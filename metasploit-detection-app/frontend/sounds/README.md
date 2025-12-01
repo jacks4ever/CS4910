@@ -26,6 +26,14 @@ This directory can optionally contain audio files for enhanced sound effects. If
 - **Loop**: Yes (continues during celebration)
 - **Fallback**: Web Audio API generates a crackling electronic sound
 
+### Pacman-death-sound.mp3
+- **Purpose**: Plays once when the 7th (final) exploit shatters the victim monitor.
+- **Timing**: Fires alongside the glass-break effect that completes the destruction sequence.
+- **Suggested**: Keep the provided retro "Pac-Man death" sample for instant nostalgia cues.
+- **Volume**: Slightly louder foreground sting (0.8 volume setting) layered on top of the glass break.
+- **Fallback**: Web Audio API recreates a quick descending chiptune arpeggio if the MP3 is missing.
+- **Notes**: Ships as `sounds/Pacman-death-sound.mp3`, auto-detected the same way as the other optional assets.
+
 ## Audio File Sources:
 
 You can find free sound effects at:
@@ -97,3 +105,12 @@ Search terms:
 - **Required credit** (include somewhere in your report or demo video):
 	`Glass breaking sample "1-20133-A-39.wav" © Karol J. Piczak / ESC-50 (CC BY 4.0)`
 - The frontend automatically discovers this `.wav` via the existing optional-audio probe logic, so no code changes are necessary—just keep the file in `frontend/sounds/`.
+
+## Bundled Pac-Man Death Sample
+
+- `sounds/Pacman-death-sound.mp3` ships with the dashboard to add the classic arcade "character defeated" sting when the final exploit lands.
+- **Source**: [Pacman Death Sound](https://orangefreesounds.com/pacman-death-sound/) by Alexander via Orange Free Sounds.
+- **License**: Creative Commons Attribution-NonCommercial 4.0 (CC BY-NC 4.0). See the [license text](https://creativecommons.org/licenses/by-nc/4.0/) for allowed uses.
+- **Required credit** (include alongside your glass-break attribution):
+	`"Pacman Death Sound" © Alexander / Orange Free Sounds (CC BY-NC 4.0)`
+- Usage is limited to non-commercial course/demo scenarios. For commercial work, obtain a different asset.
