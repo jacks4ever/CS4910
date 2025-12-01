@@ -16,7 +16,7 @@ This directory can optionally contain audio files for enhanced sound effects. If
 - **Timing**: Each time a new crack is added (7 times total)
 - **Suggested**: Short glass shattering sound (0.5-1 second)
 - **Volume**: Moderate (0.6 volume setting)
-- **Fallback**: Web Audio API generates a sharp breaking sound
+- **Fallback**: Web Audio API now renders a stereo, multi-layer glass shatter via `OfflineAudioContext` with noise bursts, shard chirps, and cabinet thud for a more realistic effect
 
 ### overheat.mp3 / overheat.wav
 - **Purpose**: Plays when victim computer turns red and overheats (7th exploit)

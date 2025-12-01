@@ -261,7 +261,7 @@ async function playGlassBreakSound() {
 
     // Fallback: Generate glass break sound
     console.log('Using Web Audio fallback for glass break');
-    playGlassBreakFallback();
+    return playGlassBreakFallback();
 }
 
 async function playOverheatSound() {
@@ -294,81 +294,206 @@ function playGlassBreakFallback() {
         console.log('Playing glass break fallback, context state:', ctx ? ctx.state : 'No context');
         if (!ctx || ctx.state !== 'running') {
             console.log('Audio context not ready for glass break fallback');
-            return;
+            return Promise.resolve();
         }
 
-        console.log('Creating multi-layer glass break sound...');
-
-        const masterGain = ctx.createGain();
-        masterGain.gain.setValueAtTime(0.8, ctx.currentTime);
-        masterGain.connect(ctx.destination);
-
-        // Layer 1: white-noise burst for initial impact
-        const noiseDuration = 0.25;
-        const bufferSize = ctx.sampleRate * noiseDuration;
-        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-        const data = noiseBuffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 3); // decay towards end
+        if (typeof OfflineAudioContext !== 'function') {
+            console.log('OfflineAudioContext not available, using realtime fallback');
+            legacyGlassBreak(ctx);
+            return Promise.resolve();
         }
-        const noiseSource = ctx.createBufferSource();
-        noiseSource.buffer = noiseBuffer;
-        const noiseGain = ctx.createGain();
-        noiseGain.gain.setValueAtTime(0, ctx.currentTime);
-        noiseGain.gain.linearRampToValueAtTime(0.7, ctx.currentTime + 0.01);
-        noiseGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + noiseDuration);
-        const noiseFilter = ctx.createBiquadFilter();
-        noiseFilter.type = 'highpass';
-        noiseFilter.frequency.setValueAtTime(1500, ctx.currentTime);
-        noiseSource.connect(noiseFilter);
-        noiseFilter.connect(noiseGain);
-        noiseGain.connect(masterGain);
-        noiseSource.start(ctx.currentTime);
-        noiseSource.stop(ctx.currentTime + noiseDuration);
 
-        // Helper to schedule shard tones (fast pitching-down chirps)
-        const scheduleShard = (frequency, delay, duration) => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(frequency, ctx.currentTime + delay);
-            osc.frequency.exponentialRampToValueAtTime(frequency * 0.4, ctx.currentTime + delay + duration);
-            gain.gain.setValueAtTime(0, ctx.currentTime + delay);
-            gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + delay + 0.01);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
-            osc.connect(gain);
-            gain.connect(masterGain);
-            osc.start(ctx.currentTime + delay);
-            osc.stop(ctx.currentTime + delay + duration + 0.01);
+        console.log('Rendering high-fidelity glass break via OfflineAudioContext...');
+        const duration = 1.2;
+        const sampleRate = ctx.sampleRate || 44100;
+        const offlineCtx = new OfflineAudioContext(2, Math.ceil(sampleRate * duration), sampleRate);
+        const masterGain = offlineCtx.createGain();
+        masterGain.gain.setValueAtTime(0.9, 0);
+        masterGain.connect(offlineCtx.destination);
+
+        const convolver = offlineCtx.createConvolver();
+        const impulse = offlineCtx.createBuffer(2, sampleRate * 0.5, sampleRate);
+        for (let channel = 0; channel < 2; channel++) {
+            const channelData = impulse.getChannelData(channel);
+            for (let i = 0; i < channelData.length; i++) {
+                const decay = Math.pow(1 - i / channelData.length, 2.5);
+                channelData[i] = (Math.random() * 2 - 1) * decay * 0.3;
+            }
+        }
+        convolver.buffer = impulse;
+        masterGain.connect(convolver);
+        convolver.connect(offlineCtx.destination);
+
+        const createNoiseBurst = (start, length, highpassFreq, gainValue, pan = 0) => {
+            const bufferSize = Math.max(offlineCtx.sampleRate * length, 1);
+            const noiseBuffer = offlineCtx.createBuffer(1, bufferSize, offlineCtx.sampleRate);
+            const data = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 3);
+            }
+            const noiseSource = offlineCtx.createBufferSource();
+            noiseSource.buffer = noiseBuffer;
+            const noiseFilter = offlineCtx.createBiquadFilter();
+            noiseFilter.type = 'highpass';
+            noiseFilter.frequency.setValueAtTime(highpassFreq, start);
+            const gainNode = offlineCtx.createGain();
+            gainNode.gain.setValueAtTime(0, start);
+            gainNode.gain.linearRampToValueAtTime(gainValue, start + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, start + length);
+            const panner = offlineCtx.createStereoPanner ? offlineCtx.createStereoPanner() : null;
+            noiseSource.connect(noiseFilter);
+            noiseFilter.connect(gainNode);
+            if (panner) {
+                panner.pan.setValueAtTime(pan, start);
+                gainNode.connect(panner);
+                panner.connect(masterGain);
+            } else {
+                gainNode.connect(masterGain);
+            }
+            noiseSource.start(start);
+            noiseSource.stop(start + length);
         };
 
-        // Layer 2: multiple shards at different offsets
-        const shardSettings = [
-            { freq: 2200, delay: 0.0, duration: 0.18 },
-            { freq: 2600, delay: 0.03, duration: 0.16 },
-            { freq: 1800, delay: 0.05, duration: 0.2 },
-            { freq: 3000, delay: 0.07, duration: 0.14 }
+        const scheduleShard = (frequency, delay, duration, pan = 0) => {
+            const osc = offlineCtx.createOscillator();
+            const gain = offlineCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(frequency, delay);
+            osc.frequency.exponentialRampToValueAtTime(Math.max(80, frequency * 0.3), delay + duration);
+            gain.gain.setValueAtTime(0, delay);
+            gain.gain.linearRampToValueAtTime(0.3, delay + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.001, delay + duration);
+            const panner = offlineCtx.createStereoPanner ? offlineCtx.createStereoPanner() : null;
+            osc.connect(gain);
+            if (panner) {
+                gain.connect(panner);
+                panner.pan.setValueAtTime(pan, delay);
+                panner.connect(masterGain);
+            } else {
+                gain.connect(masterGain);
+            }
+            osc.start(delay);
+            osc.stop(delay + duration + 0.05);
+        };
+
+        createNoiseBurst(0, 0.18, 1800, 0.8, -0.2);
+        createNoiseBurst(0.02, 0.2, 1500, 0.6, 0.4);
+        createNoiseBurst(0.05, 0.25, 1200, 0.5, -0.5);
+
+        const shards = [
+            { freq: 2400, delay: 0.0, duration: 0.2, pan: -0.3 },
+            { freq: 3100, delay: 0.03, duration: 0.18, pan: 0.35 },
+            { freq: 1800, delay: 0.05, duration: 0.25, pan: -0.6 },
+            { freq: 2700, delay: 0.07, duration: 0.22, pan: 0.55 },
+            { freq: 2100, delay: 0.09, duration: 0.24, pan: -0.1 },
+            { freq: 3500, delay: 0.12, duration: 0.18, pan: 0.1 }
         ];
-        shardSettings.forEach(({ freq, delay, duration }) => scheduleShard(freq, delay, duration));
+        shards.forEach(settings => scheduleShard(settings.freq, settings.delay, settings.duration, settings.pan));
 
-        // Layer 3: low “thud” from monitor resonance
-        const thudOsc = ctx.createOscillator();
-        const thudGain = ctx.createGain();
-        thudOsc.type = 'sine';
-        thudOsc.frequency.setValueAtTime(120, ctx.currentTime);
-        thudOsc.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.3);
-        thudGain.gain.setValueAtTime(0, ctx.currentTime);
-        thudGain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.02);
-        thudGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
-        thudOsc.connect(thudGain);
+        const thud = offlineCtx.createOscillator();
+        const thudGain = offlineCtx.createGain();
+        thud.type = 'sine';
+        thud.frequency.setValueAtTime(90, 0);
+        thud.frequency.exponentialRampToValueAtTime(45, 0.4);
+        thudGain.gain.setValueAtTime(0, 0);
+        thudGain.gain.linearRampToValueAtTime(0.3, 0.03);
+        thudGain.gain.exponentialRampToValueAtTime(0.001, 0.45);
+        thud.connect(thudGain);
         thudGain.connect(masterGain);
-        thudOsc.start(ctx.currentTime);
-        thudOsc.stop(ctx.currentTime + 0.4);
+        thud.start(0);
+        thud.stop(0.5);
 
-        console.log('Enhanced glass break fallback sound generated');
+        for (let i = 0; i < 5; i++) {
+            const freq = 1200 + Math.random() * 1800;
+            const delay = 0.15 + Math.random() * 0.3;
+            const duration = 0.25 + Math.random() * 0.2;
+            const pan = Math.random() * 1.6 - 0.8;
+            scheduleShard(freq, delay, duration, pan);
+        }
+
+        return offlineCtx.startRendering().then(renderedBuffer => {
+            const bufferSource = ctx.createBufferSource();
+            bufferSource.buffer = renderedBuffer;
+            bufferSource.connect(ctx.destination);
+            bufferSource.start();
+            console.log('Offline-rendered glass break fallback playback started');
+        }).catch(err => {
+            console.log('Offline rendering failed, falling back to legacy shatter:', err);
+            legacyGlassBreak(ctx);
+        });
     } catch (e) {
         console.log('Web Audio fallback failed:', e);
+        return Promise.resolve();
     }
+}
+
+function legacyGlassBreak(ctx) {
+    const masterGain = ctx.createGain();
+    masterGain.gain.setValueAtTime(0.8, ctx.currentTime);
+    masterGain.connect(ctx.destination);
+
+    const noiseDuration = 0.25;
+    const bufferSize = ctx.sampleRate * noiseDuration;
+    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 3);
+    }
+    const noiseSource = ctx.createBufferSource();
+    noiseSource.buffer = noiseBuffer;
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0, ctx.currentTime);
+    noiseGain.gain.linearRampToValueAtTime(0.7, ctx.currentTime + 0.01);
+    noiseGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + noiseDuration);
+    noiseSource.connect(noiseGain);
+    noiseGain.connect(masterGain);
+    noiseSource.start(ctx.currentTime);
+    noiseSource.stop(ctx.currentTime + noiseDuration);
+
+    const scheduleShard = (frequency, delay, duration, pan = 0) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(frequency, ctx.currentTime + delay);
+        osc.frequency.exponentialRampToValueAtTime(frequency * 0.4, ctx.currentTime + delay + duration);
+        gain.gain.setValueAtTime(0, ctx.currentTime + delay);
+        gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + delay + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
+        const panner = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+        osc.connect(gain);
+        if (panner) {
+            gain.connect(panner);
+            panner.pan.setValueAtTime(pan, ctx.currentTime + delay);
+            panner.connect(masterGain);
+        } else {
+            gain.connect(masterGain);
+        }
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + duration + 0.01);
+    };
+
+    const shardSettings = [
+        { freq: 2200, delay: 0.0, duration: 0.18, pan: -0.2 },
+        { freq: 2600, delay: 0.03, duration: 0.16, pan: 0.25 },
+        { freq: 1800, delay: 0.05, duration: 0.2, pan: -0.4 },
+        { freq: 3000, delay: 0.07, duration: 0.14, pan: 0.4 }
+    ];
+    shardSettings.forEach(({ freq, delay, duration, pan }) => scheduleShard(freq, delay, duration, pan));
+
+    const thudOsc = ctx.createOscillator();
+    const thudGain = ctx.createGain();
+    thudOsc.type = 'sine';
+    thudOsc.frequency.setValueAtTime(120, ctx.currentTime);
+    thudOsc.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.3);
+    thudGain.gain.setValueAtTime(0, ctx.currentTime);
+    thudGain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.02);
+    thudGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+    thudOsc.connect(thudGain);
+    thudGain.connect(masterGain);
+    thudOsc.start(ctx.currentTime);
+    thudOsc.stop(ctx.currentTime + 0.4);
+
+    console.log('Legacy glass break fallback sound generated');
 }
 
 function playOverheatFallback() {
