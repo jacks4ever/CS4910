@@ -667,8 +667,7 @@ function updateWSStatus(message, statusClass) {
 // Update system status
 function updateSystemStatus(message, statusClass) {
     const systemStatus = document.getElementById('systemStatus');
-    const icon = statusClass === 'status-running' ? '●  ' : '●  ';
-    systemStatus.textContent = icon + message;
+    systemStatus.textContent = message;
     systemStatus.className = `status-value ${statusClass}`;
 }
 
