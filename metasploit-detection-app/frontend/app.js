@@ -297,26 +297,75 @@ function playGlassBreakFallback() {
             return;
         }
 
-        console.log('Creating glass break sound...');
-        // Create a short, sharp sound like glass breaking
-        const oscillator = ctx.createOscillator();
-        const gainNode = ctx.createGain();
+        console.log('Creating multi-layer glass break sound...');
 
-        oscillator.connect(gainNode);
-        gainNode.connect(ctx.destination);
+        const masterGain = ctx.createGain();
+        masterGain.gain.setValueAtTime(0.8, ctx.currentTime);
+        masterGain.connect(ctx.destination);
 
-        // Start with high frequency, drop quickly
-        oscillator.frequency.setValueAtTime(800, ctx.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.1);
+        // Layer 1: white-noise burst for initial impact
+        const noiseDuration = 0.25;
+        const bufferSize = ctx.sampleRate * noiseDuration;
+        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 3); // decay towards end
+        }
+        const noiseSource = ctx.createBufferSource();
+        noiseSource.buffer = noiseBuffer;
+        const noiseGain = ctx.createGain();
+        noiseGain.gain.setValueAtTime(0, ctx.currentTime);
+        noiseGain.gain.linearRampToValueAtTime(0.7, ctx.currentTime + 0.01);
+        noiseGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + noiseDuration);
+        const noiseFilter = ctx.createBiquadFilter();
+        noiseFilter.type = 'highpass';
+        noiseFilter.frequency.setValueAtTime(1500, ctx.currentTime);
+        noiseSource.connect(noiseFilter);
+        noiseFilter.connect(noiseGain);
+        noiseGain.connect(masterGain);
+        noiseSource.start(ctx.currentTime);
+        noiseSource.stop(ctx.currentTime + noiseDuration);
 
-        // Quick attack and decay
-        gainNode.gain.setValueAtTime(0, ctx.currentTime);
-        gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.01);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+        // Helper to schedule shard tones (fast pitching-down chirps)
+        const scheduleShard = (frequency, delay, duration) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(frequency, ctx.currentTime + delay);
+            osc.frequency.exponentialRampToValueAtTime(frequency * 0.4, ctx.currentTime + delay + duration);
+            gain.gain.setValueAtTime(0, ctx.currentTime + delay);
+            gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + delay + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
+            osc.connect(gain);
+            gain.connect(masterGain);
+            osc.start(ctx.currentTime + delay);
+            osc.stop(ctx.currentTime + delay + duration + 0.01);
+        };
 
-        oscillator.start(ctx.currentTime);
-        oscillator.stop(ctx.currentTime + 0.15);
-        console.log('Glass break fallback sound generated');
+        // Layer 2: multiple shards at different offsets
+        const shardSettings = [
+            { freq: 2200, delay: 0.0, duration: 0.18 },
+            { freq: 2600, delay: 0.03, duration: 0.16 },
+            { freq: 1800, delay: 0.05, duration: 0.2 },
+            { freq: 3000, delay: 0.07, duration: 0.14 }
+        ];
+        shardSettings.forEach(({ freq, delay, duration }) => scheduleShard(freq, delay, duration));
+
+        // Layer 3: low “thud” from monitor resonance
+        const thudOsc = ctx.createOscillator();
+        const thudGain = ctx.createGain();
+        thudOsc.type = 'sine';
+        thudOsc.frequency.setValueAtTime(120, ctx.currentTime);
+        thudOsc.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.3);
+        thudGain.gain.setValueAtTime(0, ctx.currentTime);
+        thudGain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.02);
+        thudGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+        thudOsc.connect(thudGain);
+        thudGain.connect(masterGain);
+        thudOsc.start(ctx.currentTime);
+        thudOsc.stop(ctx.currentTime + 0.4);
+
+        console.log('Enhanced glass break fallback sound generated');
     } catch (e) {
         console.log('Web Audio fallback failed:', e);
     }
