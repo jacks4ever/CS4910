@@ -75,8 +75,8 @@ Search terms:
 4. You should hear a beep followed by a glass break sound
 
 ### Full Attack Simulation:
-1. Click **"⚠️ Simulate Attack"** to trigger fake exploit detection
-2. This will test the complete audio sequence during actual attacks
+1. Run the backend detector and generate real attack traffic (or replay the sample test traffic) so the server emits `attack_detected` events
+2. When a live exploit fires, the dashboard will exercise the complete visual + audio sequence automatically
 
 ### Manual Testing Steps:
 1. **Click "🎵 Enable Audio"** in the status bar (or click anywhere/press a key) to satisfy browser policies
@@ -87,5 +87,4 @@ Search terms:
 ### Expected Behavior:
 - **First interaction**: Audio context initializes
 - **Test Sound button**: Plays beep + glass break
-- **Simulate Attack**: Triggers full attack sequence with sounds
 - **Real attacks**: Automatic sound effects during live detection

@@ -586,30 +586,6 @@ async function testAudio() {
     }, 500);
 }
 
-// Simulate attack detection for testing
-function simulateAttack() {
-    console.log('Simulating attack detection...');
-
-    // Create a fake attack event
-    const fakeAttack = {
-        timestamp: new Date().toISOString(),
-        src_ip: '192.168.1.100',
-        dst_ip: '10.0.0.1',
-        src_port: 4444,
-        dst_port: 80,
-        protocol: 'TCP',
-        exploit: {
-            name: 'Test Exploit',
-            severity: 'HIGH',
-            description: 'Simulated attack for testing'
-        },
-        packet_data: 'Simulated packet data'
-    };
-
-    // Trigger the attack handling logic
-    handleAttack(fakeAttack);
-}
-
 // Simple beep function for testing
 function playSimpleBeep() {
     try {
@@ -654,7 +630,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('closeModal').addEventListener('click', closeWhitelistModal);
     document.getElementById('enableAudioBtn').addEventListener('click', enableAudio);
     document.getElementById('testAudioBtn').addEventListener('click', testAudio);
-    document.getElementById('simulateAttackBtn').addEventListener('click', simulateAttack);
     document.getElementById('addIPBtn').addEventListener('click', addWhitelistIP);
     document.getElementById('clearProgressBtn').addEventListener('click', clearExploitProgress);
     
