@@ -1159,10 +1159,13 @@ function animateAttack(attack) {
     
     // Create icon on packet
     const icon = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    const iconSize = Math.max(40, exploitVisuals.size * 3); // keep icons 2–4× larger than before
     icon.setAttribute('x', startX);
-    icon.setAttribute('y', '140');
+    icon.setAttribute('y', '135');
     icon.setAttribute('text-anchor', 'middle');
-    icon.setAttribute('font-size', '20');
+    icon.setAttribute('dominant-baseline', 'middle');
+    icon.setAttribute('alignment-baseline', 'middle');
+    icon.setAttribute('font-size', iconSize);
     icon.textContent = attackIcon;
     packetGroup.appendChild(icon);
     
@@ -1210,7 +1213,7 @@ function animateAttack(attack) {
         
         // Update icon position
         icon.setAttribute('x', position);
-        icon.setAttribute('y', 140 + wave);
+        icon.setAttribute('y', 135 + wave);
         icon.setAttribute('opacity', 1 - progress * 0.3);
         
         // Update trail
