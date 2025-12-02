@@ -1237,6 +1237,17 @@ function animateAttack(attack) {
     requestAnimationFrame(animate);
 }
 
+const DEFAULT_EXPLOIT_TARGETS = 8;
+
+function getTotalExploitTargets() {
+    const total = document.querySelectorAll('.exploit-item').length;
+    return total > 0 ? total : DEFAULT_EXPLOIT_TARGETS;
+}
+
+function isFinalExploit(crackCount, totalExploits) {
+    return totalExploits > 0 && crackCount >= totalExploits;
+}
+
 // Shake and crack victim computer on exploit impact
 function shakeAndCrackVictim() {
     const targetNode = document.getElementById('targetNode');
@@ -1248,13 +1259,13 @@ function shakeAndCrackVictim() {
     
     // Add progressive crack effect
     const crackCount = detectedExploits.size;
+    const totalExploits = getTotalExploitTargets();
     const cracksGroup = document.getElementById('computerCracks') || createCracksGroup();
     
     // Add new crack based on exploit count
-    addCrack(cracksGroup, crackCount);
+    addCrack(cracksGroup, crackCount, totalExploits);
     
-    // On 7th (final) exploit, make it dramatic
-    if (crackCount === 7) {
+    if (isFinalExploit(crackCount, totalExploits)) {
         setTimeout(() => {
             targetNode.classList.add('computer-destroyed');
             // Start overheating sound effect
@@ -1273,7 +1284,7 @@ function createCracksGroup() {
 }
 
 // Add a crack line to the victim computer (glass-breaking effect)
-function addCrack(cracksGroup, crackNumber) {
+function addCrack(cracksGroup, crackNumber, totalExploits) {
     // Glass shatter patterns - realistic branching cracks with spider-web effect (adjusted for 2x larger screen)
     const crackPatterns = [
         // Crack 1: Top-left impact with branches (adjusted for new screen coords)
@@ -1295,14 +1306,18 @@ function addCrack(cracksGroup, crackNumber) {
         'M 635 140 L 650 128 M 642 137 L 635 150 M 650 128 L 700 120 M 650 128 L 655 140 M 700 120 L 710 128 M 710 128 L 720 137 M 710 128 L 715 140',
         
         // Crack 7: Final devastating full shatter (adjusted for larger screen)
-        'M 625 80 L 700 135 M 625 80 L 632 70 M 625 80 L 620 90 M 700 135 L 775 180 M 700 135 L 770 165 M 775 180 L 778 185 M 640 85 L 700 120 M 760 88 L 750 110 M 645 160 L 655 140 M 755 160 L 745 140 M 630 105 L 650 125 M 770 110 L 750 125'
+        'M 625 80 L 700 135 M 625 80 L 632 70 M 625 80 L 620 90 M 700 135 L 775 180 M 700 135 L 770 165 M 775 180 L 778 185 M 640 85 L 700 120 M 760 88 L 750 110 M 645 160 L 655 140 M 755 160 L 745 140 M 630 105 L 650 125 M 770 110 L 750 125',
+
+        // Crack 8: Heartbleed catastrophic collapse (full screen rupture)
+        'M 620 90 L 780 150 M 620 90 L 640 60 M 780 150 L 760 210 M 660 70 L 700 60 M 700 60 L 770 95 M 640 190 L 700 150 M 700 150 L 750 210 M 630 130 L 600 170 M 760 120 L 800 170'
     ];
+    const isFinalCrack = isFinalExploit(crackNumber, totalExploits);
     
     if (crackNumber <= crackPatterns.length) {
         const crack = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         crack.setAttribute('d', crackPatterns[crackNumber - 1]);
         crack.setAttribute('stroke', '#ffffff');  // White cracks like broken glass
-        crack.setAttribute('stroke-width', crackNumber === 7 ? '2.5' : '1.5');
+        crack.setAttribute('stroke-width', isFinalCrack ? '3' : '1.5');
         crack.setAttribute('fill', 'none');
         crack.setAttribute('opacity', '0');
         crack.setAttribute('stroke-linecap', 'round');
@@ -1316,7 +1331,7 @@ function addCrack(cracksGroup, crackNumber) {
         // Play glass breaking sound effect
         playGlassBreakSound();
 
-        if (crackNumber === 7) {
+        if (isFinalCrack) {
             playPacmanDeathSound();
         }
         
@@ -1527,7 +1542,8 @@ function getAttackIcon(attackType) {
         'shellshock': '💣',      // Shellshock
         'sql_injection': '💉',   // SQL Injection
         'reverse_shell': '🔙',   // Reverse shell
-        'tomcat_mgr': '🐱'       // Tomcat
+        'tomcat_mgr': '🐱',      // Tomcat
+        'heartbleed': '🩸'       // Heartbleed
     };
     return icons[attackType] || '⚠️';
 }
@@ -1590,6 +1606,14 @@ function getExploitVisuals(attackType) {
             size: 18,
             pulseSpeed: 'fast',
             trailEffect: 'solid-thick'
+        },
+        // Heartbleed: TLS heartbeat leak, neon magenta pulse
+        'heartbleed': {
+            color: '#be123c',
+            glowColor: '#f43f5e',
+            size: 17,
+            pulseSpeed: 'fast',
+            trailEffect: 'electric'
         }
     };
     

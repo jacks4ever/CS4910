@@ -83,8 +83,17 @@ EXPLOIT_SIGNATURES = {
         'ports': [4444, 4445, 8080],
         'pattern': b'meterpreter',
         'severity': 'CRITICAL'
+    },
+    'heartbleed': {
+        'name': 'OpenSSL Heartbleed (CVE-2014-0160)',
+        'description': 'TLS heartbeat memory disclosure attempt',
+        'ports': [443, 8443, 10443],
+        'patterns': [],
+        'severity': 'CRITICAL'
     }
 }
+
+HEARTBLEED_PORTS = {443, 8443, 10443}
 
 class AttackDetector:
     def __init__(self):
@@ -225,6 +234,10 @@ class AttackDetector:
     def detect_exploit(self, packet):
         """Detect known exploit patterns"""
         
+        heartbleed_attack = self.detect_heartbleed(packet)
+        if heartbleed_attack:
+            return heartbleed_attack
+        
         # PRIORITY 1: Check payload patterns first for specific exploits
         if packet.haslayer(Raw):
             payload = bytes(packet[Raw].load)
@@ -289,6 +302,61 @@ class AttackDetector:
                         'details': f'SMB activity on port {target_port} ({tracker["count"]} packets in {elapsed:.1f}s)'
                     }
         
+        return None
+
+    def detect_heartbleed(self, packet):
+        """Detect Heartbleed-style TLS heartbeat over-read attempts"""
+        try:
+            if not (packet.haslayer(TCP) and packet.haslayer(Raw)):
+                return None
+            dst_port = packet[TCP].dport
+            if dst_port not in HEARTBLEED_PORTS:
+                return None
+            payload = bytes(packet[Raw].load)
+            if len(payload) < 8:
+                return None
+
+            # TLS record header: type (1), version (2), length (2)
+            record_type = payload[0]
+            if record_type != 0x18:  # Heartbeat content type
+                return None
+
+            version_major = payload[1]
+            if version_major != 0x03:
+                return None
+
+            if len(payload) < 8:
+                return None
+
+            heartbeat_data = payload[5:]
+            if len(heartbeat_data) < 3:
+                return None
+
+            heartbeat_message_type = heartbeat_data[0]
+            # Heartbeat request = 0x01
+            if heartbeat_message_type != 0x01:
+                return None
+
+            claimed_payload_len = int.from_bytes(heartbeat_data[1:3], 'big')
+            actual_payload_len = len(heartbeat_data) - 3
+
+            if claimed_payload_len <= actual_payload_len:
+                return None
+
+            leak_window = claimed_payload_len - actual_payload_len
+            info = EXPLOIT_SIGNATURES['heartbleed']
+            return {
+                'type': 'heartbleed',
+                'name': info['name'],
+                'description': info['description'],
+                'severity': info['severity'],
+                'details': (
+                    f'TLS heartbeat claims {claimed_payload_len} bytes but only '
+                    f'sent {actual_payload_len} (possible leak window ≈ {leak_window} bytes)'
+                )
+            }
+        except Exception as exc:
+            print(f"Heartbleed detection error: {exc}")
         return None
     
     def packet_handler(self, packet):

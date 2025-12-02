@@ -19,6 +19,7 @@ This application is designed for **CS4910 Security Course** to demonstrate:
 - **VSFTPD Backdoor** - FTP backdoor exploitation
 - **Tomcat Manager Deploy** - Application deployment attacks
 - **Shellshock** - Bash environment variable injection
+- **Heartbleed (CVE-2014-0160)** - TLS heartbeat memory disclosure detection
 - **SQL Injection** - Database exploitation attempts
 - **Reverse Shell** - Meterpreter callbacks
 - **Port Scanning** - Network reconnaissance detection
@@ -365,7 +366,7 @@ For issues or questions:
 
 **v1.0.0** (November 2025)
 - Initial release
-- 7 exploit signatures
+- 8 exploit signatures (Heartbleed added)
 - Port scan detection
 - SYN flood detection
 - Real-time WebSocket dashboard
