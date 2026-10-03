@@ -6,10 +6,10 @@ Students working from a web console, where pasting isn't possible, can type one 
 
 **Ubuntu (lastname-srv, lastname-tgt):**
 
-    curl -fsSL tinyurl.com/cs4910-ip-linux -o make-static-ip.sh && sudo bash make-static-ip.sh
+    curl -fsSL tinyurl.com/cs4910-sh -o make-static-ip.sh && sudo bash make-static-ip.sh
 
 **Windows (lastname-win, elevated PowerShell console):**
 
-    iwr -useb tinyurl.com/cs4910-ip-win -OutFile make-static-ip.ps1; powershell -ExecutionPolicy Bypass -File .\make-static-ip.ps1
+    iwr -useb tinyurl.com/cs4910-ps -OutFile make-static-ip.ps1; powershell -ExecutionPolicy Bypass -File .\make-static-ip.ps1
 
 The file stays in the home folder, so you can confirm the result later with `sudo bash make-static-ip.sh --check` or `.\make-static-ip.ps1 -Check`.
